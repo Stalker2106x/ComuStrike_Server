@@ -1,8 +1,19 @@
 module.exports = {
-  getMP3: (req, res) => {
+  getMP3Schema: {
+    body: {
+      type: 'object',
+      required: ['LENUM', 'LEPASS', 'IDMP3'],
+      properties: {
+        LENUM: { type: 'string' },
+        LEPASS: { type: 'string' },
+        IDMP3: { type: 'number' }
+      }
+    }
+  },
+  getMP3: (app, req, res) => {
 
   },
-  placeMP3: (req, res) => {
+  setMP3: (app, req, res) => {
 
   }
 }

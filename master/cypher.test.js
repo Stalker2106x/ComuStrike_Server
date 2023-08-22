@@ -1,14 +1,21 @@
 /* eslint-disable no-undef */
 const handler = require('./cypher')
 
+jest.mock('./config', () => {
+  return {
+    maxSize: 150,
+    cypherKey: 1337
+  }
+})
+
 describe('Cypher', () => {
-  test('Cyphered Payload should not exceed 1500 chars', () => {
+  test('Cyphered Payload should not exceed maxSize', () => {
     expect(() => {
-      handler.cypher('ooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo')
+      handler.cypher('ooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo')
     }).toThrow(Error)
   })
   test('Cypher should work', () => {
-    expect(handler.cypher('method=')).toBe('15C6075685E613C')
+    expect(handler.cypher('method=')).toBe('15460746856613D')
   })
 })
 
@@ -34,6 +41,6 @@ describe('Decypher', () => {
     }).toThrow(Error)
   })
   test('Decypher should work', () => {
-    expect(handler.decypher('15C6075685E613C6754715E6955234D457D4A46497F38656656616767556366267D40514162563C64576265665661676757234D45624A47540C37274C70534452624C4E4E0C343437')).toBe('method=get_id&LELOGIN=dfgdfgdfg&LEPASS=dfgdfgdfgf&LESOFT=2&LAVERSION=157')
+    expect(handler.decypher('15460746856613D675C715F695D234C45754A4749773864665E6166675D636726754050416A563D645F6264665E6166675F234C456A4A46540437264C785345526A4C4F4E04343537')).toBe('method=get_id&LELOGIN=dfgdfgdfg&LEPASS=dfgdfgdfgf&LESOFT=2&LAVERSION=157')
   })
 })
