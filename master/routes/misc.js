@@ -10,10 +10,23 @@ module.exports = {
       }
     }
   },
-  getMP3: (app, req, res) => {
-
+  getMP3: (app, req, res, next) => {
+    res.body = {
+      element: {
+        value: {
+          NAME: 'server',
+          COMMENTAIRE: 'desc',
+          HOST: 'x',
+          ID: 0
+        }
+      }
+    }
+    next()
   },
-  setMP3: (app, req, res) => {
-
+  setMP3Schema: {
+  },
+  setMP3: (app, req, res, next) => {
+    res.body = null
+    next()
   }
 }

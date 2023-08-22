@@ -10,7 +10,10 @@ module.exports = {
       }
     }
   },
-  getMap: (app, req, res) => {
-
+  getMap: (app, req, res, next) => {
+    body = {
+      MAP: 'toto'
+    }
+    next()
   }
 }

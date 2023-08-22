@@ -13,9 +13,10 @@ const miscRoutes = require('./misc')
 const LegacyToRESTMapper = {
   nouveaujoueur: playerRoutes.createPlayer,
   info_joueur: playerRoutes.getPlayer,
-  get_id: serverRoutes.getPlayerId,
+  get_id: playerRoutes.getPlayerId,
   score_plus: playerRoutes.addScore,
   set_tournois: tournamentRoutes.createTournament,
+  get_mp3: miscRoutes.getMP3,
   set_mp3: miscRoutes.setMP3,
   get_map: mapRoutes.getMap,
   set_server: serverRoutes.createServer,
@@ -31,7 +32,7 @@ const LegacyToRESTMapper = {
 
 module.exports = {
   xmlLayerSchema: {
-    body: {
+    query: {
       type: 'object',
       required: ['crypt'],
       properties: {
@@ -45,13 +46,17 @@ module.exports = {
   },
   xmlLayer: (app, req, res, next) => {
     try {
+      console.log(req.query.crypt)
       const requestData = cypher.decypher(req.query.crypt).split(/[?&]+/)
-      req.body = { ...requestData }
+      for (entry of requestData) {
+        const data = entry.split('=')
+        req.body[data[0].toUpperCase()] = data[1]
+      }
+      console.log(req.body)
       // Call appopriate REST method from mapper
-      LegacyToRESTMapper[requestData.method](app, req, res)
-      // We have to convert current response to legacy XML schema
-      res.type('application/xml').send(`<?xml version="1.0" encoding="ISO-8859-1"?><root>${json2xml(res.body)}</root>`)
+      LegacyToRESTMapper[req.body.METHOD](app, req, res, next)
     } catch (e) {
+      console.error(e)
       res.status(500).send('Internal server error')
     }
   }

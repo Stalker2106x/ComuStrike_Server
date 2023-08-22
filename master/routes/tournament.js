@@ -13,8 +13,8 @@ module.exports = {
       }
     }
   },
-  createTournament: (app, req, res) => {
-
+  createTournament: (app, req, res, next) => {
+    next()
   },
   getTournamentsSchema: {
     body: {
@@ -27,8 +27,16 @@ module.exports = {
       }
     }
   },
-  getTournaments: (app, req, res) => {
-
+  getTournaments: (app, req, res, next) => {
+    res.body = {
+      tournois: {
+        DESC: "crazy tournoi",
+        MAP: "snip_beach",
+        ROUND: 0,
+        TIMEOUT: 0
+      }
+    }
+    next()
   },
   getTournamentSchema: {
     body: {
@@ -43,7 +51,7 @@ module.exports = {
       }
     }
   },
-  getTournament: (app, req, res) => {
-
+  getTournament: (app, req, res, next) => {
+    next()
   }
 }

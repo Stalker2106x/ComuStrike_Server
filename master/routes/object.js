@@ -10,8 +10,8 @@ module.exports = {
       }
     }
   },
-  getObject: (app, req, res) => {
-
+  getObject: (app, req, res, next) => {
+    next()
   },
   placeObjectSchema: {
     body: {
@@ -35,7 +35,7 @@ module.exports = {
       }
     }
   },
-  placeObject: (app, req, res) => {
-
+  placeObject: (app, req, res, next) => {
+    next()
   }
 }

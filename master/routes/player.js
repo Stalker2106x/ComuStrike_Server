@@ -13,8 +13,13 @@ module.exports = {
       }
     }
   },
-  createPlayer: (app, req, res) => {
-
+  createPlayer: (app, req, res, next) => {
+    const newPlayer = app.db.Players.create({
+      username: req.body.LENOM,
+      password: req.body.LEPASS
+    })
+    res.body = {}
+    next()
   },
   getPlayerSchema: {
     body: {
@@ -27,9 +32,27 @@ module.exports = {
       }
     }
   },
-  getPlayer: (app, req, res) => {
-    console.log(app.db)
-    res.status(200).send({})
+  getPlayer: (app, req, res, next) => {
+    res.body = {
+      NAME: "test",
+      ERROR: 0,
+      MP3: { value: "lofijazz", ID: 3 },
+      MODEL: "kakashi",
+      IS_OP: 0,
+      VALIDE: 1,
+      MSG1: 'testmsg1',
+      MSG2: 'testmsg2',
+      MSG3: 'testmsg3',
+      MSG4: 'testmsg4',
+      SCORE: 0,
+      SCROLL: 'comustrike unofficial server - debug use only',
+      STATS: 'x',
+      PANEL: 'ComuStrike.V157',
+      ROMUCHAT: 'DEBUG USE ONLY',
+      ID_PLAYER: 1,
+      CONTROLE: '55ASD'
+    }
+    next()
   },
   getPlayerIdSchema: {
     body: {
@@ -42,8 +65,11 @@ module.exports = {
       }
     }
   },
-  getPlayerId: (app, req, res) => {
-
+  getPlayerId: (app, req, res, next) => {
+    res.body = {
+      ID_PLAYER: 1
+    }
+    next()
   },
   addScoreSchema: {
     body: {
@@ -59,7 +85,7 @@ module.exports = {
       }
     }
   },
-  addScore: (app, req, res) => {
-
+  addScore: (app, req, res, next) => {
+    next()
   }
 }
