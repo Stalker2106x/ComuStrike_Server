@@ -2,6 +2,7 @@ name:  Generate Release
 
 # Trigger on every master branch push and pull request
 on:
+  workflow_dispatch:
   push:
     tags:
       - 'v*.*.*'
