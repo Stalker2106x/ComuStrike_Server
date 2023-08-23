@@ -1,10 +1,13 @@
+const readline = require('readline');
 const express = require('express')
 const bodyParser = require('body-parser')
 const xmljs = require('xml-js')
 const { Validator, ValidationError } = require("express-json-validator-middleware")
 const { Sequelize } = require('sequelize')
+const mariadb = require('mariadb')
 
 const config = require('./config')
+const utils = require('./utils')
 
 const playerRoutes = require('./routes/player')
 const serverRoutes = require('./routes/server')
@@ -13,6 +16,7 @@ const objectRoutes = require('./routes/object')
 const legacyRoutes = require('./routes/legacy')
 
 const cypher = require('./cypher')
+const defaultData = require('./defaultData')
 
 const Players = require('./models/Players')
 const Maps = require('./models/Maps')
@@ -52,7 +56,7 @@ function arrayFix(res, val) {
   return (val)
 }
 
-function sendMiddleware(req, res, next) {
+function sendMiddleware(app, req, res, next) {
   const oldSend = res.send
   res.send = function(body) {
     res.send = oldSend // set function back to avoid the 'double-send'
@@ -60,42 +64,84 @@ function sendMiddleware(req, res, next) {
       if (body && body.hasOwnProperty('return')) {
         //If object contains a return key, we convert it to single value body
         const xmlData = { _declaration: { _attributes: { version:"1.0", encoding:"ISO-8859-1" } }, root: { _text: body.return } }
-        console.log(xmljs.js2xml(xmlData, { compact: true, spaces: 4 }))
+        if (app.debug) console.log(xmljs.js2xml(xmlData, { compact: true, spaces: 4 }))
         return res.type('application/xml').send(xmljs.js2xml(xmlData, { compact: true, spaces: 0 }))
       } else if (typeof body === 'object') {
         // We have to convert current response to legacy XML schema
         const xmlData = { _declaration: { _attributes: { version:"1.0", encoding:"ISO-8859-1" } }, root: objectSplit(body) }
-        console.log(xmljs.js2xml(xmlData, { compact: true, spaces: 4, elementNameFn: arrayFix }))
+        if (app.debug) console.log(xmljs.js2xml(xmlData, { compact: true, spaces: 4, elementNameFn: (val) => arrayFix(res, val) }))
         return res.type('application/xml').send(xmljs.js2xml(xmlData, { compact: true, spaces: 0, elementNameFn: (val) => arrayFix(res, val) }))
       } else {
         // Empty response
-        console.log('empty response')
+        if (app.debug) console.log('empty response')
         return res.send()
       }
     } else {
-      console.log(body)
+      if (app.debug) console.log(body)
       return res.send(body)
     }
   }
   next()
 }
 
+function validationError(error, request, response, next) {
+  // Check the error is a validation error
+  if (error instanceof ValidationError) {
+    response.status(400).send(error.validationErrors)
+    next()
+  } else {
+    // Pass error on if not a validation error
+    next(error)
+  }
+}
+
 class App {
+
+  constructor(debug, fillDB) {
+    console.log('█████████████████████████████████████████████████████████████')
+    console.log('█─▄▄▄─█─▄▄─█▄─▀█▀─▄█▄─██─▄█─▄▄▄▄█─▄─▄─█▄─▄▄▀█▄─▄█▄─█─▄█▄─▄▄─█')
+    console.log('█─███▀█─██─██─█▄█─███─██─██▄▄▄▄─███─████─▄─▄██─███─▄▀███─▄█▀█')
+    console.log('█▄▄▄▄▄▀▄▄▄▄▀▄▄▄▀▄▄▄▀▀▄▄▄▄▀▀▄▄▄▄▄▀▀▄▄▄▀▀▄▄▀▄▄▀▄▄▄▀▄▄▀▄▄▀▄▄▄▄▄█')
+    console.log(`Server v${config.serverVersion}  -  Game v${config.gameVersion}`.padStart(61))
+    this.debug = debug
+    this.fillDB = fillDB
+  }
+
   async initDB () {
     try {
       this.db = new Sequelize(config.database.database, config.database.user, config.database.password, {
         host: config.database.host,
         port: config.database.port,
         dialect: 'mariadb',
-        logging: false
+        dialectModule: mariadb,
+        logging: this.debug
       })
       await this.db.authenticate()
       this.db.define(Players.name, Players.define, Players.options)
       this.db.define(Maps.name, Maps.define, Maps.options)
       this.db.define(Tournaments.name, Tournaments.define, Tournaments.options)
-      await this.db.sync()
+      if (this.fillDB) {
+        console.warn('You passed the switch --fillDB, all your database is gonna be erased and replaced with default values')
+        const rl = readline.createInterface({
+          input: process.stdin,
+          output: process.stdout
+        });
+        const confirm = await new Promise(resolve => {
+          rl.question('Are you sure you want to proceed ? (y/n): ', resolve)
+        })
+        if (confirm !== 'y') {
+          console.log('Cancelled. exiting program...')
+          process.exit(1)
+        }
+        await this.db.sync({ force: true })
+        await defaultData.createPlayers(this)
+        await defaultData.createMaps(this)
+        console.log('Database was filled successfully!')
+      } else {
+        await this.db.sync()
+      }
     } catch (e) {
-      console.error(`Database connection failed: ${e}`)
+      console.error(`Database initialization failed: ${e}`)
       process.exit(1)
     }
   }
@@ -103,20 +149,22 @@ class App {
   initServerList () {
     // Initialize serverList
     this.serverList = new Map()
-    this.serverList.set(0, {
-      name: 'fakeserv',
-      version: '157',
-      host: 'localhost',
-      owner: 0,
-      map: 'tunisia',
-      description: 'fake server',
-      slots: 5,
-      tournamentId: 0,
-      private: 0,
-      weapons: '*****************************',
-      md5: '49fed900999d62fc6c950fa129384e72',
-      connectedPeers: []
-    })
+    if (this.debug) {
+      this.serverList.set(0, {
+        name: 'fakeserv',
+        version: '157',
+        host: 'localhost',
+        owner: 0,
+        map: 'tunisia',
+        description: 'fake server',
+        slots: 5,
+        tournamentId: 0,
+        private: 0,
+        weapons: '*****************************',
+        md5: '49fed900999d62fc6c950fa129384e72',
+        connectedPeers: []
+      })
+    }
   }
 
   initRouter () {
@@ -125,7 +173,8 @@ class App {
       const { validate } = new Validator()
       this.app = express()
       this.app.use(bodyParser.json())
-      this.app.use(sendMiddleware)
+      this.app.use((req, res, next) => sendMiddleware(this, req, res, next))
+      this.app.use(validationError)
       // Player
       this.app.post('/player', validate(playerRoutes.createPlayerSchema), (req, res, next) => playerRoutes.createPlayer(this, req, res, next))
       this.app.get('/player/:id', validate(playerRoutes.getPlayerSchema), (req, res, next) => playerRoutes.getPlayer(this, req, res, next))
@@ -133,7 +182,7 @@ class App {
       this.app.put('/player/:id/score', validate(playerRoutes.addScoreSchema), (req, res, next) => playerRoutes.addScore(this, req, res, next))
       // Server
       this.app.post('/server', validate(serverRoutes.createServerSchema), (req, res, next) => serverRoutes.createServer(this, req, res, next))
-      this.app.get('/server/:id', validate(serverRoutes.getServerSchema), (req, res, next) => serverRoutes.getServer(this, req, res, next))
+      this.app.get('/servers', validate(serverRoutes.getServerListSchema), (req, res, next) => serverRoutes.getServerList(this, req, res, next))
       this.app.get('/server/mp3', validate(serverRoutes.getMP3Schema), (req, res, next) => serverRoutes.getMP3(this, req, res, next))
       this.app.delete('/server', validate(serverRoutes.deleteServerSchema), (req, res, next) => serverRoutes.deleteServer(this, req, res, next))
       this.app.put('/server/:id/join', validate(serverRoutes.joinServerSchema), (req, res, next) => serverRoutes.joinServer(this, req, res, next))
@@ -150,18 +199,9 @@ class App {
       // Legacy
       this.app.get('/script/romustrike/xml_layer.php', validate(legacyRoutes.xmlLayerSchema), (req, res, next) => legacyRoutes.xmlLayer(this, req, res, next))
       // Debug
-      this.app.post('/cypher', (req, res, next) => { console.log(req.body); res.status(200).send(cypher.cypher(req.body.msg)); })
-      // Mws
-      this.app.use((error, request, response, next) => {
-        // Check the error is a validation error
-        if (error instanceof ValidationError) {
-          response.status(400).send(error.validationErrors)
-          next()
-        } else {
-          // Pass error on if not a validation error
-          next(error)
-        }
-      })
+      if (this.debug) {
+        this.app.post('/cypher', (req, res, next) => { res.status(200).send(cypher.cypher(req.body.msg)); })
+      }
     } catch (e) {
       console.error(`Server error: ${e} => ${e.stack}`)
       process.exit(1)
@@ -173,7 +213,7 @@ class App {
     this.initServerList()
     this.initRouter()
     this.app.listen(config.port, () => {
-      console.log(`Server listening on port ${config.port}...`)
+      utils.logger(`Server listening on port ${config.port}...`)
     })
   }
 }

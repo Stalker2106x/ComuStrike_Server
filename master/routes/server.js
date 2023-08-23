@@ -1,3 +1,7 @@
+const path = require('path')
+
+const utils = require('../utils')
+
 module.exports = {
   createServerSchema: {
     body: {
@@ -25,7 +29,8 @@ module.exports = {
   },
   createServer: (app, req, res, next) => {
     const serverId = app.serverList.size;
-    app.serverList.set(serverId, {
+    const server = {
+      serverId,
       name: req.body.DESC,
       version: req.body.LAVERSION,
       host: req.headers['x-forwarded-for'] || req.socket.remoteAddress,
@@ -38,27 +43,13 @@ module.exports = {
       weapons: req.body.ARMES,
       md5: req.body.MD5,
       connectedPeers: []
-    })
+    }
+    app.serverList.set(serverId, server)
+    utils.logger(`Server ${server.name} created by ${server.owner} on ${server.host}`)
     res.status(200).send({ return: serverId })
     next()
   },
-  deleteServerSchema: {
-    body: {
-      type: 'object',
-      required: ['LENUM', 'LEPASS', 'LESOFT', 'CLE_TOURNOIS', 'ROUND'],
-      properties: {
-        LENUM: { type: 'number' },
-        LEPASS: { type: 'string' },
-        CLE_SERVEUR: { type: 'number' },
-      }
-    }
-  },
-  deleteServer: (app, req, res, next) => {
-    app.serverList.delete(req.body.serverId)
-    res.status(200).send()
-    next()
-  },
-  getServerSchema: {
+  getServerListSchema: {
     body: {
       type: 'object',
       required: ['LENUM', 'LEPASS', 'LESOFT', 'CLE_TOURNOIS', 'ROUND'],
@@ -71,7 +62,7 @@ module.exports = {
       }
     }
   },
-  getServer: (app, req, res, next) => {
+  getServerList: (app, req, res, next) => {
     let servers = []
     for (let [serverId, server] of app.serverList) {
       res.arrayKey = 'server'
@@ -128,9 +119,11 @@ module.exports = {
     const server = app.serverList.get(parseInt(req.body.SERVERID))
     if (!server) {
       res.status(500).send({ error: 'Invalid SERVERID' })
+    } else {
+      server.connectedPeers.push(parseInt(req.body.LENUM))
+      utils.logger(`Player ${parseInt(req.body.LENUM)} joined server [${server.serverId}] ${server.host}`)
+      res.status(200).send({ return: parseInt(req.body.SERVERID) })
     }
-    server.connectedPeers.push(req.body.LENUM)
-    res.status(200).send({ return: parseInt(req.body.SERVERID) })
     next()
   },
   quitServerSchema: {
@@ -150,7 +143,36 @@ module.exports = {
   quitServer: (app, req, res, next) => {
     const server = app.serverList.get(parseInt(req.body.LAPARTIE))
     server.connectedPeers.splice(server.connectedPeers.indexOf(parseInt(req.body.LENUM)), 1)
+    utils.logger(`Player ${parseInt(req.body.LENUM)} left server [${server.serverId}] ${server.host}`)
     res.status(200).send()
+    next()
+  },
+  deleteServerSchema: {
+    body: {
+      type: 'object',
+      required: ['LENUM', 'LEPASS', 'LESOFT', 'CLE_TOURNOIS', 'ROUND'],
+      properties: {
+        LENUM: { type: 'number' },
+        LEPASS: { type: 'string' },
+        CLE_SERVEUR: { type: 'number' },
+      }
+    }
+  },
+  deleteServer: (app, req, res, next) => {
+    const server = null
+    for (const [serverId, srv] of app.serverList) {
+      if (srv.owner === parseInt(req.body.LENUM)) {
+        server = srv
+        break;
+      }
+    }
+    if (!server) {
+      res.status(500).send({ error: 'Invalid SERVERID' })
+    } else {
+      app.serverList.delete(parseInt(req.body.LENUM))
+      utils.logger(`Server ${server.name} created by ${server.owner} terminated`)
+      res.status(200).send()
+    }
     next()
   },
   getMapListSchema: {
@@ -171,8 +193,8 @@ module.exports = {
       maps.push({
         NAME: map.name,
         MAPPEUR: map.author,
-        WADMD5: '',
-        BSPMD5: '',
+        WADMD5: utils.fileMD5(path.join(__dirname, '../maps/', `${map.name}.wad`)),
+        BSPMD5: utils.fileMD5(path.join(__dirname, '../maps/', `${map.name}.bsp`)),
         HOST: 'localhost',
       })
     }

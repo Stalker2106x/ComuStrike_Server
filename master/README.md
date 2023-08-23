@@ -1,25 +1,34 @@
-# ComuStrike
+█████████████████████████████████████████████████████████████
+█─▄▄▄─█─▄▄─█▄─▀█▀─▄█▄─██─▄█─▄▄▄▄█─▄─▄─█▄─▄▄▀█▄─▄█▄─█─▄█▄─▄▄─█
+█─███▀█─██─██─█▄█─███─██─██▄▄▄▄─███─████─▄─▄██─███─▄▀███─▄█▀█
+█▄▄▄▄▄▀▄▄▄▄▀▄▄▄▀▄▄▄▀▀▄▄▄▄▀▀▄▄▄▄▄▀▀▄▄▄▀▀▄▄▀▄▄▀▄▄▄▀▄▄▀▄▄▀▄▄▄▄▄█
 
 Unofficial Romustrike server
 
-# Requirements
+# Pre-built binary
 
-- MariaDB
+The server is available in pre-built binaries on Release section
+
+NOTE: The server uses MySQL "MariaDB" engine to persist data.
+Install any edition from: https://mariadb.com/downloads/
+
+When the setup is complete, you might want to fill your database with default data.
+When you run the server for the first time, pass the switch __--fillDB__
+
+    ./ComuStrike_Server --fillDB
+
+# From source
+
+Requirements:
 - NodeJS 18 or later
 
-# Setup
+## Setup
 
-to install server dependencies, run:
+First install server dependencies, by running:
 
     yarn install
 
-to inject data in your server database, run:
-
-    $ mysql -u dbuser -p
-    mysql> source sql/createMaps.sql
-    mysql> source sql/createPlayers.sql
-
-# Start
+## Start
 
 to run server just start it
 

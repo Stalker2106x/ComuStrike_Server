@@ -1,5 +1,6 @@
 module.exports = {
-  version: '157',
+  serverVersion: '1.0.0',
+  gameVersion: '157',
   maxSize: 1500,
   cypherKey: 66865,
   port: 80,

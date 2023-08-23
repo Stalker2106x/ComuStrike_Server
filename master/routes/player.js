@@ -1,8 +1,4 @@
-const { createHash } = require('crypto')
-
-function passwordHash(password) {
-  return createHash("sha256").update(password).digest("hex")
-}
+const utils = require('../utils')
 
 module.exports = {
   createPlayerSchema: {
@@ -31,7 +27,7 @@ module.exports = {
       await app.db.models.Players.create({
         username: req.body.LENOM,
         email: req.body.LEMAIL,
-        password: passwordHash(req.body.LEPASS)
+        password: utils.passwordHash(req.body.LEPASS)
       })
       res.status(200).send('OK')
     }
@@ -52,12 +48,13 @@ module.exports = {
     const player = await app.db.models.Players.findOne({
       where: {
         player_id: req.body.LENUM,
-        password: passwordHash(req.body.LEPASS)
+        password: utils.passwordHash(req.body.LEPASS)
       }
     })
     if (player == null) {
       res.status(500).send({ error: 'Invalid credentials' })
     } else {
+      utils.logger(`Player [${player.player_id}] ${player.username} logged in`)
       res.status(200).send({
         NAME: player.username,
         ERROR: 0,
@@ -96,7 +93,7 @@ module.exports = {
     const player = await app.db.models.Players.findOne({
       where: {
         username: req.body.LELOGIN,
-        password: passwordHash(req.body.LEPASS)
+        password: utils.passwordHash(req.body.LEPASS)
       }
     })
     if (player == null) {
