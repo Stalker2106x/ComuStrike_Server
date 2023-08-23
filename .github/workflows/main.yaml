@@ -1,5 +1,8 @@
 name:  Generate Release
 
+permissions:
+  contents: write
+
 # Trigger on every master branch push and pull request
 on:
   workflow_dispatch:
