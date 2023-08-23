@@ -22,9 +22,8 @@ jobs:
       - name: Release
         uses: softprops/action-gh-release@v1
         with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
           files: |
             your-program-name-here-linux
             your-program-name-here-macos
             your-program-name-here-win.exe
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
