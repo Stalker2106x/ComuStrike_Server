@@ -24,6 +24,6 @@ jobs:
         with:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           files: |
-            your-program-name-here-linux
-            your-program-name-here-macos
-            your-program-name-here-win.exe
+            ComuStrike_Server-linux
+            ComuStrike_Server-macos
+            ComuStrike_Server-win.exe
