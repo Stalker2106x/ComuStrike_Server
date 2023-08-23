@@ -19,7 +19,10 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 18.x
-      - run: npm install --global pkg yarn
+      - name: Install Yarn & pkg
+        run: npm install --global pkg yarn
+      - name: Install dependencies
+        run: yarn install
       - name: Build
         run: yarn build
       - name: Release
