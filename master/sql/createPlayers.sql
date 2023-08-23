@@ -1,0 +1,2 @@
+INSERT INTO players (username, email, password, version, active, role) VALUES ('admin', 'admin@rs.fr', 'admin', '157', 1, 1)
+INSERT INTO players (username, email, password, version, active, role) VALUES ('user', 'user@rs.fr', 'user', '157', 1, 0)
