@@ -14,8 +14,9 @@ const legacyRoutes = require('./routes/legacy')
 
 const cypher = require('./cypher')
 
-const Players = require('./models/Players');
-const Tournaments = require('./models/Tournaments');
+const Players = require('./models/Players')
+const Maps = require('./models/Players')
+const Tournaments = require('./models/Tournaments')
 const e = require('express')
 
 function objectSplit(object) {
@@ -24,16 +25,18 @@ function objectSplit(object) {
     if (key.includes('__')) {
       // If a response has a key with __ we consider it being an attribute
       if (key.startsWith('__')) {
-        // Self attribute
+        // if __ has no prefix, attributes belong to current element
         xmlData._attributes = { ...xmlData._attributes, [key.replace('__', '')]: object[key]}
       } else {
-        // Child attribute
-        let [parent, attribute] = key.split('__')
-        xmlData[parent] = { ...xmlData[parent], _attributes: { ...xmlData[parent]._attributes, [attribute]: object[key] } }
+        // if __ has prefix, attributes belong to child element
+        let [child, attribute] = key.split('__')
+        xmlData[child] = { ...xmlData[child], _attributes: { ...xmlData[child]._attributes, [attribute]: object[key] } }
       }
     } else if (typeof object[key] === 'object') {
+      // If it is a nested object we recursively parse it
       xmlData[key] = objectSplit(object[key])
     } else {
+      // basic element
       xmlData[key] = { _text: object[key] }
     }
   }
@@ -42,7 +45,7 @@ function objectSplit(object) {
 
 function arrayFix(res, val) {
   // Arrays get converted to elements called 0,1,2...
-  // We convert numeric names to element to prevent that.
+  // We convert numeric names to given arrayKey to prevent that.
   if (/^\d+$/.test(val)) {
     val = res.arrayKey
   }
@@ -88,6 +91,7 @@ class App {
       })
       await this.db.authenticate()
       this.db.define(Players.name, Players.define, Players.options)
+      this.db.define(Maps.name, Maps.define, Maps.options)
       this.db.define(Tournaments.name, Tournaments.define, Tournaments.options)
       await this.db.sync()
     } catch (e) {

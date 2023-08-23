@@ -130,7 +130,7 @@ module.exports = {
       res.status(500).send({ error: 'Invalid SERVERID' })
     }
     server.connectedPeers.push(req.body.LENUM)
-    res.status(200).send(0)
+    res.status(200).send({ return: parseInt(req.body.SERVERID) })
     next()
   },
   quitServerSchema: {
@@ -167,9 +167,13 @@ module.exports = {
   getMapList: (app, req, res, next) => {
     res.arrayKey = 'element'
     res.status(200).send([
-      { NAME: 'tunisia'},
-      { NAME: 'dust2'},
-      { NAME: 'RS' }
+      {
+        NAME: 'tunisia',
+        MAPPEUR: 'someone',
+        WADMD5: '49fed900999d62fc6c950fa129384e72',
+        BSPMD5: '8d555894d5712aa7033e615996f5a1a2',
+        HOST: 'localhost'
+      }
     ])
     next()
   }

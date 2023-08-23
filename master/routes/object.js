@@ -11,17 +11,20 @@ module.exports = {
     }
   },
   getObject: (app, req, res, next) => {
-    res.status(200).send({
-      'P[x]': 0,
-      'P[y]': 0,
-      'P[z]': 0,
-      'D[x]': 0,
-      'D[y]': 0,
-      'D[z]': 0,
-      'U[x]': 0,
-      'U[y]': 0,
-      'U[z]': 0,
-    })
+    res.arrayKey = 'OBJ'
+    res.status(200).send([{
+      ID: 0,
+      X: 0,
+      Y: 0,
+      Z: 0,
+      DX: 0,
+      DY: 0,
+      DZ: 0,
+      HX: 0,
+      HY: 0,
+      HZ: 0,
+      TYPE: 1
+    }])
     next()
   },
   placeObjectSchema: {
