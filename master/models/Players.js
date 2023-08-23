@@ -23,8 +23,7 @@ module.exports = {
     },
     version: {
       type: DataTypes.STRING,
-      defaultValue: 100,
-      allowNull: false
+      defaultValue: 100
     },
     mac_address: {
       type: DataTypes.STRING,
@@ -36,23 +35,19 @@ module.exports = {
     },
     active: {
       type: DataTypes.INTEGER,
-      defaultValue: 0,
-      allowNull: false
+      defaultValue: 1
     },
     model: {
       type: DataTypes.STRING,
-      defaultValue: 'agtx',
-      allowNull: false
+      defaultValue: 'agtx'
     },
     role: {
       type: DataTypes.INTEGER,
-      defaultValue: 0,
-      allowNull: false
+      defaultValue: 0
     },
     score: {
       type: DataTypes.BIGINT,
-      defaultValue: 0,
-      allowNull: false
+      defaultValue: 0
     }
   },
   options: {

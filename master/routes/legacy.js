@@ -5,10 +5,8 @@ const config = require('../config')
 
 const playerRoutes = require('./player')
 const serverRoutes = require('./server')
-const mapRoutes = require('./map')
 const tournamentRoutes = require('./tournament')
 const objectRoutes = require('./object')
-const miscRoutes = require('./misc')
 
 const LegacyToRESTMapper = {
   nouveaujoueur: playerRoutes.createPlayer,
@@ -16,9 +14,8 @@ const LegacyToRESTMapper = {
   get_id: playerRoutes.getPlayerId,
   score_plus: playerRoutes.addScore,
   set_tournois: tournamentRoutes.createTournament,
-  get_mp3: miscRoutes.getMP3,
-  set_mp3: miscRoutes.setMP3,
-  get_map: mapRoutes.getMap,
+  get_mp3: serverRoutes.getMP3,
+  get_map: serverRoutes.getMapList,
   set_server: serverRoutes.createServer,
   get_server: serverRoutes.getServer,
   delete_server: serverRoutes.deleteServer,
