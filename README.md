@@ -3,19 +3,22 @@
 █─███▀█─██─██─█▄█─███─██─██▄▄▄▄─███─████─▄─▄██─███─▄▀███─▄█▀█
 █▄▄▄▄▄▀▄▄▄▄▀▄▄▄▀▄▄▄▀▀▄▄▄▄▀▀▄▄▄▄▄▀▀▄▄▄▀▀▄▄▀▄▄▀▄▄▄▀▄▄▀▄▄▀▄▄▄▄▄█
 
-Unofficial Romustrike server
+Unofficial Romustrike master server
+
+# Contributors
+
+- Stalker2106
+- SheatNoisette
 
 # Pre-built binary
 
 The server is available in pre-built binaries on Release section
 
 NOTE: The server uses MySQL "MariaDB" engine to persist data.
-Install any edition from: https://mariadb.com/downloads/
+Install any edition from: https://mariadb.com/downloads/ prior to running the server
 
-When the setup is complete, you might want to fill your database with default data.
-When you run the server for the first time, pass the switch __--fillDB__
-
-    ./ComuStrike_Server --fillDB
+To configure your server, you can run it once, and it will create a `config.json` file alongside its binary.
+Just edit the `config.json` file to match your DB settings, and the server should start!
 
 # From source
 

@@ -45,7 +45,7 @@ module.exports = {
   xmlLayer: (app, req, res, next) => {
     try {
       if (app.debug) console.log(req.query.crypt)
-      const requestData = cypher.decypher(req.query.crypt).split(/[?&]+/)
+      const requestData = cypher.decypher(app, req.query.crypt).split(/[?&]+/)
       for (entry of requestData) {
         const data = entry.split('=')
         req.body[data[0].toUpperCase()] = data[1]

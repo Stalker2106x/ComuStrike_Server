@@ -2,6 +2,8 @@ const readline = require('readline');
 const express = require('express')
 const bodyParser = require('body-parser')
 const xmljs = require('xml-js')
+const fs = require('fs')
+const path = require('path')
 const { Validator, ValidationError } = require("express-json-validator-middleware")
 const { Sequelize } = require('sequelize')
 const mariadb = require('mariadb')
@@ -21,7 +23,6 @@ const defaultData = require('./defaultData')
 const Players = require('./models/Players')
 const Maps = require('./models/Maps')
 const Tournaments = require('./models/Tournaments')
-const e = require('express')
 
 function objectSplit(object) {
   let xmlData = {}
@@ -103,15 +104,35 @@ class App {
     console.log('█─███▀█─██─██─█▄█─███─██─██▄▄▄▄─███─████─▄─▄██─███─▄▀███─▄█▀█')
     console.log('█▄▄▄▄▄▀▄▄▄▄▀▄▄▄▀▄▄▄▀▀▄▄▄▄▀▀▄▄▄▄▄▀▀▄▄▄▀▀▄▄▀▄▄▀▄▄▄▀▄▄▀▄▄▀▄▄▄▄▄█')
     console.log(`Server v${config.serverVersion}  -  Game v${config.gameVersion}`.padStart(61))
+    console.log('...')
     this.debug = debug
     this.fillDB = fillDB
   }
 
+  loadConfig () {
+    let userConfig = {}
+    let dirname = __dirname
+    if (process.pkg) {
+      dirname = path.dirname(process.execPath)
+    }
+    try {
+      userConfig = JSON.parse(fs.readFileSync(path.join(dirname, config.userConfigPath), 'utf-8'))
+    } catch (e) {
+      // If server has no config we create one
+      if (e.code === 'ENOENT') {
+        console.log('It looks like the server has no config.json file, creating one with default values...')
+        fs.writeFileSync(path.join(dirname, config.userConfigPath), JSON.stringify(config.defaultUserConfig, null, 2))
+        userConfig = config.defaultUserConfig
+      }
+    }
+    this.config = { ...config, ...userConfig }
+  }
+
   async initDB () {
     try {
-      this.db = new Sequelize(config.database.database, config.database.user, config.database.password, {
-        host: config.database.host,
-        port: config.database.port,
+      this.db = new Sequelize(this.config.database.database, this.config.database.user, this.config.database.password, {
+        host: this.config.database.host,
+        port: this.config.database.port,
         dialect: 'mariadb',
         dialectModule: mariadb,
         logging: this.debug
@@ -120,8 +141,15 @@ class App {
       this.db.define(Players.name, Players.define, Players.options)
       this.db.define(Maps.name, Maps.define, Maps.options)
       this.db.define(Tournaments.name, Tournaments.define, Tournaments.options)
-      if (this.fillDB) {
-        console.warn('You passed the switch --fillDB, all your database is gonna be erased and replaced with default values')
+      const playerCount = await this.db.models.Players.count()
+      if (playerCount == 0 || this.fillDB) {
+        if (this.fillDB) {
+          console.warn('You started the server with the --fillDB switch which is DESTRUCTIVE.')
+        } else if (playerCount == 0) {
+          console.warn('It looks like the server database is empty. To function properly, ComuStrike needs base data.')
+          console.warn('The next process will inject adequate data into your database.')
+        } 
+        console.warn('All your database is gonna be ERASED and replaced with default values')
         const rl = readline.createInterface({
           input: process.stdin,
           output: process.stdout
@@ -131,7 +159,7 @@ class App {
         })
         if (confirm !== 'y') {
           console.log('Cancelled. exiting program...')
-          process.exit(1)
+          process.exit(0)
         }
         await this.db.sync({ force: true })
         await defaultData.createPlayers(this)
@@ -200,7 +228,7 @@ class App {
       this.app.get('/script/romustrike/xml_layer.php', validate(legacyRoutes.xmlLayerSchema), (req, res, next) => legacyRoutes.xmlLayer(this, req, res, next))
       // Debug
       if (this.debug) {
-        this.app.post('/cypher', (req, res, next) => { res.status(200).send(cypher.cypher(req.body.msg)); })
+        this.app.post('/cypher', (req, res, next) => { res.status(200).send(cypher.cypher(this, req.body.msg)); })
       }
     } catch (e) {
       console.error(`Server error: ${e} => ${e.stack}`)
@@ -209,11 +237,12 @@ class App {
   }
 
   async run () {
+    this.loadConfig()
     await this.initDB()
     this.initServerList()
     this.initRouter()
-    this.app.listen(config.port, () => {
-      utils.logger(`Server listening on port ${config.port}...`)
+    this.app.listen(this.config.port, () => {
+      utils.logger(`Server listening on port ${this.config.port}...`)
     })
   }
 }
