@@ -1,2 +1,2 @@
-INSERT INTO players (username, email, password, version, active, role) VALUES ('admin', 'admin@rs.fr', 'admin', '157', 1, 1)
-INSERT INTO players (username, email, password, version, active, role) VALUES ('user', 'user@rs.fr', 'user', '157', 1, 0)
+INSERT INTO players (username, email, password, version, active, role, createdAt, updatedAt) VALUES ('admin', 'admin@rs.fr', SHA2('admin', 256), '157', 1, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO players (username, email, password, version, active, role, createdAt, updatedAt) VALUES ('user', 'user@rs.fr', SHA2('user', 256), '157', 1, 0, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);

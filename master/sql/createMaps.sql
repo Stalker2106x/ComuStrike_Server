@@ -1,43 +1,43 @@
-INSERT INTO maps (name, author) VALUES ('awp_city3', 'someone')
-INSERT INTO maps (name, author) VALUES ('awp_city4', 'someone')
-INSERT INTO maps (name, author) VALUES ('bahu', 'someone')
-INSERT INTO maps (name, author) VALUES ('base_d02', 'someone')
-INSERT INTO maps (name, author) VALUES ('calumpit', 'someone')
-INSERT INTO maps (name, author) VALUES ('castle_rock2', 'someone')
-INSERT INTO maps (name, author) VALUES ('chinatown', 'someone')
-INSERT INTO maps (name, author) VALUES ('crash', 'someone')
-INSERT INTO maps (name, author) VALUES ('ctf_depot', 'someone')
-INSERT INTO maps (name, author) VALUES ('decharge', 'someone')
-INSERT INTO maps (name, author) VALUES ('egypt', 'someone')
-INSERT INTO maps (name, author) VALUES ('forest_bunker', 'someone')
-INSERT INTO maps (name, author) VALUES ('furusato', 'someone')
-INSERT INTO maps (name, author) VALUES ('hangar', 'someone')
-INSERT INTO maps (name, author) VALUES ('lagrange', 'someone')
-INSERT INTO maps (name, author) VALUES ('living_room', 'someone')
-INSERT INTO maps (name, author) VALUES ('medievale', 'someone')
-INSERT INTO maps (name, author) VALUES ('metro', 'someone')
-INSERT INTO maps (name, author) VALUES ('normandie', 'someone')
-INSERT INTO maps (name, author) VALUES ('nov5mber', 'someone')
-INSERT INTO maps (name, author) VALUES ('old_city', 'someone')
-INSERT INTO maps (name, author) VALUES ('paintball', 'someone')
-INSERT INTO maps (name, author) VALUES ('paradise', 'someone')
-INSERT INTO maps (name, author) VALUES ('quadrat', 'someone')
-INSERT INTO maps (name, author) VALUES ('rs_assault', 'someone')
-INSERT INTO maps (name, author) VALUES ('rs_aztec', 'someone')
-INSERT INTO maps (name, author) VALUES ('rs_dust', 'someone')
-INSERT INTO maps (name, author) VALUES ('rs_inferno', 'someone')
-INSERT INTO maps (name, author) VALUES ('rs_tours', 'someone')
-INSERT INTO maps (name, author) VALUES ('rue', 'someone')
-INSERT INTO maps (name, author) VALUES ('seagate', 'someone')
-INSERT INTO maps (name, author) VALUES ('sgc', 'someone')
-INSERT INTO maps (name, author) VALUES ('snip_beach', 'someone')
-INSERT INTO maps (name, author) VALUES ('snip_castle5', 'someone')
-INSERT INTO maps (name, author) VALUES ('sniper_snow2', 'someone')
-INSERT INTO maps (name, author) VALUES ('starsnip', 'someone')
-INSERT INTO maps (name, author) VALUES ('station_orbitale', 'someone')
-INSERT INTO maps (name, author) VALUES ('sucrerie', 'someone')
-INSERT INTO maps (name, author) VALUES ('thermes', 'someone')
-INSERT INTO maps (name, author) VALUES ('trenchwar', 'someone')
-INSERT INTO maps (name, author) VALUES ('tunisia', 'someone')
-INSERT INTO maps (name, author) VALUES ('valaperil', 'someone')
-INSERT INTO maps (name, author) VALUES ('z51', 'someone')
+INSERT INTO maps (name, author, createdAt, updatedAt) VALUES ('awp_city3', 'someone', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO maps (name, author, createdAt, updatedAt) VALUES ('awp_city4', 'someone', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO maps (name, author, createdAt, updatedAt) VALUES ('bahu', 'someone', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO maps (name, author, createdAt, updatedAt) VALUES ('base_d02', 'someone', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO maps (name, author, createdAt, updatedAt) VALUES ('calumpit', 'someone', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO maps (name, author, createdAt, updatedAt) VALUES ('castle_rock2', 'someone', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO maps (name, author, createdAt, updatedAt) VALUES ('chinatown', 'someone', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO maps (name, author, createdAt, updatedAt) VALUES ('crash', 'someone', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO maps (name, author, createdAt, updatedAt) VALUES ('ctf_depot', 'someone', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO maps (name, author, createdAt, updatedAt) VALUES ('decharge', 'someone', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO maps (name, author, createdAt, updatedAt) VALUES ('egypt', 'someone', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO maps (name, author, createdAt, updatedAt) VALUES ('forest_bunker', 'someone', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO maps (name, author, createdAt, updatedAt) VALUES ('furusato', 'someone', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO maps (name, author, createdAt, updatedAt) VALUES ('hangar', 'someone', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO maps (name, author, createdAt, updatedAt) VALUES ('lagrange', 'someone', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO maps (name, author, createdAt, updatedAt) VALUES ('living_room', 'someone', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO maps (name, author, createdAt, updatedAt) VALUES ('medievale', 'someone', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO maps (name, author, createdAt, updatedAt) VALUES ('metro', 'someone', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO maps (name, author, createdAt, updatedAt) VALUES ('normandie', 'someone', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO maps (name, author, createdAt, updatedAt) VALUES ('nov5mber', 'someone', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO maps (name, author, createdAt, updatedAt) VALUES ('old_city', 'someone', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO maps (name, author, createdAt, updatedAt) VALUES ('paintball', 'someone', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO maps (name, author, createdAt, updatedAt) VALUES ('paradise', 'someone', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO maps (name, author, createdAt, updatedAt) VALUES ('quadrat', 'someone', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO maps (name, author, createdAt, updatedAt) VALUES ('rs_assault', 'someone', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO maps (name, author, createdAt, updatedAt) VALUES ('rs_aztec', 'someone', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO maps (name, author, createdAt, updatedAt) VALUES ('rs_dust', 'someone', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO maps (name, author, createdAt, updatedAt) VALUES ('rs_inferno', 'someone', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO maps (name, author, createdAt, updatedAt) VALUES ('rs_tours', 'someone', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO maps (name, author, createdAt, updatedAt) VALUES ('rue', 'someone', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO maps (name, author, createdAt, updatedAt) VALUES ('seagate', 'someone', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO maps (name, author, createdAt, updatedAt) VALUES ('sgc', 'someone', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO maps (name, author, createdAt, updatedAt) VALUES ('snip_beach', 'someone', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO maps (name, author, createdAt, updatedAt) VALUES ('snip_castle5', 'someone', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO maps (name, author, createdAt, updatedAt) VALUES ('sniper_snow2', 'someone', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO maps (name, author, createdAt, updatedAt) VALUES ('starsnip', 'someone', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO maps (name, author, createdAt, updatedAt) VALUES ('station_orbitale', 'someone', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO maps (name, author, createdAt, updatedAt) VALUES ('sucrerie', 'someone', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO maps (name, author, createdAt, updatedAt) VALUES ('thermes', 'someone', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO maps (name, author, createdAt, updatedAt) VALUES ('trenchwar', 'someone', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO maps (name, author, createdAt, updatedAt) VALUES ('tunisia', 'someone', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO maps (name, author, createdAt, updatedAt) VALUES ('valaperil', 'someone', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO maps (name, author, createdAt, updatedAt) VALUES ('z51', 'someone', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);

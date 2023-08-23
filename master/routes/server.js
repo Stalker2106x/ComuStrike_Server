@@ -164,17 +164,20 @@ module.exports = {
       }
     }
   },
-  getMapList: (app, req, res, next) => {
+  getMapList: async (app, req, res, next) => {
+    const dbMaps = await app.db.models.Maps.findAll()
+    let maps = []
+    for (const map of dbMaps) {
+      maps.push({
+        NAME: map.name,
+        MAPPEUR: map.author,
+        WADMD5: '',
+        BSPMD5: '',
+        HOST: 'localhost',
+      })
+    }
     res.arrayKey = 'element'
-    res.status(200).send([
-      {
-        NAME: 'tunisia',
-        MAPPEUR: 'someone',
-        WADMD5: '49fed900999d62fc6c950fa129384e72',
-        BSPMD5: '8d555894d5712aa7033e615996f5a1a2',
-        HOST: 'localhost'
-      }
-    ])
+    res.status(200).send(maps)
     next()
   }
 }

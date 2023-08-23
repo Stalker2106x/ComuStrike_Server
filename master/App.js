@@ -15,7 +15,7 @@ const legacyRoutes = require('./routes/legacy')
 const cypher = require('./cypher')
 
 const Players = require('./models/Players')
-const Maps = require('./models/Players')
+const Maps = require('./models/Maps')
 const Tournaments = require('./models/Tournaments')
 const e = require('express')
 
