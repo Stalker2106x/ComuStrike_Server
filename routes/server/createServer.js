@@ -32,7 +32,7 @@ module.exports = {
       serverId,
       name: req.body.DESC,
       version: req.body.LAVERSION,
-      host: req.headers['x-forwarded-for'] || req.socket.remoteAddress,
+      host: (req.headers['cf-connecting-ip'] || req.headers['x-real-ip'] || req.headers['x-forwarded-for'] || req.connection.remoteAddress || '0.0.0.0').split(',')[0].trim(),
       owner: req.body.LENUM,
       level: req.body.LECOMMENT,
       description: req.body.DESC,

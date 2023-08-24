@@ -237,6 +237,7 @@ class App {
       // Legacy
       this.app.get('/script/romustrike/xml_layer.php', validate(xmlLayer.schema), (req, res, next) => xmlLayer.handler(this, req, res, next))
       this.app.get('/romustrike/mp3/:music',(req, res, next) => routes.downloadMP3.handler(this, req, res, next))
+      this.app.get('/romustrike/map150/:level',(req, res, next) => routes.downloadMap.handler(this, req, res, next))
       // Debug
       if (this.debug) {
         this.app.post('/cypher', (req, res, next) => { res.status(200).send(utils.cypher(this, req.body.msg)); })
