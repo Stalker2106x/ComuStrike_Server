@@ -14,7 +14,7 @@ module.exports = {
     }
   },
   handler: (app, req, res, next) => {
-    const server = null
+    let server = null
     for (const [serverId, srv] of app.serverList) {
       if (srv.owner === parseInt(req.body.LENUM)) {
         server = srv

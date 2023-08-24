@@ -258,7 +258,7 @@ class App {
     this.initServerList()
     this.initRouter()
     this.initChat()
-    this.api = this.app.listen(this.config.gamePort, () => {
+    this.api = this.app.listen(this.config.gamePort, '0.0.0.0', () => {
       utils.logger('game', `Game Server listening on ${this.config.publicIP}:${this.config.gamePort}...`)
     })
   }
