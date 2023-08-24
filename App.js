@@ -144,11 +144,11 @@ class App {
         logging: this.debug
       })
       await this.db.authenticate()
-      this.db.define(Players.name, Players.define, Players.options)
-      this.db.define(Teams.name, Teams.define, Teams.options)
-      this.db.define(Maps.name, Maps.define, Maps.options)
-      this.db.define(Tournaments.name, Tournaments.define, Tournaments.options)
-      this.db.models.Players.sync() //Make sure player table exists for next request
+      await this.db.define(Players.name, Players.define, Players.options)
+      await this.db.define(Teams.name, Teams.define, Teams.options)
+      await this.db.define(Maps.name, Maps.define, Maps.options)
+      await this.db.define(Tournaments.name, Tournaments.define, Tournaments.options)
+      await this.db.models.Players.sync() //Make sure player table exists for next request
       const playerCount = await this.db.models.Players.count()
       if (playerCount == 0 || this.fillDB) {
         if (this.fillDB) {
