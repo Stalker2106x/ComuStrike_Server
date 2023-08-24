@@ -100,6 +100,7 @@ function validationError(error, request, response, next) {
 class App {
 
   constructor(debug, fillDB) {
+    const self = this
     console.log('█████████████████████████████████████████████████████████████')
     console.log('█─▄▄▄─█─▄▄─█▄─▀█▀─▄█▄─██─▄█─▄▄▄▄█─▄─▄─█▄─▄▄▀█▄─▄█▄─█─▄█▄─▄▄─█')
     console.log('█─███▀█─██─██─█▄█─███─██─██▄▄▄▄─███─████─▄─▄██─███─▄▀███─▄█▀█')
@@ -108,6 +109,11 @@ class App {
     console.log('...')
     this.debug = debug
     this.fillDB = fillDB
+    process.on('SIGINT', function() {
+      console.log('Terminating server...');
+      self.api.close()
+      self.chatWorker.postMessage({ exit: true })
+    });
   }
 
   loadConfig () {
@@ -247,7 +253,7 @@ class App {
     this.initServerList()
     this.initRouter()
     this.initChat()
-    this.app.listen(this.config.port, () => {
+    this.api = this.app.listen(this.config.gamePort, () => {
       utils.logger('game', `Game Server listening on port ${this.config.gamePort}...`)
     })
   }

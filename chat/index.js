@@ -1,8 +1,7 @@
 const net = require('net')
-const chalk = require('chalk')
 const axios = require('axios').default
 const xmljs = require('xml-js')
-const { workerData } = require('node:worker_threads');
+const { workerData, parentPort } = require('node:worker_threads');
 
 const utils = require('../utils')
 
@@ -20,8 +19,20 @@ function textFix (xml) {
 class Chat {
 
   constructor() {
+    const self = this
     this.clients = []
     this.config = workerData.config
+
+    parentPort.on("message", async (value) => {
+      if (value.exit) {
+        for (const client of this.clients) {
+          await client.socket.destroy()
+        }
+        this.server.close(function () {
+          self.server.unref()
+        });
+      }
+    })
   }
 
   broadcast(payload, rawData) {
@@ -38,7 +49,7 @@ class Chat {
     // Create a server instance, and chain the listen function to it
     // The function passed to net.createServer() becomes the event handler for the 'connection' event
     // The sock object the callback function receives UNIQUE for each connection
-    net.createServer(function(socket) {
+    this.server = net.createServer(function(socket) {
 
       // We have a connection - a socket object is assigned to the connection automatically
       utils.logger('chat', `Client ${socket.remoteAddress} connected, assigned port ${socket.remotePort}`)

@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
-    "build": "pkg -t node18-linux,node18-win --public-packages '*' --compress GZip index.js --output ComuStrike_Server",
+    "build": "pkg -t node18-linux,node18-win,node18-macos --public-packages '*' --compress GZip index.js --output ComuStrike_Server",
     "test": "jest"
   },
   "author": "stalker2106",
