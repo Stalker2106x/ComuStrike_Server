@@ -16,6 +16,18 @@ module.exports = {
     author: {
       type: DataTypes.STRING,
       allowNull: false
+    },
+    active: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: true
+    },
+    description: {
+      type: DataTypes.STRING,
+      allowNull: true
+    },
+    sessions: {
+      type: DataTypes.INTEGER,
+      defaultValue: 0
     }
   },
   options: {

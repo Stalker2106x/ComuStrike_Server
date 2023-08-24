@@ -21,6 +21,14 @@ module.exports = {
       type: DataTypes.STRING,
       allowNull: false
     },
+    credits: {
+      type: DataTypes.INTEGER,
+      defaultValue: 0
+    },
+    team_id: {
+      type: DataTypes.INTEGER,
+      allowNull: true
+    },
     version: {
       type: DataTypes.STRING,
       defaultValue: 100
@@ -45,7 +53,15 @@ module.exports = {
       type: DataTypes.INTEGER,
       defaultValue: 0
     },
-    score: {
+    kills: {
+      type: DataTypes.BIGINT,
+      defaultValue: 0
+    },
+    headshots: {
+      type: DataTypes.BIGINT,
+      defaultValue: 0
+    },
+    deaths: {
       type: DataTypes.BIGINT,
       defaultValue: 0
     }

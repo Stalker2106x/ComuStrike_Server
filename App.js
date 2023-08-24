@@ -11,17 +11,13 @@ const mariadb = require('mariadb')
 
 const config = require('./config')
 const utils = require('./utils')
+const routes = require('./routes')
+const xmlLayer = require('./routes/xmlLayer/xmlLayer')
 
-const playerRoutes = require('./routes/player')
-const serverRoutes = require('./routes/server')
-const tournamentRoutes = require('./routes/tournament')
-const objectRoutes = require('./routes/object')
-const legacyRoutes = require('./routes/legacy')
-
-const cypher = require('./cypher')
-const defaultData = require('./defaultData')
+const defaultData = require('./models/defaultData')
 
 const Players = require('./models/Players')
+const Teams = require('./models/Teams')
 const Maps = require('./models/Maps')
 const Tournaments = require('./models/Tournaments')
 
@@ -113,6 +109,7 @@ class App {
       console.log('Terminating server...');
       self.api.close()
       self.chatWorker.postMessage({ exit: true })
+      process.exit(0)
     });
   }
 
@@ -146,6 +143,7 @@ class App {
       })
       await this.db.authenticate()
       this.db.define(Players.name, Players.define, Players.options)
+      this.db.define(Teams.name, Teams.define, Teams.options)
       this.db.define(Maps.name, Maps.define, Maps.options)
       this.db.define(Tournaments.name, Tournaments.define, Tournaments.options)
       const playerCount = await this.db.models.Players.count()
@@ -170,6 +168,7 @@ class App {
         }
         await this.db.sync({ force: true })
         await defaultData.createPlayers(this)
+        await defaultData.createTeams(this)
         await defaultData.createMaps(this)
         console.log('Database was filled successfully!')
       } else {
@@ -211,31 +210,31 @@ class App {
       this.app.use((req, res, next) => sendMiddleware(this, req, res, next))
       this.app.use(validationError)
       // Player
-      this.app.post('/player', validate(playerRoutes.createPlayerSchema), (req, res, next) => playerRoutes.createPlayer(this, req, res, next))
-      this.app.get('/player/:id', validate(playerRoutes.getPlayerSchema), (req, res, next) => playerRoutes.getPlayer(this, req, res, next))
-      this.app.get('/player/:id/id', validate(playerRoutes.getPlayerIdSchema), (req, res, next) => playerRoutes.getPlayerId(this, req, res, next))
-      this.app.put('/player/:id/score', validate(playerRoutes.addScoreSchema), (req, res, next) => playerRoutes.addScore(this, req, res, next))
+      this.app.post('/player', validate(routes.createPlayer.schema), (req, res, next) => routes.createPlayer.handler(this, req, res, next))
+      this.app.get('/player/:id', validate(routes.getPlayer.schema), (req, res, next) => routes.getPlayer.handler(this, req, res, next))
+      this.app.get('/player/:id/id', validate(routes.getPlayerId.schema), (req, res, next) => routes.getPlayerId.handler(this, req, res, next))
+      this.app.put('/player/:id/score', validate(routes.addScore.schema), (req, res, next) => routes.addScore.handler(this, req, res, next))
       // Server
-      this.app.post('/server', validate(serverRoutes.createServerSchema), (req, res, next) => serverRoutes.createServer(this, req, res, next))
-      this.app.get('/servers', validate(serverRoutes.getServerListSchema), (req, res, next) => serverRoutes.getServerList(this, req, res, next))
-      this.app.get('/server/mp3', validate(serverRoutes.getMP3Schema), (req, res, next) => serverRoutes.getMP3(this, req, res, next))
-      this.app.delete('/server', validate(serverRoutes.deleteServerSchema), (req, res, next) => serverRoutes.deleteServer(this, req, res, next))
-      this.app.put('/server/:id/join', validate(serverRoutes.joinServerSchema), (req, res, next) => serverRoutes.joinServer(this, req, res, next))
-      this.app.put('/server/:id/quit', validate(serverRoutes.quitServerSchema), (req, res, next) => serverRoutes.quitServer(this, req, res, next))
+      this.app.post('/server', validate(routes.createServer.schema), (req, res, next) => routes.createServer.handler(this, req, res, next))
+      this.app.get('/servers', validate(routes.getServerList.schema), (req, res, next) => routes.getServerList.handler(this, req, res, next))
+      this.app.get('/server/mp3', validate(routes.getMP3.schema), (req, res, next) => routes.getMP3.handler(this, req, res, next))
+      this.app.delete('/server', validate(routes.deleteServer.schema), (req, res, next) => routes.deleteServer.handler(this, req, res, next))
+      this.app.put('/server/:id/join', validate(routes.joinServer.schema), (req, res, next) => routes.joinServer.handler(this, req, res, next))
+      this.app.put('/server/:id/quit', validate(routes.quitServer.schema), (req, res, next) => routes.quitServer.handler(this, req, res, next))
       // Map
-      this.app.get('/maps', validate(serverRoutes.getMapListSchema), (req, res, next) => serverRoutes.getMapList(this, req, res, next))
+      this.app.get('/maps', validate(routes.getMapList.schema), (req, res, next) => routes.getMapList.handler(this, req, res, next))
       // Tournament
-      this.app.post('/tournament', validate(tournamentRoutes.createTournamentSchema), (req, res, next) => tournamentRoutes.createTournament(this, req, res, next))
-      this.app.get('/tournament', validate(tournamentRoutes.getTournamentSchema), (req, res, next) => tournamentRoutes.getTournament(this, req, res, next))
-      this.app.get('/tournament/:id/info', validate(tournamentRoutes.getTournamentSchema), (req, res, next) => tournamentRoutes.getTournament(this, req, res, next))
+      this.app.post('/tournament', validate(routes.createTournament.schema), (req, res, next) => routes.createTournament.handler(this, req, res, next))
+      this.app.get('/tournament', validate(routes.getTournament.schema), (req, res, next) => routes.getTournament.handler(this, req, res, next))
+      this.app.get('/tournament/:id/info', validate(routes.getTournament.schema), (req, res, next) => routes.getTournament.handler(this, req, res, next))
       // Object
-      this.app.get('/object', validate(objectRoutes.getObjectSchema), (req, res, next) => objectRoutes.getObject(this, req, res, next))
-      this.app.post('/object', validate(objectRoutes.placeObjectSchema), (req, res, next) => objectRoutes.placeObject(this, req, res, next))
+      this.app.get('/object', validate(routes.getObject.schema), (req, res, next) => routes.getObject.handler(this, req, res, next))
+      this.app.post('/object', validate(routes.placeObject.schema), (req, res, next) => routes.placeObject.handler(this, req, res, next))
       // Legacy
-      this.app.get('/script/romustrike/xml_layer.php', validate(legacyRoutes.xmlLayerSchema), (req, res, next) => legacyRoutes.xmlLayer(this, req, res, next))
+      this.app.get('/script/romustrike/xml_layer.php', validate(xmlLayer.schema), (req, res, next) => xmlLayer.handler(this, req, res, next))
       // Debug
       if (this.debug) {
-        this.app.post('/cypher', (req, res, next) => { res.status(200).send(cypher.cypher(this, req.body.msg)); })
+        this.app.post('/cypher', (req, res, next) => { res.status(200).send(utils.cypher(this, req.body.msg)); })
       }
     } catch (e) {
       console.error(`Server error: ${e} => ${e.stack}`)
@@ -244,7 +243,7 @@ class App {
   }
 
   initChat() {
-    this.chatWorker = new Worker("./chat/index.js", { workerData: { config: this.config } });
+    this.chatWorker = new Worker("./Chat", { workerData: { config: this.config } });
   }
 
   async run () {

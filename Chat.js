@@ -3,7 +3,7 @@ const axios = require('axios').default
 const xmljs = require('xml-js')
 const { workerData, parentPort } = require('node:worker_threads');
 
-const utils = require('../utils')
+const utils = require('./utils')
 
 function textFix (xml) {
   for (const [key, value] of Object.entries(xml)) {
@@ -31,6 +31,7 @@ class Chat {
         this.server.close(function () {
           self.server.unref()
         });
+        process.exit(0)
       }
     })
   }
