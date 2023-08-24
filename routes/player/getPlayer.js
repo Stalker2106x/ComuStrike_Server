@@ -37,9 +37,9 @@ module.exports = {
             MSG3: 'testmsg3',
             MSG4: 'testmsg4',
             SCORE: player.score,
-            SCROLL: 'comustrike unofficial server - debug use only',
+            SCROLL: 'ComuStrike Unofficial Server - Enjoy RomuStrike in 2023... and more!',
             STATS: 'x',
-            PANEL: 'ComuStrike.V157',
+            PANEL: `ComuStrike Unofficial Server v${app.config.serverVersion}`,
             ROMUCHAT: '127.0.0.1',
             ID_PLAYER: player.player_id,
             CONTROLE: 'checksum'

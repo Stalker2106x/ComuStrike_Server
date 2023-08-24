@@ -7,12 +7,13 @@ const path = require('path')
 const { Worker } = require("worker_threads")
 const { Validator, ValidationError } = require("express-json-validator-middleware")
 const { Sequelize } = require('sequelize')
+const pubip = require('public-ip')
 const mariadb = require('mariadb')
 
 const config = require('./config')
 const utils = require('./utils')
 const routes = require('./routes')
-const xmlLayer = require('./routes/xmlLayer/xmlLayer')
+const xmlLayer = require('./routes/misc/xmlLayer')
 
 const defaultData = require('./models/defaultData')
 
@@ -113,7 +114,7 @@ class App {
     });
   }
 
-  loadConfig () {
+  async loadConfig () {
     let userConfig = {}
     let dirname = __dirname
     if (process.pkg) {
@@ -129,7 +130,8 @@ class App {
         userConfig = config.defaultUserConfig
       }
     }
-    this.config = { ...config, ...userConfig }
+    const publicIP = await pubip.v4()
+    this.config = { ...config, ...userConfig, publicIP: publicIP }
   }
 
   async initDB () {
@@ -146,6 +148,7 @@ class App {
       this.db.define(Teams.name, Teams.define, Teams.options)
       this.db.define(Maps.name, Maps.define, Maps.options)
       this.db.define(Tournaments.name, Tournaments.define, Tournaments.options)
+      this.db.models.Players.sync() //Make sure player table exists for next request
       const playerCount = await this.db.models.Players.count()
       if (playerCount == 0 || this.fillDB) {
         if (this.fillDB) {
@@ -205,6 +208,7 @@ class App {
     // Initialize router
     try {
       const { validate } = new Validator()
+      this.validate = validate
       this.app = express()
       this.app.use(bodyParser.json())
       this.app.use((req, res, next) => sendMiddleware(this, req, res, next))
@@ -232,6 +236,7 @@ class App {
       this.app.post('/object', validate(routes.placeObject.schema), (req, res, next) => routes.placeObject.handler(this, req, res, next))
       // Legacy
       this.app.get('/script/romustrike/xml_layer.php', validate(xmlLayer.schema), (req, res, next) => xmlLayer.handler(this, req, res, next))
+      this.app.get('/romustrike/mp3/:music',(req, res, next) => routes.downloadMP3.handler(this, req, res, next))
       // Debug
       if (this.debug) {
         this.app.post('/cypher', (req, res, next) => { res.status(200).send(utils.cypher(this, req.body.msg)); })
@@ -247,13 +252,13 @@ class App {
   }
 
   async run () {
-    this.loadConfig()
+    await this.loadConfig()
     await this.initDB()
     this.initServerList()
     this.initRouter()
     this.initChat()
     this.api = this.app.listen(this.config.gamePort, () => {
-      utils.logger('game', `Game Server listening on port ${this.config.gamePort}...`)
+      utils.logger('game', `Game Server listening on ${this.config.publicIP}:${this.config.gamePort}...`)
     })
   }
 }

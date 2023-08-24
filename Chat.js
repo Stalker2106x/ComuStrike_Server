@@ -51,7 +51,6 @@ class Chat {
     // The function passed to net.createServer() becomes the event handler for the 'connection' event
     // The sock object the callback function receives UNIQUE for each connection
     this.server = net.createServer(function(socket) {
-
       // We have a connection - a socket object is assigned to the connection automatically
       utils.logger('chat', `Client ${socket.remoteAddress} connected, assigned port ${socket.remotePort}`)
       self.clients.push({ socket, ip: socket.remoteAddress, port: socket.remotePort })
@@ -68,11 +67,16 @@ class Chat {
       // Add a 'close' event handler to this instance of socket
       socket.on('close', function(data) {
         utils.logger('chat', `Client ${socket.remoteAddress} disconnected, with port ${socket.remotePort}`)
+        self.clients.splice(self.clients.findIndex((client) => client.socket == socket), 1)
       });
 
+      socket.on('error', function(err) {
+        utils.logger('chat', `Client ${socket.remoteAddress} unexpectedly closed, with error ${err}`)
+        self.clients.splice(self.clients.findIndex((client) => client.socket == socket), 1)
+      })
     }).listen(this.config.chatPort, '127.0.0.1')
 
-    utils.logger('chat', `Chat Server listening on port ${this.config.chatPort}...`)
+    utils.logger('chat', `Chat Server listening on ${this.config.publicIP}:${this.config.chatPort}...`)
   }
 }
 const chatServer = new Chat()

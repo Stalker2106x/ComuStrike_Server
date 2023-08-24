@@ -1,6 +1,8 @@
 const getObject = require("./object/getObject")
 
 module.exports = {
+    // Misc
+    downloadMP3: require('./misc/downloadMP3'),
     // Object
     getObject: require('./object/getObject'),
     placeObject: require('./object/placeObject'),

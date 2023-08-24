@@ -14,9 +14,9 @@ module.exports = {
     handler: (app, req, res, next) => {
       res.status(200).send({
         element: {
-          NAME: 'server',
-          COMMENTAIRE: 'desc',
-          HOST: 'localhost',
+          NAME: 'lofijazz',
+          COMMENTAIRE: 'Enjoy lofijazz from 150!',
+          HOST: app.debug ? '127.0.0.1' : app.config.publicIP,
           ID: 0
         }
       })

@@ -1,7 +1,4 @@
-const json2xml = require('json2xml')
-
 const utils = require('../../utils')
-
 const routes = require('../index')
 
 const LegacyToRESTMapper = {
@@ -48,7 +45,7 @@ module.exports = {
       }
       if (app.debug) utils.logPayload(req.body)
       // Call appopriate REST method from mapper
-      LegacyToRESTMapper[req.body.METHOD](app, req, res, next)
+      LegacyToRESTMapper[req.body.METHOD].handler(app, req, res, next)
     } catch (e) {
       console.error(e)
       res.status(500).send('Internal server error')
