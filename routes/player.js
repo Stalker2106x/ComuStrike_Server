@@ -1,3 +1,5 @@
+const chalk = require('chalk')
+
 const utils = require('../utils')
 
 module.exports = {
@@ -54,7 +56,7 @@ module.exports = {
     if (player == null) {
       res.status(500).send({ error: 'Invalid credentials' })
     } else {
-      utils.logger(`Player [${player.player_id}] ${player.username} logged in`)
+      utils.logger('game', `Player [${player.player_id}] ${player.username} logged in`)
       res.status(200).send({
         NAME: player.username,
         ERROR: 0,
@@ -71,7 +73,7 @@ module.exports = {
         SCROLL: 'comustrike unofficial server - debug use only',
         STATS: 'x',
         PANEL: 'ComuStrike.V157',
-        ROMUCHAT: 'DEBUG USE ONLY',
+        ROMUCHAT: '127.0.0.1',
         ID_PLAYER: player.player_id,
         CONTROLE: 'checksum'
       })

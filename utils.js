@@ -1,5 +1,6 @@
 const { createHash } = require('crypto')
 const fs = require('fs')
+const chalk = require('chalk')
 
 module.exports = {
 
@@ -43,7 +44,11 @@ module.exports = {
         );
     },
 
-    logger(msg) {
-        console.log(`${module.exports.dateFormatter(new Date())} - ${msg}`);
+    logger(service, msg) {
+        if (service === 'game') {
+          console.log(`${module.exports.dateFormatter(new Date())} ${chalk.green('[GAME]')} ${chalk.green(msg)}`);
+        } else if (service === 'chat') {
+          console.log(`${module.exports.dateFormatter(new Date())} ${chalk.blue('[CHAT]')} ${chalk.blue(msg)}`);
+        }
     }
 }

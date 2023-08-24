@@ -1,4 +1,5 @@
 const path = require('path')
+const chalk = require('chalk')
 
 const utils = require('../utils')
 
@@ -45,7 +46,7 @@ module.exports = {
       connectedPeers: []
     }
     app.serverList.set(serverId, server)
-    utils.logger(`Server ${server.name} created by ${server.owner} on ${server.host}`)
+    utils.logger('game', `Server ${server.name} created by ${server.owner} on ${server.host}`)
     res.status(200).send({ return: serverId })
     next()
   },
@@ -121,7 +122,7 @@ module.exports = {
       res.status(500).send({ error: 'Invalid SERVERID' })
     } else {
       server.connectedPeers.push(parseInt(req.body.LENUM))
-      utils.logger(`Player ${parseInt(req.body.LENUM)} joined server [${server.serverId}] ${server.host}`)
+      utils.logger('game', `Player ${parseInt(req.body.LENUM)} joined server [${server.serverId}] ${server.host}`)
       res.status(200).send({ return: parseInt(req.body.SERVERID) })
     }
     next()
@@ -143,7 +144,7 @@ module.exports = {
   quitServer: (app, req, res, next) => {
     const server = app.serverList.get(parseInt(req.body.LAPARTIE))
     server.connectedPeers.splice(server.connectedPeers.indexOf(parseInt(req.body.LENUM)), 1)
-    utils.logger(`Player ${parseInt(req.body.LENUM)} left server [${server.serverId}] ${server.host}`)
+    utils.logger('game', `Player ${parseInt(req.body.LENUM)} left server [${server.serverId}] ${server.host}`)
     res.status(200).send()
     next()
   },
@@ -170,7 +171,7 @@ module.exports = {
       res.status(500).send({ error: 'Invalid SERVERID' })
     } else {
       app.serverList.delete(parseInt(req.body.LENUM))
-      utils.logger(`Server ${server.name} created by ${server.owner} terminated`)
+      utils.logger('game', `Server ${server.name} created by ${server.owner} terminated`)
       res.status(200).send()
     }
     next()

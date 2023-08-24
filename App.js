@@ -4,6 +4,7 @@ const bodyParser = require('body-parser')
 const xmljs = require('xml-js')
 const fs = require('fs')
 const path = require('path')
+const { Worker } = require("worker_threads")
 const { Validator, ValidationError } = require("express-json-validator-middleware")
 const { Sequelize } = require('sequelize')
 const mariadb = require('mariadb')
@@ -236,13 +237,18 @@ class App {
     }
   }
 
+  initChat() {
+    this.chatWorker = new Worker("./chat/index.js", { workerData: { config: this.config } });
+  }
+
   async run () {
     this.loadConfig()
     await this.initDB()
     this.initServerList()
     this.initRouter()
+    this.initChat()
     this.app.listen(this.config.port, () => {
-      utils.logger(`Server listening on port ${this.config.port}...`)
+      utils.logger('game', `Game Server listening on port ${this.config.gamePort}...`)
     })
   }
 }

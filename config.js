@@ -5,7 +5,9 @@ module.exports = {
   defaultUserConfig: {
     "maxPayloadSize": 1500,
     "cypherKey": 66865,
-    "port": 80,
+    "gamePort": 80,
+    "chatPort": 3159,
+    "chatDiscordWebhook": '',
     "database": {
         "host": "127.0.0.1",
         "port": 3306,
