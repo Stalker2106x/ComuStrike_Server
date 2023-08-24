@@ -1,5 +1,4 @@
 const net = require('net')
-const axios = require('axios').default
 const xmljs = require('xml-js')
 const { workerData, parentPort } = require('node:worker_threads');
 
@@ -38,7 +37,10 @@ class Chat {
 
   broadcast(payload, rawData) {
     if (this.config.chatDiscordWebhook && this.config.chatDiscordWebhook !== '') {
-      axios.post(webHook, { username: payload.racine.pseudo, content: payload.racine.msg })
+      fetch(this.config.chatDiscordWebhook, {
+        method: "POST",
+        body: JSON.stringify({ username: payload.racine.pseudo, content: payload.racine.msg }),
+      })
     }
     for (const client of this.clients) {
       client.socket.write(rawData+'\0')

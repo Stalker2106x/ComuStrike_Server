@@ -248,7 +248,7 @@ class App {
   }
 
   initChat() {
-    this.chatWorker = new Worker("./Chat", { workerData: { config: this.config } });
+    this.chatWorker = new Worker(path.join(__dirname, 'Chat.js'), { workerData: { config: this.config } });
   }
 
   async run () {
