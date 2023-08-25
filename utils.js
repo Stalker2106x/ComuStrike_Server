@@ -49,7 +49,7 @@ module.exports = {
     logPayload (body) {
         const copy = JSON.parse(JSON.stringify(body));
         delete copy.LEPASS
-        console.log(copy)
+        if (globals.debug) console.log(copy)
     },
 
     padTwoDigits(num) {

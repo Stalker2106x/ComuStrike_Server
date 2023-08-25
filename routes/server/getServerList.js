@@ -15,17 +15,17 @@ module.exports = {
     },
     handler: (app, req, res, next) => {
       let servers = []
-      for (let [serverId, server] of app.serverList) {
+      for (const server of app.serverList) {
         res.arrayKey = 'server'
         servers.push({
           NOM: server.name,
           VERSION: server.version,
-          COMMENT: 'Unofficial server',
+          COMMENT: `Comustrike v${app.config.serverVersion} server`,
           MD5: server.md5,
           DESC: server.description,
           MAP: server.level,
           __IP: server.host,
-          __SERVERID: serverId,
+          __SERVERID: server.serverId,
           __PLAYERID: server.owner
         })
       }

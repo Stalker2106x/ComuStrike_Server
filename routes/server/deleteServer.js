@@ -14,13 +14,7 @@ module.exports = {
     }
   },
   handler: (app, req, res, next) => {
-    let server = null
-    for (const [serverId, srv] of app.serverList) {
-      if (srv.owner === parseInt(req.body.LENUM)) {
-        server = srv
-        break;
-      }
-    }
+    const server = app.serverList[app.serverList.findIndex((serv) => serv.owner === parseInt(req.body.LENUM))]
     if (!server) {
       res.status(500).send({ error: 'Invalid SERVERID' })
     } else {

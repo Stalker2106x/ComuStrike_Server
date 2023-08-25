@@ -17,16 +17,12 @@ module.exports = {
   handler: async (app, req, res, next) => {
     const dbMaps = await app.db.models.Maps.findAll()
     let maps = []
-    let dirname = __dirname
-    if (process.pkg) {
-      dirname = path.dirname(process.execPath)
-    }
     for (const map of dbMaps) {
       maps.push({
         NAME: map.name,
         MAPPEUR: map.author,
-        WADMD5: utils.fileMD5(path.join(dirname, '../../maps/', `${map.name}.wad`)),
-        BSPMD5: utils.fileMD5(path.join(dirname, '../../maps/', `${map.name}.bsp`)),
+        WADMD5: utils.fileMD5(path.join(__dirname, '../../maps/', `${map.name}.wad`)),
+        BSPMD5: utils.fileMD5(path.join(__dirname, '../../maps/', `${map.name}.bsp`)),
         HOST: global.forceLocalhost ? '127.0.0.1' : app.config.publicIP,
       })
     }

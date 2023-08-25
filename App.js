@@ -146,7 +146,7 @@ class App {
         port: this.config.database.port,
         dialect: 'mariadb',
         dialectModule: mariadb,
-        logging: this.debug
+        logging: global.debug
       })
       await this.db.authenticate()
       await this.db.define(Players.name, Players.define, Players.options)
@@ -190,18 +190,19 @@ class App {
 
   initServerList () {
     // Initialize serverList
-    this.serverList = new Map()
-    if (this.debug) {
-      this.serverList.set(0, {
-        name: 'fakeserv',
+    this.serverList = []
+    if (global.debug) {
+      this.serverList.push({
+        serverId: 0,
+        name: 'Fake server DEBUG USE ONLY',
         version: '157',
         host: 'localhost',
         owner: 0,
-        map: 'tunisia',
-        description: 'fake server',
+        level: 'tunisia',
+        description: 'Non-existing server',
         slots: 5,
         tournamentId: 0,
-        private: 0,
+        private: true,
         weapons: '*****************************',
         md5: '49fed900999d62fc6c950fa129384e72',
         connectedPeers: []
@@ -257,7 +258,7 @@ class App {
       this.app.get('/romustrike/mp3/:music',(req, res, next) => routes.downloadMP3.handler(this, req, res, next))
       this.app.get('/romustrike/map150/:level',(req, res, next) => routes.downloadMap.handler(this, req, res, next))
       // Debug
-      if (this.debug) {
+      if (global.debug) {
         this.app.post('/cypher', (req, res, next) => { res.status(200).send(utils.cypher(this, req.body.msg)); })
       }
     } catch (e) {

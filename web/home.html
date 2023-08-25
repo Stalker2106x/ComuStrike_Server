@@ -13,16 +13,33 @@
                 {{version}}
             </p>
             <h4>Servers:</h4>
-            {% for server in serverList %}
-                name: {{ server.name }}
-                description: {{ server.description }}
-                version: {{ server.version }}
-                map: {{ server.level }}
-                slots: {{ server.connectedPeers.length }}/{{ server.slots }}
-                private: {{ server.private }}
-            {% else %}
-                No servers are currently running
-            {% endfor %}
+            <table>
+                <thead>
+                  <tr>
+                    <th width="30%">Name</th>
+                    <th width="30%">Description</th>
+                    <th>Version</th>
+                    <th>Map</th>
+                    <th>Players</th>
+                    <th>Private</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    {% for server in serverList %}
+                    <tr>
+                        <td>{{ server.name }}</td>
+                        <td>{{ server.description }}</td>
+                        <td>{{ server.version }}</td>
+                        <td>{{ server.level }}</td>
+                        <td>{{ server.connectedPeers.length }}/{{ server.slots }}</td>
+                        <td>{{ server.private }}</td>
+                    </tr>
+                    {% else %}
+                    <tr><td colspan="6">No servers are currently running</td></tr>
+                    {% endfor %}
+                  
+                </tbody>
+              </table>
         </div>
     </body>
 </html>

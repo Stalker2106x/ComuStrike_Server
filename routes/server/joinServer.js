@@ -15,7 +15,7 @@ module.exports = {
     }
   },
   handler: (app, req, res, next) => {
-    const server = app.serverList.get(parseInt(req.body.SERVERID))
+    const server = app.serverList[app.serverList.findIndex((serv) => serv.serverId === parseInt(req.body.SERVERID))]
     if (!server) {
       res.status(500).send({ error: 'Invalid SERVERID' })
     } else {

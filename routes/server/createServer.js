@@ -27,7 +27,7 @@ module.exports = {
     }
   },
   handler: (app, req, res, next) => {
-    const serverId = app.serverList.size;
+    const serverId = app.serverList.length;
     const server = {
       serverId,
       name: req.body.DESC,
@@ -43,7 +43,7 @@ module.exports = {
       md5: req.body.MD5,
       connectedPeers: []
     }
-    app.serverList.set(serverId, server)
+    app.serverList.push(server)
     utils.logger('game', `Server ${server.name} created by ${server.owner} on ${server.host}`)
     res.status(200).send({ return: serverId })
     next()
