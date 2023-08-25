@@ -14,12 +14,13 @@ module.exports = {
     }
   },
   handler: (app, req, res, next) => {
-    const server = app.serverList[app.serverList.findIndex((serv) => serv.owner === parseInt(req.body.LENUM))]
+    const serverIndex = app.serverList.findIndex((serv) => serv.owner === parseInt(req.body.LENUM))
+    const server = app.serverList[serverIndex]
     if (!server) {
       res.status(500).send({ error: 'Invalid SERVERID' })
     } else {
-      app.serverList.delete(parseInt(req.body.LENUM))
-      utils.logger('game', `Server ${server.name} created by ${server.owner} terminated`)
+      app.serverList.splice(serverIndex, 1)
+      utils.logger('game', `Deleted server ${server.name} created by ${server.owner}`)
       res.status(200).send()
     }
     next()

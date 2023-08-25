@@ -18,8 +18,8 @@ module.exports = {
       }
     },
     handler: async (app, req, res, next) => {
-      if (req.body.LENOM.length < 3 || !/^[a-zA-Z0-9_]*$/.test(req.body.LENOM)) {
-        res.status(500).send('Username must consist only of alphanumeric characters, and be at least 3 characters long')
+      if ((req.body.LENOM.length < 2 && req.body.LENOM.length > 15) || !/^[a-zA-Z0-9_]*$/.test(req.body.LENOM)) {
+        res.status(500).send('Username must consist only of alphanumeric characters, and be between 2 and 15 characters long')
         return
       }
       if (!/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(req.body.LEMAIL)) {
@@ -28,6 +28,10 @@ module.exports = {
       }
       if (parseInt(req.body.LESOFT) !== 2) {
         res.status(500).send('LESOFT must be 2')
+        return
+      }
+      if (req.body.LEPASS.length < 2 && req.body.LEPASS.length > 10) {
+        res.status(500).send('Password length should be between 2 and 10')
         return
       }
       const player = await app.db.models.Players.findOne({
