@@ -1,0 +1,110 @@
+<html>
+    <head>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/water.css@2/out/water.css">
+        <style>{{css}}</style>
+    </head>
+    <body>
+        <div class="content">
+            <h2>Register</h2>
+            <form id="form" class="form">
+                <label for="username">Username:</label>
+                <input name="username" id="username" value="">
+                <p id="usernameWarning" class="warning"></p><br />
+                <label for="email">Email</label>
+                <input type="email" name="email" id="email" placeholder="john.doe@gmail.com">
+                <p id="emailWarning" class="warning"></p><br />
+                <label for="password">Password:</label>
+                <input type="password" name="password" id="password" value="">
+                <p id="passwordWarning" class="warning"></p><br />
+                <input type="checkbox" name="acceptCOC" id="acceptCOC" checked="false">
+                <label for="acceptCOC">By registering, I accept the <a href="#" onClick="window.open('./COC.html','MyWindow','width=800,height=800');">code of conduct</a></label><br />
+                <p id="COCWarning" class="warning">You must accept code of conduct in order to register</p><br />
+                <button id="submit" onclick="return false;">Submit</button>
+            </form>
+            <div id="success" style="display: none;">
+                <p>
+                    Your account was successfully created!<br>
+                    You can now login in the game using the credentials you provided.
+                </p>
+            </div>
+        </div>
+        <script>
+            const submitBtn = document.getElementById("submit");
+            submitBtn.addEventListener("click", () => {
+
+                document.getElementById('acceptCOC').onchange = function() {
+                    document.getElementById('COCWarning').style.display = 'none'
+                }
+                document.getElementById('username').onchange = function() {
+                    document.getElementById('usernameWarning').style.display = 'none'
+                    document.getElementById('usernameTakenWarning').style.display = 'none'
+                }
+                document.getElementById('email').onchange = function() {
+                    document.getElementById('emailWarning').style.display = 'none'
+                }
+                document.getElementById('password').onchange = function() {
+                    document.getElementById('passwordWarning').style.display = 'none'
+                }
+
+                const acceptCOC = document.getElementById('acceptCOC').checked
+                if (!acceptCOC) {
+                    document.getElementById('COCWarning').style.display = 'block'
+                } else {
+                    const host = window.location.href.startsWith('file://') ? 'http://localhost' : window.location.host
+
+                    const username = document.getElementById('username').value
+                    if (!/^[a-zA-Z0-9_]*$/.test(username)) {
+                        const warning = document.getElementById('usernameWarning')
+                        warning.innerText = 'Username must be composed of alphanumeric characters only'
+                        warning.style.display = 'block'
+                        return;
+                    }
+                    if (username.length < 3) {
+                        const warning = document.getElementById('usernameWarning')
+                        warning.innerText = 'Username must be of at least 3 characters'
+                        warning.style.display = 'block'
+                        return;
+                    }
+
+                    const email = document.getElementById('email').value
+                    if (!/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email)) {
+                        const warning = document.getElementById('emailWarning')
+                        warning.innerText = 'Please enter a valid email'
+                        warning.style.display = 'block'
+                        return;
+                    }
+
+                    const password = document.getElementById('password').value
+                    if (password.length < 8) {
+                        const warning = document.getElementById('passwordWarning')
+                        warning.innerText = 'Password must be of at least 8 characters'
+                        warning.style.display = 'block'
+                        return;
+                    }
+
+                    let req = new XMLHttpRequest();
+                    req.onreadystatechange = function() {
+                        if (req.readyState === 4) {
+                            if (req.status === 200) {
+                                document.getElementById('form').style.display = 'none'
+                                document.getElementById('success').style.display = 'block'
+                            } else {
+                                const warning1 = document.getElementById('usernameWarning')
+                                warning1.innerText = 'Username or email is already taken'
+                                warning1.style.display = 'block'
+                                const warning2 = document.getElementById('emailWarning')
+                                warning2.innerText = 'Email or username is already taken'
+                                warning2.style.display = 'block'
+                                return;
+                            }
+                        }
+                    }
+                    req.open("POST", host+"/v1/player");
+                    req.setRequestHeader('Access-Control-Allow-Origin', '*');
+                    req.setRequestHeader("Content-Type", "application/json");
+                    req.send(JSON.stringify({ 'LENUM': 0, 'LESOFT': 2, 'LENOM': username, 'LEVERSION': '100', "LEMAIL": email, 'LEPASS': password }))
+                }
+            });
+        </script> 
+    </body>
+</html>

@@ -22,6 +22,9 @@ class Chat {
     this.clients = []
     this.config = workerData.config
 
+    // Set global for logger
+    if (this.config.chatHistoryFile && this.config.chatHistoryFile !== '') global.chatHistoryFile = this.config.chatHistoryFile
+
     parentPort.on("message", async (value) => {
       if (value.exit) {
         for (const client of this.clients) {

@@ -40,7 +40,7 @@ module.exports = {
             SCROLL: 'ComuStrike Unofficial Server - Enjoy RomuStrike in 2023... and more!',
             STATS: 'x',
             PANEL: `ComuStrike Unofficial Server v${app.config.serverVersion}`,
-            ROMUCHAT: '127.0.0.1',
+            ROMUCHAT: global.forceLocalhost ? '127.0.0.1' : app.config.publicIP,
             ID_PLAYER: player.player_id,
             CONTROLE: 'checksum'
         })

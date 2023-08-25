@@ -1,5 +1,4 @@
 const { Sequelize, DataTypes } = require('sequelize')
-const sequelize = new Sequelize({ dialect: 'mariadb' })
 
 module.exports = {
   name: 'Players',

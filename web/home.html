@@ -1,0 +1,28 @@
+<html>
+    <head>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/water.css@2/out/water.css">
+        <style>{{css}}</style>
+    </head>
+    <body>
+        <div class="content">
+            <p class="logo">
+                █████████████████████████████████████████████████████████████<br />
+                █─▄▄▄─█─▄▄─█▄─▀█▀─▄█▄─██─▄█─▄▄▄▄█─▄─▄─█▄─▄▄▀█▄─▄█▄─█─▄█▄─▄▄─█<br />
+                █─███▀█─██─██─█▄█─███─██─██▄▄▄▄─███─████─▄─▄██─███─▄▀███─▄█▀█<br />
+                █▄▄▄▄▄▀▄▄▄▄▀▄▄▄▀▄▄▄▀▀▄▄▄▄▀▀▄▄▄▄▄▀▀▄▄▄▀▀▄▄▀▄▄▀▄▄▄▀▄▄▀▄▄▀▄▄▄▄▄█<br />
+                {{version}}
+            </p>
+            <h4>Servers:</h4>
+            {% for server in serverList %}
+                name: {{ server.name }}
+                description: {{ server.description }}
+                version: {{ server.version }}
+                map: {{ server.level }}
+                slots: {{ server.connectedPeers.length }}/{{ server.slots }}
+                private: {{ server.private }}
+            {% else %}
+                No servers are currently running
+            {% endfor %}
+        </div>
+    </body>
+</html>

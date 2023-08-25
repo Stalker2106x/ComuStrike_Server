@@ -1,4 +1,4 @@
-const { DataTypes } = require('sequelize')
+const { Sequelize, DataTypes } = require('sequelize')
 
 module.exports = {
   name: 'Tournaments',

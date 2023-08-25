@@ -1,5 +1,7 @@
 const readline = require('readline');
 const express = require('express')
+const rateLimit = require('express-rate-limit')
+var cors = require('cors')
 const bodyParser = require('body-parser')
 const xmljs = require('xml-js')
 const fs = require('fs')
@@ -63,20 +65,20 @@ function sendMiddleware(app, req, res, next) {
       if (body && body.hasOwnProperty('return')) {
         //If object contains a return key, we convert it to single value body
         const xmlData = { _declaration: { _attributes: { version:"1.0", encoding:"ISO-8859-1" } }, root: { _text: body.return } }
-        if (app.debug) console.log(xmljs.js2xml(xmlData, { compact: true, spaces: 4 }))
+        if (global.debug) console.log(xmljs.js2xml(xmlData, { compact: true, spaces: 4 }))
         return res.type('application/xml').send(xmljs.js2xml(xmlData, { compact: true, spaces: 0 }))
       } else if (typeof body === 'object') {
         // We have to convert current response to legacy XML schema
         const xmlData = { _declaration: { _attributes: { version:"1.0", encoding:"ISO-8859-1" } }, root: objectSplit(body) }
-        if (app.debug) console.log(xmljs.js2xml(xmlData, { compact: true, spaces: 4, elementNameFn: (val) => arrayFix(res, val) }))
+        if (global.debug) console.log(xmljs.js2xml(xmlData, { compact: true, spaces: 4, elementNameFn: (val) => arrayFix(res, val) }))
         return res.type('application/xml').send(xmljs.js2xml(xmlData, { compact: true, spaces: 0, elementNameFn: (val) => arrayFix(res, val) }))
       } else {
         // Empty response
-        if (app.debug) console.log('empty response')
+        if (global.debug) console.log('empty response')
         return res.send()
       }
     } else {
-      if (app.debug) console.log(body)
+      if (global.debug) console.log(body)
       return res.send(body)
     }
   }
@@ -96,7 +98,7 @@ function validationError(error, request, response, next) {
 
 class App {
 
-  constructor(debug, fillDB) {
+  constructor(debug, fillDB, forceLocalhost) {
     const self = this
     console.log('█████████████████████████████████████████████████████████████')
     console.log('█─▄▄▄─█─▄▄─█▄─▀█▀─▄█▄─██─▄█─▄▄▄▄█─▄─▄─█▄─▄▄▀█▄─▄█▄─█─▄█▄─▄▄─█')
@@ -104,7 +106,8 @@ class App {
     console.log('█▄▄▄▄▄▀▄▄▄▄▀▄▄▄▀▄▄▄▀▀▄▄▄▄▀▀▄▄▄▄▄▀▀▄▄▄▀▀▄▄▀▄▄▀▄▄▄▀▄▄▀▄▄▀▄▄▄▄▄█')
     console.log(`Server v${config.serverVersion}  -  Game v${config.gameVersion}`.padStart(61))
     console.log('...')
-    this.debug = debug
+    if (debug) global.debug = true
+    if (forceLocalhost) global.forceLocalhost = true
     this.fillDB = fillDB
     process.on('SIGINT', function() {
       console.log('Terminating server...');
@@ -132,6 +135,8 @@ class App {
     }
     const publicIP = await pubip.v4()
     this.config = { ...config, ...userConfig, publicIP: publicIP }
+    // Set globals for logger
+    if (this.config.logFile && this.config.logFile !== '') global.logFile = this.config.logFile
   }
 
   async initDB () {
@@ -210,30 +215,43 @@ class App {
       const { validate } = new Validator()
       this.validate = validate
       this.app = express()
+      this.app.use(cors())
       this.app.use(bodyParser.json())
+
+      // Defaults is 100 request in 15 minutes frame
+      this.app.use(rateLimit({
+        windowMs: this.config.rateLimitWindow,
+        max: this.config.rateLimitRequests,
+        standardHeaders: true,
+        legacyHeaders: false,
+      }))
+
       this.app.use((req, res, next) => sendMiddleware(this, req, res, next))
       this.app.use(validationError)
       // Player
-      this.app.post('/player', validate(routes.createPlayer.schema), (req, res, next) => routes.createPlayer.handler(this, req, res, next))
-      this.app.get('/player/:id', validate(routes.getPlayer.schema), (req, res, next) => routes.getPlayer.handler(this, req, res, next))
-      this.app.get('/player/:id/id', validate(routes.getPlayerId.schema), (req, res, next) => routes.getPlayerId.handler(this, req, res, next))
-      this.app.put('/player/:id/score', validate(routes.addScore.schema), (req, res, next) => routes.addScore.handler(this, req, res, next))
+      this.app.post('/v1/player', validate(routes.createPlayer.schema), (req, res, next) => routes.createPlayer.handler(this, req, res, next))
+      this.app.get('/v1/player/:id', validate(routes.getPlayer.schema), (req, res, next) => routes.getPlayer.handler(this, req, res, next))
+      this.app.get('/v1/player/:id/id', validate(routes.getPlayerId.schema), (req, res, next) => routes.getPlayerId.handler(this, req, res, next))
+      this.app.put('/v1/player/:id/score', validate(routes.addScore.schema), (req, res, next) => routes.addScore.handler(this, req, res, next))
       // Server
-      this.app.post('/server', validate(routes.createServer.schema), (req, res, next) => routes.createServer.handler(this, req, res, next))
-      this.app.get('/servers', validate(routes.getServerList.schema), (req, res, next) => routes.getServerList.handler(this, req, res, next))
-      this.app.get('/server/mp3', validate(routes.getMP3.schema), (req, res, next) => routes.getMP3.handler(this, req, res, next))
-      this.app.delete('/server', validate(routes.deleteServer.schema), (req, res, next) => routes.deleteServer.handler(this, req, res, next))
-      this.app.put('/server/:id/join', validate(routes.joinServer.schema), (req, res, next) => routes.joinServer.handler(this, req, res, next))
-      this.app.put('/server/:id/quit', validate(routes.quitServer.schema), (req, res, next) => routes.quitServer.handler(this, req, res, next))
+      this.app.post('/v1/server', validate(routes.createServer.schema), (req, res, next) => routes.createServer.handler(this, req, res, next))
+      this.app.get('/v1/servers', validate(routes.getServerList.schema), (req, res, next) => routes.getServerList.handler(this, req, res, next))
+      this.app.get('/v1/server/mp3', validate(routes.getMP3.schema), (req, res, next) => routes.getMP3.handler(this, req, res, next))
+      this.app.delete('/v1/server', validate(routes.deleteServer.schema), (req, res, next) => routes.deleteServer.handler(this, req, res, next))
+      this.app.put('/v1/server/:id/join', validate(routes.joinServer.schema), (req, res, next) => routes.joinServer.handler(this, req, res, next))
+      this.app.put('/v1/server/:id/quit', validate(routes.quitServer.schema), (req, res, next) => routes.quitServer.handler(this, req, res, next))
       // Map
-      this.app.get('/maps', validate(routes.getMapList.schema), (req, res, next) => routes.getMapList.handler(this, req, res, next))
+      this.app.get('/v1/maps', validate(routes.getMapList.schema), (req, res, next) => routes.getMapList.handler(this, req, res, next))
       // Tournament
-      this.app.post('/tournament', validate(routes.createTournament.schema), (req, res, next) => routes.createTournament.handler(this, req, res, next))
-      this.app.get('/tournament', validate(routes.getTournament.schema), (req, res, next) => routes.getTournament.handler(this, req, res, next))
-      this.app.get('/tournament/:id/info', validate(routes.getTournament.schema), (req, res, next) => routes.getTournament.handler(this, req, res, next))
+      this.app.post('/v1/tournament', validate(routes.createTournament.schema), (req, res, next) => routes.createTournament.handler(this, req, res, next))
+      this.app.get('/v1/tournament', validate(routes.getTournament.schema), (req, res, next) => routes.getTournament.handler(this, req, res, next))
+      this.app.get('/v1/tournament/:id/info', validate(routes.getTournament.schema), (req, res, next) => routes.getTournament.handler(this, req, res, next))
       // Object
-      this.app.get('/object', validate(routes.getObject.schema), (req, res, next) => routes.getObject.handler(this, req, res, next))
-      this.app.post('/object', validate(routes.placeObject.schema), (req, res, next) => routes.placeObject.handler(this, req, res, next))
+      this.app.get('/v1/object', validate(routes.getObject.schema), (req, res, next) => routes.getObject.handler(this, req, res, next))
+      this.app.post('/v1/object', validate(routes.placeObject.schema), (req, res, next) => routes.placeObject.handler(this, req, res, next))
+      // Web
+      this.app.get('/', (req, res, next) => { routes.home.handler(this, req, res) })
+      this.app.get('/register', (req, res, next) => { routes.register.handler(this, req, res) })
       // Legacy
       this.app.get('/script/romustrike/xml_layer.php', validate(xmlLayer.schema), (req, res, next) => xmlLayer.handler(this, req, res, next))
       this.app.get('/romustrike/mp3/:music',(req, res, next) => routes.downloadMP3.handler(this, req, res, next))

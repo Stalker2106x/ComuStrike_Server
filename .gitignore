@@ -129,6 +129,8 @@ dist
 .yarn/install-state.gz
 .pnp.*
 
-# Export
+# Server
 Comustrike_Server*
 config.json
+server.log
+chat.log

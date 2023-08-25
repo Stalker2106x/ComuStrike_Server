@@ -74,8 +74,14 @@ module.exports = {
 
     logger(service, msg) {
         if (service === 'game') {
+          if (global.logFile) {
+            fs.appendFileSync(global.logFile, `${module.exports.dateFormatter(new Date())} '[GAME]' ${msg}\n`)
+          }
           console.log(`${module.exports.dateFormatter(new Date())} ${chalk.green('[GAME]')} ${chalk.green(msg)}`);
         } else if (service === 'chat') {
+          if (global.chatHistoryFile) {
+            fs.appendFileSync(global.chatHistoryFile, `${module.exports.dateFormatter(new Date())} '[CHAT]' ${msg}\n`)
+          }
           console.log(`${module.exports.dateFormatter(new Date())} ${chalk.blue('[CHAT]')} ${chalk.blue(msg)}`);
         }
     }

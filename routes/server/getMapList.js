@@ -27,7 +27,7 @@ module.exports = {
         MAPPEUR: map.author,
         WADMD5: utils.fileMD5(path.join(dirname, '../../maps/', `${map.name}.wad`)),
         BSPMD5: utils.fileMD5(path.join(dirname, '../../maps/', `${map.name}.bsp`)),
-        HOST: app.debug ? '127.0.0.1' : app.config.publicIP,
+        HOST: global.forceLocalhost ? '127.0.0.1' : app.config.publicIP,
       })
     }
     res.arrayKey = 'element'

@@ -33,3 +33,8 @@ First install server dependencies, by running:
 to run server just start it
 
     yarn start
+
+## Game Ports
+ 47624 TCP/UDP
+ 6073 UDP
+ 2300-2400 UDP

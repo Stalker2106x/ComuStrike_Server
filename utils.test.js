@@ -1,9 +1,5 @@
 /* eslint-disable no-undef */
-const handler = require('./cypher')
-
-jest.mock('./config', () => {
-  return 
-})
+const handler = require('./utils')
 
 describe('Cypher', () => {
   test('Cyphered Payload should not exceed maxSize', () => {

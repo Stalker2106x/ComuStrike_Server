@@ -16,7 +16,7 @@ module.exports = {
         element: {
           NAME: 'lofijazz',
           COMMENTAIRE: 'Enjoy lofijazz from 150!',
-          HOST: app.debug ? '127.0.0.1' : app.config.publicIP,
+          HOST: global.forceLocalhost ? '127.0.0.1' : app.config.publicIP,
           ID: 0
         }
       })

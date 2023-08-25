@@ -1,6 +1,9 @@
 const getObject = require("./object/getObject")
 
 module.exports = {
+    // Web
+    home: require('./web/home'),
+    register: require('./web/register'),
     // Misc
     downloadMP3: require('./misc/downloadMP3'),
     downloadMap: require('./misc/downloadMap'),

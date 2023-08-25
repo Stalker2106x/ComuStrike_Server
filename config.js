@@ -1,5 +1,5 @@
 module.exports = {
-  serverVersion: '1.0.2',
+  serverVersion: '1.1.0',
   gameVersion: '157',
   userConfigPath: './config.json',
   defaultUserConfig: {
@@ -8,6 +8,10 @@ module.exports = {
     "gamePort": 80,
     "chatPort": 3159,
     "chatDiscordWebhook": '',
+    "rateLimitWindow": 900000,
+    "rateLimitRequests": 100,
+    "logFile": "server.log",
+    "chatHistoryFile": "chat.log",
     "database": {
         "host": "127.0.0.1",
         "port": 3306,

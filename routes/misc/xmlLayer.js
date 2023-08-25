@@ -37,13 +37,13 @@ module.exports = {
   },
   handler: (app, req, res, next) => {
     try {
-      if (app.debug) console.log(req.query.crypt)
+      if (global.debug) console.log(req.query.crypt)
       const requestData = utils.decypher(app, req.query.crypt).split(/[?&]+/)
       for (entry of requestData) {
         const data = entry.split('=')
         req.body[data[0].toUpperCase()] = data[1]
       }
-      if (app.debug) utils.logPayload(req.body)
+      if (global.debug) utils.logPayload(req.body)
       // Call appopriate REST method from mapper
       LegacyToRESTMapper[req.body.METHOD].handler(app, req, res, next)
     } catch (e) {
