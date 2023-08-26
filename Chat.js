@@ -1,12 +1,12 @@
 const net = require('net')
 const xmljs = require('xml-js')
-const { workerData, parentPort } = require('node:worker_threads');
+const { workerData, parentPort } = require('node:worker_threads')
 
 const utils = require('./utils')
 
 function textFix (xml) {
   for (const [key, value] of Object.entries(xml)) {
-    if (value.hasOwnProperty('_text')) {
+    if (Object.prototype.hasOwnProperty.call(value, '_text')) {
       xml[key] = value._text
     } else {
       xml[key] = textFix(value)
@@ -16,8 +16,7 @@ function textFix (xml) {
 }
 
 class Chat {
-
-  constructor() {
+  constructor () {
     const self = this
     this.clients = []
     this.config = workerData.config
@@ -25,28 +24,28 @@ class Chat {
     // Set global for logger
     if (this.config.chatHistoryFile && this.config.chatHistoryFile !== '') global.chatHistoryFile = this.config.chatHistoryFile
 
-    parentPort.on("message", async (value) => {
+    parentPort.on('message', async (value) => {
       if (value.exit) {
         for (const client of this.clients) {
           await client.socket.destroy()
         }
         this.server.close(function () {
           self.server.unref()
-        });
+        })
         process.exit(0)
       }
     })
   }
 
-  broadcast(payload, rawData) {
+  broadcast (payload, rawData) {
     if (this.config.chatDiscordWebhook && this.config.chatDiscordWebhook !== '') {
       fetch(this.config.chatDiscordWebhook, {
-        method: "POST",
-        body: JSON.stringify({ username: payload.racine.pseudo, content: payload.racine.msg }),
+        method: 'POST',
+        body: JSON.stringify({ username: payload.racine.pseudo, content: payload.racine.msg })
       })
     }
     for (const client of this.clients) {
-      client.socket.write(rawData+'\0')
+      client.socket.write(rawData + '\0')
     }
   }
 
@@ -55,29 +54,29 @@ class Chat {
     // Create a server instance, and chain the listen function to it
     // The function passed to net.createServer() becomes the event handler for the 'connection' event
     // The sock object the callback function receives UNIQUE for each connection
-    this.server = net.createServer(function(socket) {
+    this.server = net.createServer(function (socket) {
       // We have a connection - a socket object is assigned to the connection automatically
       utils.logger('chat', `Client ${socket.remoteAddress} connected, assigned port ${socket.remotePort}`)
       self.clients.push({ socket, ip: socket.remoteAddress, port: socket.remotePort })
 
       // Add a 'data' event handler to this instance of socket
-      socket.on('data', function(rawData) {
+      socket.on('data', function (rawData) {
         const payload = textFix(xmljs.xml2js(rawData.toString().replace('\0', ''), { compact: true }))
-        if (!payload.hasOwnProperty('who')) {
+        if (!Object.prototype.hasOwnProperty.call(payload, 'who')) {
           utils.logger('chat', `${payload.racine.pseudo}: ${payload.racine.msg}`)
           self.broadcast(payload, rawData)
         }
-      });
+      })
 
       // Add a 'close' event handler to this instance of socket
-      socket.on('close', function(data) {
+      socket.on('close', function (data) {
         utils.logger('chat', `Client ${socket.remoteAddress} disconnected, with port ${socket.remotePort}`)
-        self.clients.splice(self.clients.findIndex((client) => client.socket == socket), 1)
-      });
+        self.clients.splice(self.clients.findIndex((client) => client.socket === socket), 1)
+      })
 
-      socket.on('error', function(err) {
+      socket.on('error', function (err) {
         utils.logger('chat', `Client ${socket.remoteAddress} unexpectedly closed, with error ${err}`)
-        self.clients.splice(self.clients.findIndex((client) => client.socket == socket), 1)
+        self.clients.splice(self.clients.findIndex((client) => client.socket === socket), 1)
       })
     }).listen(this.config.chatPort, '127.0.0.1')
 

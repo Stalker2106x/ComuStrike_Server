@@ -36,19 +36,25 @@ module.exports = {
     }
   },
   handler: (app, req, res, next) => {
+    if (global.debug) console.log(req.query.crypt)
     try {
-      if (global.debug) console.log(req.query.crypt)
       const requestData = utils.decypher(app, req.query.crypt).split(/[?&]+/)
-      for (entry of requestData) {
+      for (const entry of requestData) {
         const data = entry.split('=')
         req.body[data[0].toUpperCase()] = data[1]
       }
-      if (global.debug) utils.logPayload(req.body)
+    } catch (e) {
+      res.status(500).send('Invalid crypt payload')
+      next()
+      return
+    }
+    if (global.debug) utils.logPayload(req.body)
+    if (!Object.prototype.hasOwnProperty.call(LegacyToRESTMapper, req.body.METHOD)) {
+      res.status(500).send('Unknown method')
+      next()
+    } else {
       // Call appopriate REST method from mapper
       LegacyToRESTMapper[req.body.METHOD].handler(app, req, res, next)
-    } catch (e) {
-      console.error(e)
-      res.status(500).send('Internal server error')
     }
   }
 }

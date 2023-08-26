@@ -2,14 +2,14 @@ const utils = require('../../utils')
 
 // delete_server -> deleteServer
 module.exports = {
-    schema: {
+  schema: {
     body: {
       type: 'object',
       required: ['LENUM', 'LEPASS', 'LESOFT', 'CLE_TOURNOIS', 'ROUND'],
       properties: {
         LENUM: { type: 'number' },
         LEPASS: { type: 'string' },
-        CLE_SERVEUR: { type: 'number' },
+        CLE_SERVEUR: { type: 'number' }
       }
     }
   },

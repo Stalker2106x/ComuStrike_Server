@@ -53,9 +53,9 @@
                     const endpoint = window.location.href.startsWith('file://') ? 'http://localhost/v1/player' : "/v1/player"
 
                     const username = document.getElementById('username').value
-                    if (!/^[a-zA-Z0-9_]*$/.test(username)) {
+                    if (!/^[a-zA-Z0-9_.^$]*$/.test(username)) {
                         const warning = document.getElementById('usernameWarning')
-                        warning.innerText = 'Username must be composed of alphanumeric characters only'
+                        warning.innerText = 'Username can only be composed of alphanumeric characters and any of [_.^]'
                         warning.style.display = 'block'
                         return;
                     }

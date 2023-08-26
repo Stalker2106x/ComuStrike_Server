@@ -27,7 +27,7 @@ module.exports = {
     }
   },
   handler: (app, req, res, next) => {
-    const serverId = app.serverList.length;
+    const serverId = app.serverList.length
     const server = {
       serverId,
       name: req.body.DESC,
@@ -38,7 +38,7 @@ module.exports = {
       description: req.body.DESC,
       slots: parseInt(req.body.MAX_PLAYERS),
       tournamentId: parseInt(req.body.CLE_TOURNOIS),
-      private: req.body.PRIVEE === '0' ? true : false,
+      private: parseInt(req.body.PRIVEE) === 1,
       weapons: req.body.ARMES,
       md5: req.body.MD5,
       connectedPeers: []

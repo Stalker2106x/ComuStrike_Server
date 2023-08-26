@@ -1,13 +1,13 @@
-const readline = require('readline');
+const readline = require('readline')
 const express = require('express')
 const rateLimit = require('express-rate-limit')
-var cors = require('cors')
+const cors = require('cors')
 const bodyParser = require('body-parser')
 const xmljs = require('xml-js')
 const fs = require('fs')
 const path = require('path')
-const { Worker } = require("worker_threads")
-const { Validator, ValidationError } = require("express-json-validator-middleware")
+const { Worker } = require('worker_threads')
+const { Validator, ValidationError } = require('express-json-validator-middleware')
 const { Sequelize } = require('sequelize')
 const pubip = require('public-ip')
 const mariadb = require('mariadb')
@@ -24,17 +24,17 @@ const Teams = require('./models/Teams')
 const Maps = require('./models/Maps')
 const Tournaments = require('./models/Tournaments')
 
-function objectSplit(object) {
-  let xmlData = {}
-  for (key of Object.keys(object)) {
+function objectSplit (object) {
+  const xmlData = {}
+  for (const key of Object.keys(object)) {
     if (key.includes('__')) {
       // If a response has a key with __ we consider it being an attribute
       if (key.startsWith('__')) {
         // if __ has no prefix, attributes belong to current element
-        xmlData._attributes = { ...xmlData._attributes, [key.replace('__', '')]: object[key]}
+        xmlData._attributes = { ...xmlData._attributes, [key.replace('__', '')]: object[key] }
       } else {
         // if __ has prefix, attributes belong to child element
-        let [child, attribute] = key.split('__')
+        const [child, attribute] = key.split('__')
         xmlData[child] = { ...xmlData[child], _attributes: { ...xmlData[child]._attributes, [attribute]: object[key] } }
       }
     } else if (typeof object[key] === 'object') {
@@ -48,7 +48,7 @@ function objectSplit(object) {
   return (xmlData)
 }
 
-function arrayFix(res, val) {
+function arrayFix (res, val) {
   // Arrays get converted to elements called 0,1,2...
   // We convert numeric names to given arrayKey to prevent that.
   if (/^\d+$/.test(val)) {
@@ -57,19 +57,19 @@ function arrayFix(res, val) {
   return (val)
 }
 
-function sendMiddleware(app, req, res, next) {
+function sendMiddleware (app, req, res, next) {
   const oldSend = res.send
-  res.send = function(body) {
+  res.send = function (body) {
     res.send = oldSend // set function back to avoid the 'double-send'
     if (req.query.crypt) {
-      if (body && body.hasOwnProperty('return')) {
-        //If object contains a return key, we convert it to single value body
-        const xmlData = { _declaration: { _attributes: { version:"1.0", encoding:"ISO-8859-1" } }, root: { _text: body.return } }
+      if (body && Object.prototype.hasOwnProperty.call(body, 'return')) {
+        // If object contains a return key, we convert it to single value body
+        const xmlData = { _declaration: { _attributes: { version: '1.0', encoding: 'ISO-8859-1' } }, root: { _text: body.return } }
         if (global.debug) console.log(xmljs.js2xml(xmlData, { compact: true, spaces: 4 }))
         return res.type('application/xml').send(xmljs.js2xml(xmlData, { compact: true, spaces: 0 }))
       } else if (typeof body === 'object') {
         // We have to convert current response to legacy XML schema
-        const xmlData = { _declaration: { _attributes: { version:"1.0", encoding:"ISO-8859-1" } }, root: objectSplit(body) }
+        const xmlData = { _declaration: { _attributes: { version: '1.0', encoding: 'ISO-8859-1' } }, root: objectSplit(body) }
         if (global.debug) console.log(xmljs.js2xml(xmlData, { compact: true, spaces: 4, elementNameFn: (val) => arrayFix(res, val) }))
         return res.type('application/xml').send(xmljs.js2xml(xmlData, { compact: true, spaces: 0, elementNameFn: (val) => arrayFix(res, val) }))
       } else {
@@ -85,7 +85,7 @@ function sendMiddleware(app, req, res, next) {
   next()
 }
 
-function validationError(error, request, response, next) {
+function validationError (error, request, response, next) {
   // Check the error is a validation error
   if (error instanceof ValidationError) {
     response.status(400).send(error.validationErrors)
@@ -97,8 +97,7 @@ function validationError(error, request, response, next) {
 }
 
 class App {
-
-  constructor(debug, fillDB, forceLocalhost) {
+  constructor (debug, fillDB, forceLocalhost) {
     const self = this
     console.log('█████████████████████████████████████████████████████████████')
     console.log('█─▄▄▄─█─▄▄─█▄─▀█▀─▄█▄─██─▄█─▄▄▄▄█─▄─▄─█▄─▄▄▀█▄─▄█▄─█─▄█▄─▄▄─█')
@@ -109,12 +108,12 @@ class App {
     if (debug) global.debug = true
     if (forceLocalhost) global.forceLocalhost = true
     this.fillDB = fillDB
-    process.on('SIGINT', function() {
-      console.log('Terminating server...');
+    process.on('SIGINT', function () {
+      console.log('Terminating server...')
       self.api.close()
       self.chatWorker.postMessage({ exit: true })
       process.exit(0)
-    });
+    })
   }
 
   async loadConfig () {
@@ -134,7 +133,7 @@ class App {
       }
     }
     const publicIP = await pubip.v4()
-    this.config = { ...config, ...userConfig, publicIP: publicIP }
+    this.config = { ...config, ...userConfig, publicIP }
     // Set globals for logger
     if (this.config.logFile && this.config.logFile !== '') global.logFile = this.config.logFile
   }
@@ -153,20 +152,20 @@ class App {
       await this.db.define(Teams.name, Teams.define, Teams.options)
       await this.db.define(Maps.name, Maps.define, Maps.options)
       await this.db.define(Tournaments.name, Tournaments.define, Tournaments.options)
-      await this.db.models.Players.sync() //Make sure player table exists for next request
+      await this.db.models.Players.sync() // Make sure player table exists for next request
       const playerCount = await this.db.models.Players.count()
-      if (playerCount == 0 || this.fillDB) {
+      if (playerCount === 0 || this.fillDB) {
         if (this.fillDB) {
           console.warn('You started the server with the --fillDB switch which is DESTRUCTIVE.')
-        } else if (playerCount == 0) {
+        } else if (playerCount === 0) {
           console.warn('It looks like the server database is empty. To function properly, ComuStrike needs base data.')
           console.warn('The next process will inject adequate data into your database.')
-        } 
+        }
         console.warn('All your database is gonna be ERASED and replaced with default values')
         const rl = readline.createInterface({
           input: process.stdin,
           output: process.stdout
-        });
+        })
         const confirm = await new Promise(resolve => {
           rl.question('Are you sure you want to proceed ? (y/n): ', resolve)
         })
@@ -224,7 +223,7 @@ class App {
         windowMs: this.config.rateLimitWindow,
         max: this.config.rateLimitRequests,
         standardHeaders: true,
-        legacyHeaders: false,
+        legacyHeaders: false
       }))
 
       this.app.use((req, res, next) => sendMiddleware(this, req, res, next))
@@ -255,11 +254,11 @@ class App {
       this.app.get('/register', (req, res, next) => { routes.register.handler(this, req, res) })
       // Legacy
       this.app.get('/script/romustrike/xml_layer.php', validate(xmlLayer.schema), (req, res, next) => xmlLayer.handler(this, req, res, next))
-      this.app.get('/romustrike/mp3/:music',(req, res, next) => routes.downloadMP3.handler(this, req, res, next))
-      this.app.get('/romustrike/map150/:level',(req, res, next) => routes.downloadMap.handler(this, req, res, next))
+      this.app.get('/romustrike/mp3/:music', (req, res, next) => routes.downloadMP3.handler(this, req, res, next))
+      this.app.get('/romustrike/map150/:level', (req, res, next) => routes.downloadMap.handler(this, req, res, next))
       // Debug
       if (global.debug) {
-        this.app.post('/cypher', (req, res, next) => { res.status(200).send(utils.cypher(this, req.body.msg)); })
+        this.app.post('/cypher', (req, res, next) => { res.status(200).send(utils.cypher(this, req.body.msg)) })
       }
     } catch (e) {
       console.error(`Server error: ${e} => ${e.stack}`)
@@ -267,8 +266,8 @@ class App {
     }
   }
 
-  initChat() {
-    this.chatWorker = new Worker(path.join(__dirname, 'Chat.js'), { workerData: { config: this.config } });
+  initChat () {
+    this.chatWorker = new Worker(path.join(__dirname, 'Chat.js'), { workerData: { config: this.config } })
   }
 
   async run () {

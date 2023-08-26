@@ -2,16 +2,16 @@ const utils = require('../../utils')
 
 // join_server -> joinServer
 module.exports = {
-    schema: {
+  schema: {
     body: {
-        type: 'object',
-        required: ['LENUM', 'LEPASS', 'LESOFT', 'SERVERID'],
-        properties: {
-            LENUM: { type: 'number' },
-            LEPASS: { type: 'string' },
-            LESOFT: { type: 'number' },
-            SERVERID: { type: 'number' }
-        }
+      type: 'object',
+      required: ['LENUM', 'LEPASS', 'LESOFT', 'SERVERID'],
+      properties: {
+        LENUM: { type: 'number' },
+        LEPASS: { type: 'string' },
+        LESOFT: { type: 'number' },
+        SERVERID: { type: 'number' }
+      }
     }
   },
   handler: (app, req, res, next) => {
