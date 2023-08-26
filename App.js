@@ -175,6 +175,7 @@ class App {
         }
         await this.db.sync({ force: true })
         await defaultData.createPlayers(this)
+        await defaultData.createMP3(this)
         await defaultData.createTeams(this)
         await defaultData.createMaps(this)
         console.log('Database was filled successfully!')

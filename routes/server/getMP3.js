@@ -11,13 +11,14 @@ module.exports = {
       }
     }
   },
-  handler: (app, req, res, next) => {
+  handler: async (app, req, res, next) => {
+    const mp3s = await app.db.models.MP3.findAll()
     res.status(200).send({
       element: {
-        NAME: 'lofijazz',
-        COMMENTAIRE: 'Enjoy lofijazz from 150!',
+        NAME: mp3s[0].name,
+        COMMENTAIRE: mp3s[0].description,
         HOST: global.forceLocalhost ? '127.0.0.1' : app.config.publicIP,
-        ID: 0
+        ID: mp3s[0].mp3_id
       }
     })
     next()

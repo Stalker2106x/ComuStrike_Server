@@ -6,6 +6,12 @@ module.exports = {
       name: 'RS Staff'
     })
   },
+  async createMP3 (app) {
+    await app.db.models.MP3.create({
+      name: 'lofijazz',
+      description: 'Lofijazz from V150!'
+    })
+  },
   async createPlayers (app) {
     await app.db.models.Players.create({
       username: 'admin',

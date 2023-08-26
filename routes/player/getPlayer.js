@@ -23,12 +23,13 @@ module.exports = {
     if (player == null) {
       res.status(500).send({ error: 'Invalid credentials' })
     } else {
+      const mp3s = await app.db.models.MP3.findAll()
       utils.logger('game', `Player [${player.player_id}] ${player.username} logged in`)
       res.status(200).send({
         NAME: player.username,
         ERROR: 0,
-        MP3: 'lofijazz',
-        MP3__ID: 3,
+        MP3: mp3s[0].name,
+        MP3__ID: mp3s[0].mp3_id,
         MODEL: player.model,
         IS_OP: player.role,
         VALIDE: player.active,
@@ -38,7 +39,7 @@ module.exports = {
         MSG4: 'testmsg4',
         SCORE: player.score,
         SCROLL: 'ComuStrike Unofficial Server - Enjoy RomuStrike in 2023... and more!',
-        STATS: 'x',
+        STATS: `Score: ${player.score}`,
         PANEL: `ComuStrike Unofficial Server v${app.config.serverVersion}`,
         ROMUCHAT: global.forceLocalhost ? '127.0.0.1' : app.config.publicIP,
         ID_PLAYER: player.player_id,

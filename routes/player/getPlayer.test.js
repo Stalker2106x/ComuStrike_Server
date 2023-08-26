@@ -28,6 +28,12 @@ describe('Get player', () => {
               score: 10,
               player_id: 0
             })
+          },
+          MP3: {
+            findAll: () => Promise.resolve([{
+              mp3_id: 0,
+              name: 'music'
+            }])
           }
         }
       }
