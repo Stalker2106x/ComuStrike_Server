@@ -2,14 +2,16 @@ module.exports = {
   // Web
   home: require('./web/home'),
   register: require('./web/register'),
-  // Misc
-  downloadMP3: require('./misc/downloadMP3'),
-  downloadMap: require('./misc/downloadMap'),
+  // Assets
+  downloadAsset: require('./assets/downloadAsset'),
+  getMapList: require('./assets/getMapList'),
+  getMP3List: require('./assets/getMP3List'),
   // Object
   getObject: require('./object/getObject'),
   placeObject: require('./object/placeObject'),
   // Player
   addScore: require('./player/addScore'),
+  setMP3: require('./player/setMP3'),
   createPlayer: require('./player/createPlayer'),
   getPlayer: require('./player/getPlayer'),
   getPlayerId: require('./player/getPlayerId'),
@@ -17,9 +19,6 @@ module.exports = {
   createServer: require('./server/createServer'),
   deleteServer: require('./server/deleteServer'),
   getServerList: require('./server/getServerList'),
-  getMapList: require('./server/getMapList'),
-  getMP3: require('./server/getMP3'),
-  setMP3: require('./server/setMP3'),
   joinServer: require('./server/joinServer'),
   quitServer: require('./server/quitServer'),
   // Tournament

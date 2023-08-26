@@ -3,7 +3,6 @@ const express = require('express')
 const rateLimit = require('express-rate-limit')
 const cors = require('cors')
 const bodyParser = require('body-parser')
-const xmljs = require('xml-js')
 const fs = require('fs')
 const path = require('path')
 const { Worker } = require('worker_threads')
@@ -15,7 +14,10 @@ const mariadb = require('mariadb')
 const config = require('./config')
 const utils = require('./utils')
 const routes = require('./routes')
-const xmlLayer = require('./routes/misc/xmlLayer')
+const xmlLayer = require('./routes/xmlLayer/xmlLayer')
+
+const mwValidationError = require('./middlewares/validationError')
+const sendMiddleware = require('./middlewares/sendMiddleware')
 
 const defaultData = require('./models/defaultData')
 
@@ -24,78 +26,6 @@ const MP3 = require('./models/MP3')
 const Teams = require('./models/Teams')
 const Maps = require('./models/Maps')
 const Tournaments = require('./models/Tournaments')
-
-function objectSplit (object) {
-  const xmlData = {}
-  for (const key of Object.keys(object)) {
-    if (key.includes('__')) {
-      // If a response has a key with __ we consider it being an attribute
-      if (key.startsWith('__')) {
-        // if __ has no prefix, attributes belong to current element
-        xmlData._attributes = { ...xmlData._attributes, [key.replace('__', '')]: object[key] }
-      } else {
-        // if __ has prefix, attributes belong to child element
-        const [child, attribute] = key.split('__')
-        xmlData[child] = { ...xmlData[child], _attributes: { ...xmlData[child]._attributes, [attribute]: object[key] } }
-      }
-    } else if (typeof object[key] === 'object') {
-      // If it is a nested object we recursively parse it
-      xmlData[key] = objectSplit(object[key])
-    } else {
-      // basic element
-      xmlData[key] = { _text: object[key] }
-    }
-  }
-  return (xmlData)
-}
-
-function arrayFix (res, val) {
-  // Arrays get converted to elements called 0,1,2...
-  // We convert numeric names to given arrayKey to prevent that.
-  if (/^\d+$/.test(val)) {
-    val = res.arrayKey
-  }
-  return (val)
-}
-
-function sendMiddleware (app, req, res, next) {
-  const oldSend = res.send
-  res.send = function (body) {
-    res.send = oldSend // set function back to avoid the 'double-send'
-    if (req.query.crypt) {
-      if (body && Object.prototype.hasOwnProperty.call(body, 'return')) {
-        // If object contains a return key, we convert it to single value body
-        const xmlData = { _declaration: { _attributes: { version: '1.0', encoding: 'ISO-8859-1' } }, root: { _text: body.return } }
-        if (global.debug) console.log(xmljs.js2xml(xmlData, { compact: true, spaces: 4 }))
-        return res.type('application/xml').send(xmljs.js2xml(xmlData, { compact: true, spaces: 0 }))
-      } else if (typeof body === 'object') {
-        // We have to convert current response to legacy XML schema
-        const xmlData = { _declaration: { _attributes: { version: '1.0', encoding: 'ISO-8859-1' } }, root: objectSplit(body) }
-        if (global.debug) console.log(xmljs.js2xml(xmlData, { compact: true, spaces: 4, elementNameFn: (val) => arrayFix(res, val) }))
-        return res.type('application/xml').send(xmljs.js2xml(xmlData, { compact: true, spaces: 0, elementNameFn: (val) => arrayFix(res, val) }))
-      } else {
-        // Empty response
-        if (global.debug) console.log('empty response')
-        return res.send()
-      }
-    } else {
-      if (global.debug) console.log(body)
-      return res.send(body)
-    }
-  }
-  next()
-}
-
-function validationError (error, request, response, next) {
-  // Check the error is a validation error
-  if (error instanceof ValidationError) {
-    response.status(400).send(error.validationErrors)
-    next()
-  } else {
-    // Pass error on if not a validation error
-    next(error)
-  }
-}
 
 class App {
   constructor (debug, fillDB, forceLocalhost) {
@@ -229,22 +159,24 @@ class App {
         legacyHeaders: false
       }))
 
-      this.app.use((req, res, next) => sendMiddleware(this, req, res, next))
-      this.app.use(validationError)
+      this.app.use(sendMiddleware)
+      this.app.use(mwValidationError)
       // Player
       this.app.post('/v1/player', validate(routes.createPlayer.schema), (req, res, next) => routes.createPlayer.handler(this, req, res, next))
+      this.app.post('/v1/player/:id/mp3', validate(routes.setMP3.schema), (req, res, next) => routes.setMP3.handler(this, req, res, next))
       this.app.get('/v1/player/:id', validate(routes.getPlayer.schema), (req, res, next) => routes.getPlayer.handler(this, req, res, next))
       this.app.get('/v1/player/:id/id', validate(routes.getPlayerId.schema), (req, res, next) => routes.getPlayerId.handler(this, req, res, next))
       this.app.put('/v1/player/:id/score', validate(routes.addScore.schema), (req, res, next) => routes.addScore.handler(this, req, res, next))
       // Server
       this.app.post('/v1/server', validate(routes.createServer.schema), (req, res, next) => routes.createServer.handler(this, req, res, next))
       this.app.get('/v1/servers', validate(routes.getServerList.schema), (req, res, next) => routes.getServerList.handler(this, req, res, next))
-      this.app.get('/v1/server/mp3', validate(routes.getMP3.schema), (req, res, next) => routes.getMP3.handler(this, req, res, next))
       this.app.delete('/v1/server', validate(routes.deleteServer.schema), (req, res, next) => routes.deleteServer.handler(this, req, res, next))
       this.app.put('/v1/server/:id/join', validate(routes.joinServer.schema), (req, res, next) => routes.joinServer.handler(this, req, res, next))
       this.app.put('/v1/server/:id/quit', validate(routes.quitServer.schema), (req, res, next) => routes.quitServer.handler(this, req, res, next))
-      // Map
+      // Assets
+      this.app.get('/v1/mp3', validate(routes.getMP3List.schema), (req, res, next) => routes.getMP3List.handler(this, req, res, next))
       this.app.get('/v1/maps', validate(routes.getMapList.schema), (req, res, next) => routes.getMapList.handler(this, req, res, next))
+      this.app.get('/romustrike/:assetType/:music', (req, res, next) => routes.downloadAsset.handler(this, req, res, next))
       // Tournament
       this.app.post('/v1/tournament', validate(routes.createTournament.schema), (req, res, next) => routes.createTournament.handler(this, req, res, next))
       this.app.get('/v1/tournament', validate(routes.getTournament.schema), (req, res, next) => routes.getTournament.handler(this, req, res, next))
@@ -257,8 +189,6 @@ class App {
       this.app.get('/register', (req, res, next) => { routes.register.handler(this, req, res) })
       // Legacy
       this.app.get('/script/romustrike/xml_layer.php', validate(xmlLayer.schema), (req, res, next) => xmlLayer.handler(this, req, res, next))
-      this.app.get('/romustrike/mp3/:music', (req, res, next) => routes.downloadMP3.handler(this, req, res, next))
-      this.app.get('/romustrike/map150/:level', (req, res, next) => routes.downloadMap.handler(this, req, res, next))
       // Debug
       if (global.debug) {
         this.app.post('/cypher', (req, res, next) => { res.status(200).send(utils.cypher(this, req.body.msg)) })
