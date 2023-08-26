@@ -23,6 +23,7 @@ describe('Get player', () => {
             findOne: () => Promise.resolve({
               username: 'user',
               model: 'agtx',
+              mp3: 0,
               role: 0,
               active: 1,
               score: 10,

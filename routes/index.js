@@ -19,6 +19,7 @@ module.exports = {
   getServerList: require('./server/getServerList'),
   getMapList: require('./server/getMapList'),
   getMP3: require('./server/getMP3'),
+  setMP3: require('./server/setMP3'),
   joinServer: require('./server/joinServer'),
   quitServer: require('./server/quitServer'),
   // Tournament

@@ -23,13 +23,16 @@ module.exports = {
     if (player == null) {
       res.status(500).send({ error: 'Invalid credentials' })
     } else {
-      const mp3s = await app.db.models.MP3.findAll()
+      console.log(player.mp3)
+      const mp3 = await app.db.models.MP3.findOne({
+        where: { mp3_id: player.mp3 }
+      })
       utils.logger('game', `Player [${player.player_id}] ${player.username} logged in`)
       res.status(200).send({
         NAME: player.username,
         ERROR: 0,
-        MP3: mp3s[0].name,
-        MP3__ID: mp3s[0].mp3_id,
+        MP3: mp3.name,
+        MP3__ID: player.mp3,
         MODEL: player.model,
         IS_OP: player.role,
         VALIDE: player.active,

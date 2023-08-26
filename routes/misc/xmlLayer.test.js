@@ -9,6 +9,7 @@ jest.mock('../index', () => {
     addScore: { handler: jest.fn()},
     createTournament: { handler: jest.fn()},
     getMP3: { handler: jest.fn()},
+    setMP3: { handler: jest.fn()},
     getMapList: { handler: jest.fn()},
     createServer: { handler: jest.fn()},
     getServerList: { handler: jest.fn()},

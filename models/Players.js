@@ -44,6 +44,10 @@ module.exports = {
       type: DataTypes.INTEGER,
       defaultValue: 1
     },
+    mp3: {
+      type: DataTypes.INTEGER,
+      defaultValue: 1
+    },
     model: {
       type: DataTypes.STRING,
       defaultValue: 'agtx'

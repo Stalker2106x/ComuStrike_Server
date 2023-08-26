@@ -16,7 +16,6 @@ module.exports = {
   handler: (app, req, res, next) => {
     const servers = []
     for (const server of app.serverList) {
-      res.arrayKey = 'server'
       servers.push({
         NOM: server.name,
         VERSION: server.version,
@@ -29,6 +28,7 @@ module.exports = {
         __PLAYERID: server.owner
       })
     }
+    res.arrayKey = 'server'
     res.status(200).send(servers)
     next()
   }

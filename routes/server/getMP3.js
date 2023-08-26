@@ -12,15 +12,18 @@ module.exports = {
     }
   },
   handler: async (app, req, res, next) => {
-    const mp3s = await app.db.models.MP3.findAll()
-    res.status(200).send({
-      element: {
-        NAME: mp3s[0].name,
-        COMMENTAIRE: mp3s[0].description,
+    const dbMp3s = await app.db.models.MP3.findAll()
+    const mp3s = []
+    for (const mp3 of dbMp3s) {
+      mp3s.push({
+        NAME: mp3.name,
+        COMMENTAIRE: mp3.description,
         HOST: global.forceLocalhost ? '127.0.0.1' : app.config.publicIP,
-        ID: mp3s[0].mp3_id
-      }
-    })
+        ID: mp3.mp3_id
+      })
+    }
+    res.arrayKey = 'element'
+    res.status(200).send(mp3s)
     next()
   }
 }

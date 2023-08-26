@@ -8,6 +8,7 @@ const LegacyToRESTMapper = {
   score_plus: routes.addScore,
   set_tournois: routes.createTournament,
   get_mp3: routes.getMP3,
+  set_mp3: routes.setMP3,
   get_map: routes.getMapList,
   set_server: routes.createServer,
   get_server: routes.getServerList,

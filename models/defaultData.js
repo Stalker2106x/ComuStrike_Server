@@ -11,6 +11,10 @@ module.exports = {
       name: 'lofijazz',
       description: 'Lofijazz from V150!'
     })
+    await app.db.models.MP3.create({
+      name: 'RSbo',
+      description: 'Default 157 music'
+    })
   },
   async createPlayers (app) {
     await app.db.models.Players.create({
