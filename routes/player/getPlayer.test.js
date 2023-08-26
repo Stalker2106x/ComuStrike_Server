@@ -31,10 +31,10 @@ describe('Get player', () => {
             })
           },
           MP3: {
-            findAll: () => Promise.resolve([{
+            findOne: () => Promise.resolve({
               mp3_id: 0,
               name: 'music'
-            }])
+            })
           }
         }
       }
