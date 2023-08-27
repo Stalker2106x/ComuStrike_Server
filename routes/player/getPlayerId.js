@@ -14,17 +14,15 @@ module.exports = {
     }
   },
   handler: async (app, req, res, next) => {
-    const player = await app.db.models.Players.findOne({
-      where: {
-        username: req.body.LELOGIN,
-        password: utils.passwordHash(req.body.LEPASS, app.config.cypherKey)
-      }
-    })
-    if (player == null) {
+    let player
+    try {
+      player = utils.authorizePlayer(app, { username: parseInt(req.body.LELOGIN), password: req.body.LEPASS })
+    } catch (e) {
       res.status(500).send({ error: 'Invalid credentials' })
-    } else {
-      res.status(200).send({ ID_PLAYER: player.player_id })
+      next()
+      return
     }
+    res.status(200).send({ ID_PLAYER: player.player_id })
     next()
   }
 }

@@ -1,3 +1,5 @@
+const utils = require('../../utils')
+
 // get_server -> getServerList
 module.exports = {
   schema: {
@@ -14,6 +16,13 @@ module.exports = {
     }
   },
   handler: (app, req, res, next) => {
+    try {
+      utils.authorizePlayer(app, { id: parseInt(req.body.LENUM), password: req.body.LEPASS })
+    } catch (e) {
+      res.status(500).send({ error: 'Invalid credentials' })
+      next()
+      return
+    }
     const servers = []
     for (const server of app.serverList) {
       servers.push({

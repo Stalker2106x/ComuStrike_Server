@@ -5,6 +5,14 @@ const resMock = {
   status: jest.fn().mockReturnThis(),
   send: jest.fn().mockReturnThis()
 }
+
+jest.mock('../../utils', () => {
+  return {
+    authorizePlayer: () => {},
+    logger: () => {}
+  }
+})
+
 jest.spyOn(resMock, 'status')
 afterEach(() => {
   jest.clearAllMocks()

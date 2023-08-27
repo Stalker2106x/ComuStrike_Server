@@ -15,6 +15,13 @@ module.exports = {
     }
   },
   handler: (app, req, res, next) => {
+    try {
+      utils.authorizePlayer(app, { id: parseInt(req.body.LENUM), password: req.body.LEPASS })
+    } catch (e) {
+      res.status(500).send({ error: 'Invalid credentials' })
+      next()
+      return
+    }
     const server = app.serverList[app.serverList.findIndex((serv) => serv.serverId === parseInt(req.body.SERVERID))]
     if (!server) {
       res.status(500).send({ error: 'Invalid SERVERID' })

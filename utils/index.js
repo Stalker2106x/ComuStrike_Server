@@ -2,8 +2,10 @@ const cypherModule = require('./cypher')
 const hashModule = require('./hash')
 const loggerModule = require('./logger')
 const xmlModule = require('./xml')
+const authorizeModule = require('./authorize')
 
 module.exports = {
+  authorizeModule: authorizeModule.authorizePlayer,
   cypher: cypherModule.cypher,
   decypher: cypherModule.decypher,
   fileMD5: hashModule.fileMD5,

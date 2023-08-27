@@ -5,6 +5,24 @@ const resMock = {
   status: jest.fn().mockReturnThis(),
   send: jest.fn().mockReturnThis()
 }
+
+jest.mock('../../utils', () => {
+  return {
+    authorizePlayer: () => {
+      return {
+        username: 'user',
+        model: 'agtx',
+        mp3: 0,
+        role: 0,
+        active: 1,
+        score: 10,
+        player_id: 0
+      }
+    },
+    logger: () => {}
+  }
+})
+
 jest.spyOn(resMock, 'status')
 afterEach(() => {
   jest.clearAllMocks()
@@ -19,17 +37,6 @@ describe('Get player', () => {
       },
       db: {
         models: {
-          Players: {
-            findOne: () => Promise.resolve({
-              username: 'user',
-              model: 'agtx',
-              mp3: 0,
-              role: 0,
-              active: 1,
-              score: 10,
-              player_id: 0
-            })
-          },
           MP3: {
             findOne: () => Promise.resolve({
               mp3_id: 0,

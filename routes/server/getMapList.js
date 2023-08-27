@@ -15,6 +15,13 @@ module.exports = {
     }
   },
   handler: async (app, req, res, next) => {
+    try {
+      utils.authorizePlayer(app, { id: parseInt(req.body.LENUM), password: req.body.LEPASS })
+    } catch (e) {
+      res.status(500).send({ error: 'Invalid credentials' })
+      next()
+      return
+    }
     const dbMaps = await app.db.models.Maps.findAll()
     const maps = []
     for (const map of dbMaps) {
