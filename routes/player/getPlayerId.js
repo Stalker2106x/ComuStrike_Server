@@ -17,7 +17,7 @@ module.exports = {
     const player = await app.db.models.Players.findOne({
       where: {
         username: req.body.LELOGIN,
-        password: utils.passwordHash(req.body.LEPASS)
+        password: utils.passwordHash(req.body.LEPASS, app.config.cypherKey)
       }
     })
     if (player == null) {

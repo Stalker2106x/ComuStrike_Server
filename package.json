@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node index.js",
     "build": "pkg -t node18-linux,node18-win,node18-macos --public-packages '*' --compress GZip . --output ComuStrike_Server",
-    "test": "jest"
+    "test": "jest --coverage --silent"
   },
   "bin": "./index.js",
   "pkg": {

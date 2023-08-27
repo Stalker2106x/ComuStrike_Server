@@ -20,7 +20,15 @@ describe('Create player', () => {
     expect(resMock.status).toBeCalledWith(500)
   })
   test('Create player should fail if LESOFT is not 2', async () => {
-    await handler.handler({}, { body: { LENOM: 'test', LESOFT: '4' } }, resMock, jest.fn())
+    await handler.handler({}, { body: { LENOM: 'test', LEMAIL: 'mail@rs.fr', LESOFT: '4' } }, resMock, jest.fn())
+    expect(resMock.status).toBeCalledWith(500)
+  })
+  test('Create player should fail if password is less than 2', async () => {
+    await handler.handler({}, { body: { LENOM: 'test', LEMAIL: 'mail@rs.fr', LESOFT: '2', LEPASS: 'x' } }, resMock, jest.fn())
+    expect(resMock.status).toBeCalledWith(500)
+  })
+  test('Create player should fail if password is more than 10', async () => {
+    await handler.handler({}, { body: { LENOM: 'test', LEMAIL: 'mail@rs.fr', LESOFT: '2', LEPASS: 'longpassword' } }, resMock, jest.fn())
     expect(resMock.status).toBeCalledWith(500)
   })
   test('Create player should fail if user already exists', async () => {
@@ -38,6 +46,9 @@ describe('Create player', () => {
   })
   test('Create player should work', async () => {
     const appMock = {
+      config: {
+        cypherKey: 1234
+      },
       db: {
         models: {
           Players: {
@@ -47,7 +58,7 @@ describe('Create player', () => {
         }
       }
     }
-    await handler.handler(appMock, { body: { LENOM: 'test', LESOFT: '2', LEMAIL: 'hello@gmail.com', LEPASS: 'hellofriends' } }, resMock, jest.fn())
+    await handler.handler(appMock, { body: { LENOM: 'test', LESOFT: '2', LEMAIL: 'hello@gmail.com', LEPASS: 'hello' } }, resMock, jest.fn())
     expect(resMock.status).toBeCalledWith(200)
   })
 })

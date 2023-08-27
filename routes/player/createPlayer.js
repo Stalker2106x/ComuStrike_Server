@@ -30,7 +30,7 @@ module.exports = {
       res.status(500).send('LESOFT must be 2')
       return
     }
-    if (req.body.LEPASS.length < 2 && req.body.LEPASS.length > 10) {
+    if (req.body.LEPASS.length < 2 || req.body.LEPASS.length > 10) {
       res.status(500).send('Password length should be between 2 and 10')
       return
     }
@@ -48,7 +48,7 @@ module.exports = {
       await app.db.models.Players.create({
         username: req.body.LENOM,
         email: req.body.LEMAIL,
-        password: utils.passwordHash(req.body.LEPASS)
+        password: utils.passwordHash(req.body.LEPASS, app.config.cypherKey)
       })
       res.status(200).send('OK')
       next()

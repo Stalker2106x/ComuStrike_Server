@@ -1,5 +1,5 @@
 /* eslint-disable no-undef */
-const handler = require('./utils')
+const handler = require('./cypher')
 
 describe('Cypher', () => {
   test('Cyphered Payload should not exceed maxSize', () => {

@@ -20,13 +20,13 @@ module.exports = {
     await app.db.models.Players.create({
       username: 'admin',
       email: 'admin@romustrike.fr',
-      password: utils.passwordHash('admin'),
+      password: utils.passwordHash('admin', app.config.cypherKey),
       team_id: await app.db.models.Teams.findOne({ where: { name: 'RS Staff' } }).team_id
     })
     await app.db.models.Players.create({
       username: 'user',
       email: 'user@romustrike.fr',
-      password: utils.passwordHash('user')
+      password: utils.passwordHash('user', app.config.cypherKey)
     })
   },
   async createMaps (app) {
