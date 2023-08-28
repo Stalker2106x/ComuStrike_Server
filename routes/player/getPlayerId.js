@@ -8,20 +8,13 @@ module.exports = {
       required: ['LELOGIN', 'LEPASS', 'LESOFT'],
       properties: {
         LELOGIN: { type: 'string', minLength: 3 },
-        LEPASS: { type: 'string', minLength: 3 },
-        LESOFT: { type: 'number' }
+        LESOFT: { type: 'number' },
+        LAVERSION: { type: 'string', minLength: 3 }
       }
     }
   },
   handler: async (app, req, res, next) => {
-    let player
-    try {
-      player = utils.authorizePlayer(app, { username: parseInt(req.body.LELOGIN), password: req.body.LEPASS })
-    } catch (e) {
-      res.status(500).send({ error: 'Invalid credentials' })
-      next()
-      return
-    }
+    const player = await app.db.models.Players.findOne({ where: { username: req.body.LELOGIN } })
     res.status(200).send({ ID_PLAYER: player.player_id })
     next()
   }

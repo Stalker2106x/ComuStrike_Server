@@ -5,29 +5,28 @@ module.exports = {
   schema: {
     body: {
       type: 'object',
-      required: ['LENUM', 'LEPASS', 'LESOFT', 'CLE_TOURNOIS', 'ROUND'],
+      required: ['LENUM', 'CLE_SERVEUR', 'LAVERSION'],
       properties: {
         LENUM: { type: 'number' },
-        LEPASS: { type: 'string' },
-        CLE_SERVEUR: { type: 'number' }
+        CLE_SERVEUR: { type: 'number' },
+        LAVERSION: { type: 'string' }
       }
     }
   },
-  handler: (app, req, res, next) => {
-    try {
-      utils.authorizePlayer(app, { id: parseInt(req.body.LENUM), password: req.body.LEPASS })
-    } catch (e) {
-      res.status(500).send({ error: 'Invalid credentials' })
+  handler: async (app, req, res, next) => {
+    const player = await app.db.models.Players.findOne({ where: { player_id: parseInt(req.body.LENUM) } })
+    if (!player) {
+      res.status(500).send({ error: 'Invalid player ID' })
       next()
       return
     }
-    const serverIndex = app.serverList.findIndex((serv) => serv.owner === parseInt(req.body.LENUM))
+    const serverIndex = app.serverList.findIndex((serv) => serv.serverId === parseInt(req.body.CLE_SERVEUR))
     const server = app.serverList[serverIndex]
     if (!server) {
       res.status(500).send({ error: 'Invalid SERVERID' })
     } else {
       app.serverList.splice(serverIndex, 1)
-      utils.logger('game', `Deleted server ${server.name} created by ${server.owner}`)
+      utils.logger('game', `Deleted server ${server.name} owned by ${server.owner}`)
       res.status(200).send()
     }
     next()

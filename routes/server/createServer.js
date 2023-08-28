@@ -26,11 +26,10 @@ module.exports = {
       }
     }
   },
-  handler: (app, req, res, next) => {
-    try {
-      utils.authorizePlayer(app, { id: parseInt(req.body.LENUM), password: req.body.LEPASS })
-    } catch (e) {
-      res.status(500).send({ error: 'Invalid credentials' })
+  handler: async (app, req, res, next) => {
+    const player = await app.db.models.Players.findOne({ where: { player_id: parseInt(req.body.LENUM) } })
+    if (!player) {
+      res.status(500).send({ error: 'Invalid player ID' })
       next()
       return
     }
@@ -52,7 +51,7 @@ module.exports = {
     }
     app.serverList.push(server)
     utils.logger('game', `Server ${server.name} created by ${server.owner} on ${server.host}`)
-    res.status(200).send({ return: serverId })
+    res.status(200).send({ return: server.serverId })
     next()
   }
 }

@@ -4,6 +4,8 @@ const routes = require('../index')
 const LegacyToRESTMapper = {
   nouveaujoueur: routes.createPlayer,
   info_joueur: routes.getPlayer,
+  get_niveau_grade: routes.getRank,
+  se_faire_tuer: routes.killed,
   get_id: routes.getPlayerId,
   score_plus: routes.addScore,
   set_tournois: routes.createTournament,

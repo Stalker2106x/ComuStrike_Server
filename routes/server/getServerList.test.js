@@ -6,12 +6,6 @@ const resMock = {
   send: jest.fn().mockReturnThis()
 }
 
-jest.mock('../../utils', () => {
-  return {
-    authorizePlayer: () => {}
-  }
-})
-
 jest.spyOn(resMock, 'status')
 afterEach(() => {
   jest.clearAllMocks()
@@ -35,7 +29,14 @@ describe('Get server list', () => {
         weapons: '****************************',
         md5: 'checksum',
         connectedPeers: []
-      }]
+      }],
+      db: {
+        models: {
+          Players: {
+            findOne: () => Promise.resolve({})
+          }
+        }
+      }
     }
     const reqMock = {
       body: {

@@ -8,7 +8,6 @@ const resMock = {
 
 jest.mock('../../utils', () => {
   return {
-    authorizePlayer: () => {},
     logger: () => {}
   }
 })
@@ -35,7 +34,14 @@ describe('Delete server', () => {
         weapons: '****************************',
         md5: 'checksum',
         connectedPeers: []
-      }]
+      }],
+      db: {
+        models: {
+          Players: {
+            findOne: () => Promise.resolve({})
+          }
+        }
+      }
     }
     const reqMock = {
       headers: [],

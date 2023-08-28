@@ -5,20 +5,19 @@ module.exports = {
   schema: {
     body: {
       type: 'object',
-      required: ['LENUM', 'LEPASS', 'LESOFT', 'SERVERID'],
+      required: ['LENUM', 'LESOFT', 'SERVERID', 'LAVERSION'],
       properties: {
         LENUM: { type: 'number' },
-        LEPASS: { type: 'string' },
         LESOFT: { type: 'number' },
-        SERVERID: { type: 'number' }
+        SERVERID: { type: 'number' },
+        LAVERSION: { type: 'string' }
       }
     }
   },
-  handler: (app, req, res, next) => {
-    try {
-      utils.authorizePlayer(app, { id: parseInt(req.body.LENUM), password: req.body.LEPASS })
-    } catch (e) {
-      res.status(500).send({ error: 'Invalid credentials' })
+  handler: async (app, req, res, next) => {
+    const player = await app.db.models.Players.findOne({ where: { player_id: parseInt(req.body.LENUM) } })
+    if (!player) {
+      res.status(500).send({ error: 'Invalid player ID' })
       next()
       return
     }
@@ -26,10 +25,15 @@ module.exports = {
     if (!server) {
       res.status(500).send({ error: 'Invalid SERVERID' })
     } else {
+      if (server.connectedPeers.indexOf(player.player_id) != -1) {
+        res.status(500).send({ error: 'Player ID already on server' })
+        next()
+        return
+      }
       server.connectedPeers.push(parseInt(req.body.LENUM))
       utils.logger('game', `Player ${parseInt(req.body.LENUM)} joined server [${server.serverId}] ${server.host}`)
-      res.status(200).send({ return: parseInt(req.body.SERVERID) })
+      res.status(200).send({ return: server.serverId })
+      next()
     }
-    next()
   }
 }

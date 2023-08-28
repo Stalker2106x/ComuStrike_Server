@@ -14,6 +14,14 @@ module.exports = {
     }
   },
   handler: (app, req, res, next) => {
+    res.status(200).send({
+      TEAM: 'jobar',
+      DETAIL: 'test',
+      EKIP: 1,
+      JOUEUR: 0,
+      PLAYER: 2,
+      CAMP: 0
+    })
     next()
   }
 }

@@ -8,17 +8,15 @@ module.exports = {
       required: ['LENUM', 'LEPASS', 'LAMAC'],
       properties: {
         LENUM: { type: 'number' },
-        LEPASS: { type: 'string' },
-        LAMAC: { type: 'string' }
+        LAMAC: { type: 'string' },
+        LAVERSION: { type: 'string' }
       }
     }
   },
   handler: async (app, req, res, next) => {
-    let player
-    try {
-      player = utils.authorizePlayer(app, { id: parseInt(req.body.LENUM), password: req.body.LEPASS })
-    } catch (e) {
-      res.status(500).send({ error: 'Invalid credentials' })
+    const player = await app.db.models.Players.findOne({ where: { player_id: parseInt(req.body.LENUM) } })
+    if (!player) {
+      res.status(500).send({ error: 'Invalid player ID' })
       next()
       return
     }
@@ -28,7 +26,7 @@ module.exports = {
     utils.logger('game', `Player [${player.player_id}] ${player.username} logged in`)
     res.status(200).send({
       NAME: player.username,
-      ERROR: 0,
+      KEY: '???',
       MP3: mp3.name,
       MP3__ID: player.mp3,
       MODEL: player.model,
@@ -44,7 +42,7 @@ module.exports = {
       PANEL: `ComuStrike Unofficial Server v${app.config.serverVersion}`,
       ROMUCHAT: global.forceLocalhost ? '127.0.0.1' : app.config.publicIP,
       ID_PLAYER: player.player_id,
-      CONTROLE: 'checksum'
+      CONTROLE: 'f7aaabf477ffbe41212e388962d7dff6'
     })
     next()
   }

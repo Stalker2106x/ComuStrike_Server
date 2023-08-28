@@ -8,17 +8,6 @@ const resMock = {
 
 jest.mock('../../utils', () => {
   return {
-    authorizePlayer: () => {
-      return {
-        username: 'user',
-        model: 'agtx',
-        mp3: 0,
-        role: 0,
-        active: 1,
-        score: 10,
-        player_id: 0
-      }
-    },
     logger: () => {}
   }
 })
@@ -37,6 +26,17 @@ describe('Get player', () => {
       },
       db: {
         models: {
+          Players: {
+            findOne: (updated) => Promise.resolve({
+              username: 'user',
+              model: 'agtx',
+              mp3: 0,
+              role: 0,
+              active: 1,
+              score: 10,
+              player_id: 0
+            })
+          },
           MP3: {
             findOne: () => Promise.resolve({
               mp3_id: 0,
@@ -56,7 +56,7 @@ describe('Get player', () => {
     expect(resMock.status).toBeCalledWith(200)
     expect(resMock.send).toBeCalledWith({
       NAME: 'user',
-      ERROR: 0,
+      KEY: expect.any(String),
       MP3: expect.any(String),
       MP3__ID: expect.any(Number),
       MODEL: 'agtx',
@@ -72,7 +72,7 @@ describe('Get player', () => {
       PANEL: expect.any(String),
       ROMUCHAT: '127.0.0.1',
       ID_PLAYER: 0,
-      CONTROLE: 'checksum'
+      CONTROLE: expect.any(String)
     })
   })
 })

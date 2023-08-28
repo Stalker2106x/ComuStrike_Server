@@ -6,17 +6,6 @@ const resMock = {
   send: jest.fn().mockReturnThis()
 }
 
-jest.mock('../../utils', () => {
-  return {
-    authorizePlayer: () => {
-      return {
-        username: 'user',
-        player_id: 0
-      }
-    }
-  }
-})
-
 jest.spyOn(resMock, 'status')
 afterEach(() => {
   jest.clearAllMocks()
@@ -28,6 +17,16 @@ describe('Get player ID', () => {
       config: {
         serverVersion: '1.0.0',
         publicIP: '127.0.0.1'
+      },
+      db: {
+        models: {
+          Players: {
+            findOne: () => Promise.resolve({
+              username: 'user',
+              player_id: 0
+            })
+          }
+        }
       }
     }
     await handler.handler(appMock, {

@@ -8,7 +8,6 @@ const resMock = {
 
 jest.mock('../../utils', () => {
   return {
-    authorizePlayer: () => {},
     logger: () => {}
   }
 })
@@ -35,7 +34,14 @@ describe('Quit server', () => {
         weapons: '****************************',
         md5: 'checksum',
         connectedPeers: [0]
-      }]
+      }],
+      db: {
+        models: {
+          Players: {
+            findOne: () => Promise.resolve({})
+          }
+        }
+      }
     }
     const reqMock = {
       body: {

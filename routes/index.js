@@ -13,6 +13,8 @@ module.exports = {
   addScore: require('./player/addScore'),
   setMP3: require('./player/setMP3'),
   createPlayer: require('./player/createPlayer'),
+  getRank: require('./player/getRank'),
+  killed: require('./player/killed'),
   getPlayer: require('./player/getPlayer'),
   getPlayerId: require('./player/getPlayerId'),
   // Server

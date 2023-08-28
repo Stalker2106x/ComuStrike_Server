@@ -6,16 +6,6 @@ const resMock = {
   send: jest.fn().mockReturnThis()
 }
 
-jest.mock('../../utils', () => {
-  return {
-    authorizePlayer: () => {
-      return {
-        update: (updated) => Promise.resolve(updated)
-      }
-    }
-  }
-})
-
 jest.spyOn(resMock, 'status')
 afterEach(() => {
   jest.clearAllMocks()
@@ -23,7 +13,17 @@ afterEach(() => {
 
 describe('Add score', () => {
   test('Add score should work', async () => {
-    await handler.handler({}, {
+    await handler.handler({
+      db: {
+        models: {
+          Players: {
+            findOne: () => Promise.resolve({
+              update: (updated) => Promise.resolve(updated)
+            }),
+          }
+        }
+      }
+    }, {
       body: {
         LENUM: '0',
         LEPASS: 'test',

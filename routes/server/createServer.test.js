@@ -8,7 +8,6 @@ const resMock = {
 
 jest.mock('../../utils', () => {
   return {
-    authorizePlayer: () => {},
     logger: () => {}
   }
 })
@@ -20,7 +19,16 @@ afterEach(() => {
 
 describe('Create server', () => {
   test('Create server should add to serverList', async () => {
-    const appMock = { serverList: [] }
+    const appMock = {
+      serverList: [],
+      db: {
+        models: {
+          Players: {
+            findOne: () => Promise.resolve({})
+          }
+        }
+      }
+    }
     const reqMock = {
       headers: [],
       connection: { remoteAddress: '127.0.0.1' },
