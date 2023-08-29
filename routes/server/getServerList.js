@@ -1,19 +1,15 @@
-const utils = require('../../utils')
+const Joi = require('joi')
 
 // get_server -> getServerList
 module.exports = {
   schema: {
-    body: {
-      type: 'object',
-      required: ['LENUM', 'LEPASS', 'LESOFT', 'CLE_TOURNOIS', 'ROUND'],
-      properties: {
-        LENUM: { type: 'number' },
-        LESOFT: { type: 'number' },
-        CLE_TOURNOIS: { type: 'number' },
-        ROUND: { type: 'number' },
-        LAVERSION: { type: 'string' }
-      }
-    }
+    body: Joi.object({
+      LENUM: Joi.number().required(),
+      LESOFT: Joi.number().required(),
+      CLE_TOURNOIS: Joi.number().required(),
+      ROUND: Joi.number().required(),
+      LAVERSION: Joi.string().required()
+    })
   },
   handler: async (app, req, res, next) => {
     const player = await app.db.models.Players.findOne({ where: { player_id: parseInt(req.body.LENUM) } })

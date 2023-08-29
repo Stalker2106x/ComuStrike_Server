@@ -6,7 +6,6 @@ const bodyParser = require('body-parser')
 const fs = require('fs')
 const path = require('path')
 const { Worker } = require('worker_threads')
-const { Validator, ValidationError } = require('express-json-validator-middleware')
 const { Sequelize } = require('sequelize')
 const pubip = require('public-ip')
 const mariadb = require('mariadb')
@@ -16,7 +15,7 @@ const utils = require('./utils')
 const routes = require('./routes')
 const xmlLayer = require('./routes/xmlLayer/xmlLayer')
 
-const mwValidationError = require('./middlewares/validationError')
+const validate = require('./middlewares/validation')
 const sendMiddleware = require('./middlewares/sendMiddleware')
 
 const defaultData = require('./models/defaultData')
@@ -145,8 +144,6 @@ class App {
   initRouter () {
     // Initialize router
     try {
-      const { validate } = new Validator()
-      this.validate = validate
       this.app = express()
       this.app.use(cors())
       this.app.use(bodyParser.json())
@@ -160,35 +157,34 @@ class App {
       }))
 
       this.app.use(sendMiddleware)
-      this.app.use(mwValidationError)
       // Player
-      this.app.post('/v1/player', validate(routes.createPlayer.schema), (req, res, next) => routes.createPlayer.handler(this, req, res, next))
-      this.app.post('/v1/player/:id/mp3', validate(routes.setMP3.schema), (req, res, next) => routes.setMP3.handler(this, req, res, next))
-      this.app.get('/v1/player/:id', validate(routes.getPlayer.schema), (req, res, next) => routes.getPlayer.handler(this, req, res, next))
-      this.app.get('/v1/player/:id/id', validate(routes.getPlayerId.schema), (req, res, next) => routes.getPlayerId.handler(this, req, res, next))
-      this.app.put('/v1/player/:id/score', validate(routes.addScore.schema), (req, res, next) => routes.addScore.handler(this, req, res, next))
+      this.app.post('/v1/players', (req, res, next) => { validate(routes.createPlayer.schema, req, res, next) }, (req, res, next) => routes.createPlayer.handler(this, req, res, next))
+      this.app.post('/v1/players/:id/mp3', (req, res, next) => { validate(routes.setMP3.schema, req, res, next) }, (req, res, next) => routes.setMP3.handler(this, req, res, next))
+      this.app.get('/v1/players/:id', (req, res, next) => { validate(routes.getPlayer.schema, req, res, next) }, (req, res, next) => routes.getPlayer.handler(this, req, res, next))
+      this.app.get('/v1/players/:username/id', (req, res, next) => { validate(routes.getPlayerId.schema, req, res, next) }, (req, res, next) => routes.getPlayerId.handler(this, req, res, next))
+      this.app.put('/v1/players/:id/score', (req, res, next) => { validate(routes.addScore.schema, req, res, next) }, (req, res, next) => routes.addScore.handler(this, req, res, next))
       // Server
-      this.app.post('/v1/server', validate(routes.createServer.schema), (req, res, next) => routes.createServer.handler(this, req, res, next))
-      this.app.get('/v1/servers', validate(routes.getServerList.schema), (req, res, next) => routes.getServerList.handler(this, req, res, next))
-      this.app.delete('/v1/server', validate(routes.deleteServer.schema), (req, res, next) => routes.deleteServer.handler(this, req, res, next))
-      this.app.put('/v1/server/:id/join', validate(routes.joinServer.schema), (req, res, next) => routes.joinServer.handler(this, req, res, next))
-      this.app.put('/v1/server/:id/quit', validate(routes.quitServer.schema), (req, res, next) => routes.quitServer.handler(this, req, res, next))
+      this.app.post('/v1/servers', (req, res, next) => { validate(routes.createServer.schema, req, res, next) }, (req, res, next) => routes.createServer.handler(this, req, res, next))
+      this.app.get('/v1/servers', (req, res, next) => { validate(routes.getServerList.schema, req, res, next) }, (req, res, next) => routes.getServerList.handler(this, req, res, next))
+      this.app.delete('/v1/servers/:id', (req, res, next) => { validate(routes.deleteServer.schema, req, res, next) }, (req, res, next) => routes.deleteServer.handler(this, req, res, next))
+      this.app.put('/v1/servers/:id/join', (req, res, next) => { validate(routes.joinServer.schema, req, res, next) }, (req, res, next) => routes.joinServer.handler(this, req, res, next))
+      this.app.put('/v1/servers/:id/quit', (req, res, next) => { validate(routes.quitServer.schema, req, res, next) }, (req, res, next) => routes.quitServer.handler(this, req, res, next))
       // Assets
-      this.app.get('/v1/mp3', validate(routes.getMP3List.schema), (req, res, next) => routes.getMP3List.handler(this, req, res, next))
-      this.app.get('/v1/maps', validate(routes.getMapList.schema), (req, res, next) => routes.getMapList.handler(this, req, res, next))
+      this.app.get('/v1/mp3', (req, res, next) => { validate(routes.getMP3List.schema, req, res, next) }, (req, res, next) => routes.getMP3List.handler(this, req, res, next))
+      this.app.get('/v1/maps', (req, res, next) => { validate(routes.getMapList.schema, req, res, next) }, (req, res, next) => routes.getMapList.handler(this, req, res, next))
       this.app.get('/romustrike/:assetType/:music', (req, res, next) => routes.downloadAsset.handler(this, req, res, next))
       // Tournament
-      this.app.post('/v1/tournament', validate(routes.createTournament.schema), (req, res, next) => routes.createTournament.handler(this, req, res, next))
-      this.app.get('/v1/tournament', validate(routes.getTournament.schema), (req, res, next) => routes.getTournament.handler(this, req, res, next))
-      this.app.get('/v1/tournament/:id/info', validate(routes.getTournament.schema), (req, res, next) => routes.getTournament.handler(this, req, res, next))
+      this.app.post('/v1/tournaments', (req, res, next) => { validate(routes.createTournament.schema, req, res, next) }, (req, res, next) => routes.createTournament.handler(this, req, res, next))
+      this.app.get('/v1/tournaments', (req, res, next) => { validate(routes.getTournament.schema, req, res, next) }, (req, res, next) => routes.getTournament.handler(this, req, res, next))
+      this.app.get('/v1/tournaments/:id/info', (req, res, next) => { validate(routes.getTournament.schema, req, res, next) }, (req, res, next) => routes.getTournament.handler(this, req, res, next))
       // Object
-      this.app.get('/v1/object', validate(routes.getObject.schema), (req, res, next) => routes.getObject.handler(this, req, res, next))
-      this.app.post('/v1/object', validate(routes.placeObject.schema), (req, res, next) => routes.placeObject.handler(this, req, res, next))
+      this.app.get('/v1/objects', (req, res, next) => { validate(routes.getObject.schema, req, res, next) }, (req, res, next) => routes.getObject.handler(this, req, res, next))
+      this.app.post('/v1/objects', (req, res, next) => { validate(routes.placeObject.schema, req, res, next) }, (req, res, next) => routes.placeObject.handler(this, req, res, next))
       // Web
       this.app.get('/', (req, res, next) => { routes.home.handler(this, req, res) })
       this.app.get('/register', (req, res, next) => { routes.register.handler(this, req, res) })
       // Legacy
-      this.app.get('/script/romustrike/xml_layer.php', validate(xmlLayer.schema), (req, res, next) => xmlLayer.handler(this, req, res, next))
+      this.app.get('/script/romustrike/xml_layer.php', (req, res, next) => { validate(routes.placeObject.schema, req, res, next) }, (req, res, next) => xmlLayer.handler(this, req, res, next))
       // Debug
       if (global.debug) {
         this.app.post('/cypher', (req, res, next) => { res.status(200).send(utils.cypher(this, req.body.msg)) })

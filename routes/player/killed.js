@@ -1,20 +1,16 @@
-const utils = require('../../utils')
+const Joi = require('joi')
 
 // se_faire_tuer -> killed
 module.exports = {
   schema: {
-    body: {
-      type: 'object',
-      required: ['V', 'P', 'T', 'PV', 'PT', 'HS', 'LAVERSION'],
-      properties: {
-        V: { type: 'number' }, //victim ID
-        P: { type: 'string' }, //victime NAME
-        T: { type: 'number' }, //killer ID
-        PV: { type: 'number' }, //?
-        PT: { type: 'number' }, //??
-        HS: { type: 'number' } //Is it a headshot ? 1 : 0
-      }
-    }
+    body: Joi.object({
+      V: Joi.number().required(), //victim ID
+      P: Joi.string().required(), //victime NAME
+      T: Joi.number().required(), //killer ID
+      PV: Joi.number().required(), //?
+      PT: Joi.number().required(), //??
+      HS: Joi.number().required() //Is it a headshot ? 1 : 0
+    })
   },
   handler: (app, req, res, next) => {
     res.status(200).send({

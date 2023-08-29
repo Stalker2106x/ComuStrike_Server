@@ -1,17 +1,14 @@
+const Joi = require('joi')
 const utils = require('../../utils')
 
 // info_joueur -> getPlayer
 module.exports = {
   schema: {
-    body: {
-      type: 'object',
-      required: ['LENUM', 'LEPASS', 'LAMAC'],
-      properties: {
-        LENUM: { type: 'number' },
-        LAMAC: { type: 'string' },
-        LAVERSION: { type: 'string' }
-      }
-    }
+    body: Joi.object({
+      LENUM: Joi.number().required(),
+      LAMAC: Joi.string().required(),
+      LAVERSION: Joi.string().required()
+    })
   },
   handler: async (app, req, res, next) => {
     const player = await app.db.models.Players.findOne({ where: { player_id: parseInt(req.body.LENUM) } })

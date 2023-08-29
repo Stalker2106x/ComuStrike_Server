@@ -1,16 +1,12 @@
-const utils = require('../../utils')
+const Joi = require('joi')
 
 // get_niveau_grade -> getRank
 module.exports = {
   schema: {
-    body: {
-      type: 'object',
-      required: ['J', 'LAVERSION'],
-      properties: {
-        J: { type: 'string' },
-        LAVERSION: { type: 'string' }
-      }
-    }
+    body: Joi.object({
+      J: Joi.string().required(),
+      LAVERSION: Joi.string().required()
+    })
   },
   handler: (app, req, res, next) => {
     res.status(200).send({

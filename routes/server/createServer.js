@@ -1,30 +1,27 @@
+const Joi = require('joi')
 const utils = require('../../utils')
 
 // set_server -> createServer
 module.exports = {
   schema: {
-    body: {
-      type: 'object',
-      required: ['LENUM', 'LEPASS', 'LESOFT', 'LECOMMENT', 'MAX_PLAYERS', 'CFT', 'CLE_TOURNOIS', 'ROUND', 'MD5', 'DESC', 'PRIVEE', 'ARMES'],
-      properties: {
-        LENUM: { type: 'number' },
-        LEPASS: { type: 'string' },
-        LESOFT: { type: 'number' },
-        LECOMMENT: { type: 'string' },
-        MAX_PLAYERS: { type: 'number' },
-        CFT: { type: 'number' },
-        CLE_TOURNOIS: { type: 'number' },
-        ROUND: { type: 'number' },
-        MD5: { type: 'number' },
-        DESC: { type: 'number' },
-        PRIVEE: { type: 'number' },
-        ARMES: { type: 'number' },
-        THIRD: { type: 'number' },
-        GDMG: { type: 'number' },
-        ANTILAG: { type: 'number' },
-        LAVERSION: { type: 'string' }
-      }
-    }
+    body: Joi.object({
+      LENUM: Joi.number().required(),
+      LEPASS: Joi.string().required(),
+      LESOFT: Joi.number().required(),
+      LECOMMENT: Joi.string().required(),
+      MAX_PLAYERS: Joi.number().required(),
+      CFT: Joi.number().required(),
+      CLE_TOURNOIS: Joi.number().required(),
+      ROUND: Joi.number().required(),
+      MD5: Joi.number().required(),
+      DESC: Joi.number().required(),
+      PRIVEE: Joi.number().required(),
+      ARMES: Joi.number().required(),
+      THIRD: Joi.number().required(),
+      GDMG: Joi.number().required(),
+      ANTILAG: Joi.number().required(),
+      LAVERSION: Joi.string().required()
+    })
   },
   handler: async (app, req, res, next) => {
     const player = await app.db.models.Players.findOne({ where: { player_id: parseInt(req.body.LENUM) } })

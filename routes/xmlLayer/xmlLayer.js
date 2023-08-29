@@ -1,3 +1,6 @@
+const Joi = require('joi')
+
+const validate = require('../../middlewares/validation')
 const utils = require('../../utils')
 const routes = require('../index')
 
@@ -26,17 +29,9 @@ const LegacyToRESTMapper = {
 // xml_layer.php -> xmlLayer
 module.exports = {
   schema: {
-    query: {
-      type: 'object',
-      required: ['crypt'],
-      properties: {
-        crypt: {
-          type: 'string',
-          minLength: 3,
-          maxLength: 1500
-        }
-      }
-    }
+    query: Joi.object({
+      crypt: Joi.string().required() //minLength: 3, maxLength: 1500
+    })
   },
   handler: (app, req, res, next) => {
     if (global.debug) console.log(req.query.crypt)
@@ -57,7 +52,10 @@ module.exports = {
       next()
     } else {
       // Call appopriate REST method from mapper
-      LegacyToRESTMapper[req.body.METHOD].handler(app, req, res, next)
+      const method = LegacyToRESTMapper[req.body.METHOD]
+      
+      //validate(method.schema, req, res, next)
+      method.handler(app, req, res, next)
     }
   }
 }

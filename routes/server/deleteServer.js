@@ -1,17 +1,14 @@
+const Joi = require('joi')
 const utils = require('../../utils')
 
 // delete_server -> deleteServer
 module.exports = {
   schema: {
-    body: {
-      type: 'object',
-      required: ['LENUM', 'CLE_SERVEUR', 'LAVERSION'],
-      properties: {
-        LENUM: { type: 'number' },
-        CLE_SERVEUR: { type: 'number' },
-        LAVERSION: { type: 'string' }
-      }
-    }
+    body: Joi.object({
+      LENUM: Joi.number().required(),
+      CLE_SERVEUR: Joi.number().required(),
+      LAVERSION: Joi.string().required()
+    })
   },
   handler: async (app, req, res, next) => {
     const player = await app.db.models.Players.findOne({ where: { player_id: parseInt(req.body.LENUM) } })

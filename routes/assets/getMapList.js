@@ -1,18 +1,16 @@
+const Joi = require('joi')
+
 const path = require('path')
 const utils = require('../../utils')
 
 // get_map -> getMapList
 module.exports = {
   schema: {
-    body: {
-      type: 'object',
-      required: ['LENUM', 'LESOFT', 'LEPASS'],
-      properties: {
-        LENUM: { type: 'number' },
-        LESOFT: { type: 'number' },
-        LEPASS: { type: 'string' }
-      }
-    }
+    body: Joi.object({
+      LENUM: Joi.number().required(),
+      LESOFT: Joi.number().required(),
+      LEPASS: Joi.string().required()
+    })
   },
   handler: async (app, req, res, next) => {
     const dbMaps = await app.db.models.Maps.findAll()

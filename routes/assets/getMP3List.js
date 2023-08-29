@@ -1,15 +1,13 @@
+const Joi = require('joi')
+
 // get_mp3 -> getMP3
 module.exports = {
   schema: {
-    body: {
-      type: 'object',
-      required: ['LENUM', 'LEPASS', 'IDMP3'],
-      properties: {
-        LENUM: { type: 'string' },
-        LEPASS: { type: 'string' },
-        IDMP3: { type: 'number' }
-      }
-    }
+    body: Joi.object({
+      LENUM: Joi.string().required(),
+      LEPASS: Joi.string().required(),
+      IDMP3: Joi.number().required()
+    })
   },
   handler: async (app, req, res, next) => {
     const dbMp3s = await app.db.models.MP3.findAll()

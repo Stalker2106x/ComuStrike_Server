@@ -1,18 +1,15 @@
+const Joi = require('joi')
 const utils = require('../../utils')
 
 // join_server -> joinServer
 module.exports = {
   schema: {
-    body: {
-      type: 'object',
-      required: ['LENUM', 'LESOFT', 'SERVERID', 'LAVERSION'],
-      properties: {
-        LENUM: { type: 'number' },
-        LESOFT: { type: 'number' },
-        SERVERID: { type: 'number' },
-        LAVERSION: { type: 'string' }
-      }
-    }
+    body: Joi.object({
+      LENUM: Joi.number().required(),
+      LESOFT: Joi.number().required(),
+      SERVERID: Joi.number().required(),
+      LAVERSION: Joi.string().required()
+    })
   },
   handler: async (app, req, res, next) => {
     const player = await app.db.models.Players.findOne({ where: { player_id: parseInt(req.body.LENUM) } })

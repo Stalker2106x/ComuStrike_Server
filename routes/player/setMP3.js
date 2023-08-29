@@ -1,15 +1,13 @@
+const Joi = require('joi')
+
 // set_mp3 -> setMP3
 module.exports = {
   schema: {
-    body: {
-      type: 'object',
-      required: ['LENUM', 'IDMP3', 'LAVERSION'],
-      properties: {
-        LENUM: { type: 'string' },
-        IDMP3: { type: 'number' },
-        LAVERSION: { type: 'string' }
-      }
-    }
+    body: Joi.object({
+      LENUM: Joi.string().required(),
+      IDMP3: Joi.number().required(),
+      LAVERSION: Joi.string().required()
+    })
   },
   handler: async (app, req, res, next) => {
     await app.db.models.Players.update({

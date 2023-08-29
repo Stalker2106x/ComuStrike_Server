@@ -1,21 +1,19 @@
+const Joi = require('joi')
 const { Op } = require('sequelize')
+
 const utils = require('../../utils')
 
 // nouveaujoueur -> createPlayer
 module.exports = {
   schema: {
-    body: {
-      type: 'object',
-      required: ['LENUM', 'LESOFT', 'LENOM', 'LEVERSION', 'LEMAIL', 'LEPASS'],
-      properties: {
-        LENUM: { type: 'number' },
-        LESOFT: { type: 'number' },
-        LENOM: { type: 'string' },
-        LEVERSION: { type: 'string' },
-        LEMAIL: { type: 'string' },
-        LEPASS: { type: 'string' }
-      }
-    }
+    body: Joi.object({
+      LENUM: Joi.number().required(),
+      LESOFT: Joi.number().required(),
+      LENOM: Joi.string().required(),
+      LEVERSION: Joi.string().required(),
+      LEMAIL: Joi.string().required(),
+      LEPASS: Joi.string().required()
+    })
   },
   handler: async (app, req, res, next) => {
     if ((req.body.LENOM.length < 2 && req.body.LENOM.length > 15) || !/^[a-zA-Z0-9._^$]*$/.test(req.body.LENOM)) {

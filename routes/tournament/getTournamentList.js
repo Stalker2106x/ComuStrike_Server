@@ -1,15 +1,13 @@
+const Joi = require('joi')
+
 // get_tournois -> getTournamentList
 module.exports = {
   schema: {
-    body: {
-      type: 'object',
-      required: ['LENUM', 'LEPASS', 'LESOFT'],
-      properties: {
-        LENUM: { type: 'number' },
-        LEPASS: { type: 'string' },
-        LESOFT: { type: 'number' }
-      }
-    }
+    body: Joi.object({
+      LENUM: Joi.number().required(),
+      LEPASS: Joi.string().required(),
+      LESOFT: Joi.number().required()
+    })
   },
   handler: (app, req, res, next) => {
     res.body = {

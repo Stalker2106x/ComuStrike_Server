@@ -1,26 +1,23 @@
+const Joi = require('joi')
 // set_objet -> placeObject
 module.exports = {
   schema: {
-    body: {
-      type: 'object',
-      required: ['LENUM', 'LEPASS', 'P[x]', 'P[y]', 'P[z]', 'D[x]', 'D[y]', 'D[z]', 'U[x]', 'U[y]', 'U[z]', 'T', 'M'],
-      properties: {
-        LENUM: { type: 'number' },
-        LEPASS: { type: 'string' },
-        LAMAP: { type: 'string' },
-        'P[x]': { type: 'number' },
-        'P[y]': { type: 'number' },
-        'P[z]': { type: 'number' },
-        'D[x]': { type: 'number' },
-        'D[y]': { type: 'number' },
-        'D[z]': { type: 'number' },
-        'U[x]': { type: 'number' },
-        'U[y]': { type: 'number' },
-        'U[z]': { type: 'number' },
-        T: { type: 'number' },
-        M: { type: 'string' }
-      }
-    }
+    body: Joi.object({
+      LENUM: Joi.number(),
+      LEPASS: Joi.string(),
+      LAMAP: Joi.string(),
+      'P[x]': Joi.number(),
+      'P[y]': Joi.number(),
+      'P[z]': Joi.number(),
+      'D[x]': Joi.number(),
+      'D[y]': Joi.number(),
+      'D[z]': Joi.number(),
+      'U[x]': Joi.number(),
+      'U[y]': Joi.number(),
+      'U[z]': Joi.number(),
+      T: Joi.number(),
+      M: Joi.string()
+    })
   },
   handler: (app, req, res, next) => {
     next()

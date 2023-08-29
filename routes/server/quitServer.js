@@ -1,20 +1,17 @@
+const Joi = require('joi')
 const utils = require('../../utils')
 
 // quit_server -> quitServer
 module.exports = {
   schema: {
-    body: {
-      type: 'object',
-      required: ['LENUM', 'LESCORE', 'LAPARTIE', 'KILLER', 'KILLED', 'LAVERSION'],
-      properties: {
-        LENUM: { type: 'number' },
-        LESCORE: { type: 'number' },
-        LAPARTIE: { type: 'number' },
-        KILLER: { type: 'number' },
-        KILLED: { type: 'number' },
-        LAVERSION: { type: 'string' }
-      }
-    }
+    body: Joi.object({
+      LENUM: Joi.number().required(),
+      LESCORE: Joi.number().required(),
+      LAPARTIE: Joi.number().required(),
+      KILLER: Joi.number().required(),
+      KILLED: Joi.number().required(),
+      LAVERSION: Joi.string().required()
+    })
   },
   handler: async (app, req, res, next) => {
     const player = await app.db.models.Players.findOne({ where: { player_id: parseInt(req.body.LENUM) } })

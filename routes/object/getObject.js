@@ -1,15 +1,13 @@
+const Joi = require('joi')
+
 // get_objet -> getObject
 module.exports = {
   schema: {
-    body: {
-      type: 'object',
-      required: ['LENUM', 'LEPASS', 'LAMAP'],
-      properties: {
-        LENUM: { type: 'number' },
-        LEPASS: { type: 'string' },
-        LAMAP: { type: 'string' }
-      }
-    }
+    body: Joi.object({
+      LENUM: Joi.number(),
+      LEPASS: Joi.string(),
+      LAMAP: Joi.string()
+    })
   },
   handler: (app, req, res, next) => {
     res.arrayKey = 'OBJ'
