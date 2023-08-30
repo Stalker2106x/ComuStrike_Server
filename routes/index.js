@@ -1,29 +1,29 @@
 module.exports = {
+  downloadAsset: require('./legacy/downloadAsset'),
   // Web
   home: require('./web/home'),
   register: require('./web/register'),
   // Assets
-  downloadAsset: require('./assets/downloadAsset'),
-  getMapList: require('./assets/getMapList'),
-  getMP3List: require('./assets/getMP3List'),
+  getMapList: require('./v1/assets/getMapList'),
+  getMP3List: require('./v1/assets/getMP3List'),
   // Object
-  getObject: require('./object/getObject'),
-  placeObject: require('./object/placeObject'),
+  getObject: require('./v1/object/getObject'),
+  placeObject: require('./v1/object/placeObject'),
   // Player
-  setMP3: require('./player/setMP3'),
-  createPlayer: require('./player/createPlayer'),
-  getRank: require('./player/getRank'),
-  killed: require('./player/killed'),
-  getPlayer: require('./player/getPlayer'),
-  getPlayerId: require('./player/getPlayerId'),
+  setMP3: require('./v1/player/setMP3'),
+  createPlayer: require('./v1/player/createPlayer'),
+  getRank: require('./v1/player/getRank'),
+  killed: require('./v1/player/killed'),
+  getPlayer: require('./v1/player/getPlayer'),
+  getPlayerId: require('./v1/player/getPlayerId'),
   // Server
-  createServer: require('./server/createServer'),
-  deleteServer: require('./server/deleteServer'),
-  getServerList: require('./server/getServerList'),
-  joinServer: require('./server/joinServer'),
-  quitServer: require('./server/quitServer'),
+  createServer: require('./v1/server/createServer'),
+  deleteServer: require('./v1/server/deleteServer'),
+  getServerList: require('./v1/server/getServerList'),
+  joinServer: require('./v1/server/joinServer'),
+  quitServer: require('./v1/server/quitServer'),
   // Tournament
-  createTournament: require('./tournament/createTournament'),
-  getTournament: require('./tournament/getTournament'),
-  getTournamentList: require('./tournament/getTournamentList')
+  createTournament: require('./v1/tournament/createTournament'),
+  getTournament: require('./v1/tournament/getTournament'),
+  getTournamentList: require('./v1/tournament/getTournamentList')
 }

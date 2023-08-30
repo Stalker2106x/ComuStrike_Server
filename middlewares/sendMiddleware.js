@@ -22,7 +22,7 @@ module.exports = (req, res, next) => {
         return res.send()
       }
     } else {
-      if (global.debug) console.log('RES>' +body)
+      if (global.debug && res.baseUrl === '/v1') console.log('RES>' +body)
       return res.send(body)
     }
   }

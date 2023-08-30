@@ -1,6 +1,6 @@
 module.exports = {
     getIp: async () => {
-    const res = await fetch("https://ipecho.io/json")
+    const res = await fetch("https://api.ipify.org?format=json")
     const data = await res.json()
     return data.ip
   }

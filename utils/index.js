@@ -4,6 +4,7 @@ const loggerModule = require('./logger')
 const xmlModule = require('./xml')
 const authorizeModule = require('./authorize')
 const ipModule = require('./ip')
+const openapiModule = require('./openapi')
 
 module.exports = {
   authorizePlayer: authorizeModule.authorizePlayer,
@@ -15,5 +16,6 @@ module.exports = {
   js2xmlPreformat: xmlModule.js2xmlPreformat,
   logPayload: loggerModule.logPayload,
   logger: loggerModule.logger,
-  getIp: ipModule.getIp
+  getIp: ipModule.getIp,
+  generateAPIdoc: openapiModule.generate
 }

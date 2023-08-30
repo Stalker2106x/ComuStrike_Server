@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
+    "document": "node generate-openapi.js",
     "build": "pkg -t node18-linux,node18-win,node18-macos --public-packages '*' --compress GZip . --output ComuStrike_Server",
     "test": "jest --coverage --silent"
   },
@@ -24,9 +25,11 @@
     "express": "4.18.2",
     "express-rate-limit": "^6.9.0",
     "joi": "^17.10.0",
+    "joi-openapi": "^3.2.1",
     "mariadb": "^3.2.0",
     "nunjucks": "^3.2.4",
     "sequelize": "6.32.1",
+    "swagger-ui-express": "^5.0.0",
     "xml-js": "^1.6.11"
   },
   "devDependencies": {

@@ -7,12 +7,13 @@ const fs = require('fs')
 const path = require('path')
 const { Worker } = require('worker_threads')
 const { Sequelize } = require('sequelize')
+const swaggerUi = require('swagger-ui-express')
 const mariadb = require('mariadb')
 
 const config = require('./config')
 const utils = require('./utils')
 const routes = require('./routes')
-const xmlLayer = require('./routes/xmlLayer/xmlLayer')
+const xmlLayer = require('./routes/legacy/xmlLayer')
 
 const validate = require('./middlewares/validation').middleware
 const sendMiddleware = require('./middlewares/sendMiddleware')
@@ -65,6 +66,8 @@ class App {
     this.config = { ...config, ...userConfig, publicIP }
     // Set globals for logger
     if (this.config.logFile && this.config.logFile !== '') global.logFile = this.config.logFile
+    // Initialize serverList
+    this.serverList = []
   }
 
   async initDB () {
@@ -118,28 +121,6 @@ class App {
     }
   }
 
-  initServerList () {
-    // Initialize serverList
-    this.serverList = []
-    if (global.debug) {
-      this.serverList.push({
-        serverId: 0,
-        name: 'Fake server DEBUG USE ONLY',
-        version: '157',
-        host: 'localhost',
-        owner: 0,
-        level: 'tunisia',
-        description: 'Non-existing server',
-        slots: 5,
-        tournamentId: 0,
-        private: true,
-        weapons: '*****************************',
-        md5: '49fed900999d62fc6c950fa129384e72',
-        connectedPeers: []
-      })
-    }
-  }
-
   initRouter () {
     // Initialize router
     try {
@@ -155,37 +136,18 @@ class App {
         legacyHeaders: false
       }))
 
+      // Register all routes and xmlLayer
       this.app.use(sendMiddleware)
-      // Player
-      this.app.post('/v1/players', (req, res, next) => { validate(routes.createPlayer.schema, req, res, next) }, (req, res, next) => routes.createPlayer.handler(this, req, res, next))
-      this.app.post('/v1/players/:playerId/mp3', (req, res, next) => { validate(routes.setMP3.schema, req, res, next) }, (req, res, next) => routes.setMP3.handler(this, req, res, next))
-      this.app.get('/v1/players/:playerId', (req, res, next) => { validate(routes.getPlayer.schema, req, res, next) }, (req, res, next) => routes.getPlayer.handler(this, req, res, next))
-      this.app.get('/v1/players/:username/id', (req, res, next) => { validate(routes.getPlayerId.schema, req, res, next) }, (req, res, next) => routes.getPlayerId.handler(this, req, res, next))
-      // Server
-      this.app.post('/v1/servers', (req, res, next) => { validate(routes.createServer.schema, req, res, next) }, (req, res, next) => routes.createServer.handler(this, req, res, next))
-      this.app.get('/v1/servers', (req, res, next) => { validate(routes.getServerList.schema, req, res, next) }, (req, res, next) => routes.getServerList.handler(this, req, res, next))
-      this.app.delete('/v1/servers/:serverId', (req, res, next) => { validate(routes.deleteServer.schema, req, res, next) }, (req, res, next) => routes.deleteServer.handler(this, req, res, next))
-      this.app.put('/v1/servers/:serverId/join', (req, res, next) => { validate(routes.joinServer.schema, req, res, next) }, (req, res, next) => routes.joinServer.handler(this, req, res, next))
-      this.app.put('/v1/servers/:serverId/quit', (req, res, next) => { validate(routes.quitServer.schema, req, res, next) }, (req, res, next) => routes.quitServer.handler(this, req, res, next))
-      // Assets
-      this.app.get('/v1/mp3', (req, res, next) => { validate(routes.getMP3List.schema, req, res, next) }, (req, res, next) => routes.getMP3List.handler(this, req, res, next))
-      this.app.get('/v1/maps', (req, res, next) => { validate(routes.getMapList.schema, req, res, next) }, (req, res, next) => routes.getMapList.handler(this, req, res, next))
-      this.app.get('/romustrike/:assetType/:music', (req, res, next) => routes.downloadAsset.handler(this, req, res, next))
-      // Tournament
-      this.app.post('/v1/tournaments', (req, res, next) => { validate(routes.createTournament.schema, req, res, next) }, (req, res, next) => routes.createTournament.handler(this, req, res, next))
-      this.app.get('/v1/tournaments', (req, res, next) => { validate(routes.getTournament.schema, req, res, next) }, (req, res, next) => routes.getTournament.handler(this, req, res, next))
-      this.app.get('/v1/tournaments/:tournamentId/info', (req, res, next) => { validate(routes.getTournament.schema, req, res, next) }, (req, res, next) => routes.getTournament.handler(this, req, res, next))
-      // Object
-      this.app.get('/v1/objects', (req, res, next) => { validate(routes.getObject.schema, req, res, next) }, (req, res, next) => routes.getObject.handler(this, req, res, next))
-      this.app.post('/v1/objects', (req, res, next) => { validate(routes.placeObject.schema, req, res, next) }, (req, res, next) => routes.placeObject.handler(this, req, res, next))
-      // Web
-      this.app.get('/', (req, res, next) => { routes.home.handler(this, req, res) })
-      this.app.get('/register', (req, res, next) => { routes.register.handler(this, req, res) })
-      // Legacy
-      this.app.get('/script/romustrike/xml_layer.php', (req, res, next) => { validate(routes.placeObject.schema, req, res, next) }, (req, res, next) => xmlLayer.handler(this, req, res, next))
-      // Debug
+      for (const route of Object.values(routes)) {
+        if (route.schema) {
+          this.app[route.method](route.route, (req, res, next) => { validate(route.schema, req, res, next) }, (req, res, next) => route.handler(this, req, res, next))
+        } else {
+          this.app[route.method](route.route, (req, res, next) => route.handler(this, req, res, next))
+        }
+      }
+      this.app.get('/script/romustrike/xml_layer.php', (req, res, next) => { validate(xmlLayer.schema, req, res, next) }, (req, res, next) => xmlLayer.handler(this, req, res, next))
       if (global.debug) {
-        this.app.post('/cypher', (req, res, next) => { res.status(200).send(utils.cypher(this, req.body.msg)) })
+        this.app.use('/documentation', swaggerUi.serve, swaggerUi.setup(utils.generateAPIdoc()))
       }
     } catch (e) {
       console.error(`Server error: ${e} => ${e.stack}`)
@@ -200,7 +162,6 @@ class App {
   async run () {
     await this.loadConfig()
     await this.initDB()
-    this.initServerList()
     this.initRouter()
     this.initChat()
     this.api = this.app.listen(this.config.gamePort, '0.0.0.0', () => {

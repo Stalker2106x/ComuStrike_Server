@@ -3,6 +3,9 @@ const fs = require('fs')
 const path = require('path')
 
 module.exports = {
+  description: 'Homepage of server web interface',
+  method: 'get',
+  route: '/',
   handler: async (app, req, res, next) => {
     const template = await fs.readFileSync(path.join(__dirname, '../../web', 'home.html'), 'utf-8')
     const css = await fs.readFileSync(path.join(__dirname, '../../web', 'web.css'), 'utf-8')
