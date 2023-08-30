@@ -7,7 +7,6 @@ const fs = require('fs')
 const path = require('path')
 const { Worker } = require('worker_threads')
 const { Sequelize } = require('sequelize')
-const pubip = require('public-ip')
 const mariadb = require('mariadb')
 
 const config = require('./config')
@@ -62,7 +61,7 @@ class App {
         userConfig = config.defaultUserConfig
       }
     }
-    const publicIP = await pubip.v4()
+    const publicIP = await utils.getIp()
     this.config = { ...config, ...userConfig, publicIP }
     // Set globals for logger
     if (this.config.logFile && this.config.logFile !== '') global.logFile = this.config.logFile

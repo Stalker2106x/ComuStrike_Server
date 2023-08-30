@@ -3,6 +3,7 @@ const hashModule = require('./hash')
 const loggerModule = require('./logger')
 const xmlModule = require('./xml')
 const authorizeModule = require('./authorize')
+const ipModule = require('./ip')
 
 module.exports = {
   authorizePlayer: authorizeModule.authorizePlayer,
@@ -13,5 +14,6 @@ module.exports = {
   arrayFix: xmlModule.arrayFix,
   js2xmlPreformat: xmlModule.js2xmlPreformat,
   logPayload: loggerModule.logPayload,
-  logger: loggerModule.logger
+  logger: loggerModule.logger,
+  getIp: ipModule.getIp
 }
