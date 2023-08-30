@@ -158,16 +158,15 @@ class App {
       this.app.use(sendMiddleware)
       // Player
       this.app.post('/v1/players', (req, res, next) => { validate(routes.createPlayer.schema, req, res, next) }, (req, res, next) => routes.createPlayer.handler(this, req, res, next))
-      this.app.post('/v1/players/:id/mp3', (req, res, next) => { validate(routes.setMP3.schema, req, res, next) }, (req, res, next) => routes.setMP3.handler(this, req, res, next))
-      this.app.get('/v1/players/:id', (req, res, next) => { validate(routes.getPlayer.schema, req, res, next) }, (req, res, next) => routes.getPlayer.handler(this, req, res, next))
+      this.app.post('/v1/players/:playerId/mp3', (req, res, next) => { validate(routes.setMP3.schema, req, res, next) }, (req, res, next) => routes.setMP3.handler(this, req, res, next))
+      this.app.get('/v1/players/:playerId', (req, res, next) => { validate(routes.getPlayer.schema, req, res, next) }, (req, res, next) => routes.getPlayer.handler(this, req, res, next))
       this.app.get('/v1/players/:username/id', (req, res, next) => { validate(routes.getPlayerId.schema, req, res, next) }, (req, res, next) => routes.getPlayerId.handler(this, req, res, next))
-      this.app.put('/v1/players/:id/score', (req, res, next) => { validate(routes.addScore.schema, req, res, next) }, (req, res, next) => routes.addScore.handler(this, req, res, next))
       // Server
       this.app.post('/v1/servers', (req, res, next) => { validate(routes.createServer.schema, req, res, next) }, (req, res, next) => routes.createServer.handler(this, req, res, next))
       this.app.get('/v1/servers', (req, res, next) => { validate(routes.getServerList.schema, req, res, next) }, (req, res, next) => routes.getServerList.handler(this, req, res, next))
-      this.app.delete('/v1/servers/:id', (req, res, next) => { validate(routes.deleteServer.schema, req, res, next) }, (req, res, next) => routes.deleteServer.handler(this, req, res, next))
-      this.app.put('/v1/servers/:id/join', (req, res, next) => { validate(routes.joinServer.schema, req, res, next) }, (req, res, next) => routes.joinServer.handler(this, req, res, next))
-      this.app.put('/v1/servers/:id/quit', (req, res, next) => { validate(routes.quitServer.schema, req, res, next) }, (req, res, next) => routes.quitServer.handler(this, req, res, next))
+      this.app.delete('/v1/servers/:serverId', (req, res, next) => { validate(routes.deleteServer.schema, req, res, next) }, (req, res, next) => routes.deleteServer.handler(this, req, res, next))
+      this.app.put('/v1/servers/:serverId/join', (req, res, next) => { validate(routes.joinServer.schema, req, res, next) }, (req, res, next) => routes.joinServer.handler(this, req, res, next))
+      this.app.put('/v1/servers/:serverId/quit', (req, res, next) => { validate(routes.quitServer.schema, req, res, next) }, (req, res, next) => routes.quitServer.handler(this, req, res, next))
       // Assets
       this.app.get('/v1/mp3', (req, res, next) => { validate(routes.getMP3List.schema, req, res, next) }, (req, res, next) => routes.getMP3List.handler(this, req, res, next))
       this.app.get('/v1/maps', (req, res, next) => { validate(routes.getMapList.schema, req, res, next) }, (req, res, next) => routes.getMapList.handler(this, req, res, next))
@@ -175,7 +174,7 @@ class App {
       // Tournament
       this.app.post('/v1/tournaments', (req, res, next) => { validate(routes.createTournament.schema, req, res, next) }, (req, res, next) => routes.createTournament.handler(this, req, res, next))
       this.app.get('/v1/tournaments', (req, res, next) => { validate(routes.getTournament.schema, req, res, next) }, (req, res, next) => routes.getTournament.handler(this, req, res, next))
-      this.app.get('/v1/tournaments/:id/info', (req, res, next) => { validate(routes.getTournament.schema, req, res, next) }, (req, res, next) => routes.getTournament.handler(this, req, res, next))
+      this.app.get('/v1/tournaments/:tournamentId/info', (req, res, next) => { validate(routes.getTournament.schema, req, res, next) }, (req, res, next) => routes.getTournament.handler(this, req, res, next))
       // Object
       this.app.get('/v1/objects', (req, res, next) => { validate(routes.getObject.schema, req, res, next) }, (req, res, next) => routes.getObject.handler(this, req, res, next))
       this.app.post('/v1/objects', (req, res, next) => { validate(routes.placeObject.schema, req, res, next) }, (req, res, next) => routes.placeObject.handler(this, req, res, next))

@@ -5,6 +5,9 @@ const utils = require('../../utils')
 // join_server -> joinServer
 module.exports = {
   schema: {
+    query: Joi.object({
+      serverId: Joi.number().optional()
+    }),
     body: Joi.object({
       LENUM: Joi.number().required(),
       LEPASS: Joi.string().required(),
@@ -21,7 +24,8 @@ module.exports = {
       res.status(500).send({ error: 'Invalid credentials' })
       return next()
     }
-    const server = app.serverList[app.serverList.findIndex((serv) => serv.serverId === parseInt(req.body.SERVERID))]
+    const serverId = parseInt( req.query.serverId || req.body.SERVERID)
+    const server = app.serverList[app.serverList.findIndex((serv) => serv.serverId === serverId)]
     if (!server) {
       res.status(500).send({ error: 'Invalid SERVERID' })
       return next()

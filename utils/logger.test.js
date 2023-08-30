@@ -5,7 +5,7 @@ describe('Log Payload', () => {
   test('Payload should be logged without sensitive data', () => {
     jest.spyOn(console, 'log')
     handler.logPayload({ ANY: 'text', LEPASS: 'password' })
-    expect(console.log).toBeCalledWith({ ANY: 'text' })
+    expect(console.log).toBeCalledWith({ ANY: 'text', LEPASS: '***' })
   })
 })
 

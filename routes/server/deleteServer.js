@@ -5,8 +5,11 @@ const utils = require('../../utils')
 // delete_server -> deleteServer
 module.exports = {
   schema: {
+    query: Joi.object({
+      serverId: Joi.number().optional()
+    }),
     body: Joi.object({
-      LENUM: Joi.number().required(),
+      LENUM: Joi.number().optional(),
       LEPASS: Joi.string().required(),
       CLE_SERVEUR: Joi.number().required(),
       LAVERSION: Joi.string().required()
@@ -20,7 +23,8 @@ module.exports = {
       res.status(500).send({ error: 'Invalid credentials' })
       return next()
     }
-    const serverIndex = app.serverList.findIndex((serv) => serv.serverId === parseInt(req.body.CLE_SERVEUR))
+    const serverId = parseInt(req.query.serverId || req.body.CLE_SERVEUR)
+    const serverIndex = app.serverList.findIndex((serv) => serv.serverId === serverId)
     const server = app.serverList[serverIndex]
     if (!server) {
       res.status(500).send({ error: 'Invalid SERVERID' })

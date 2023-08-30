@@ -8,6 +8,17 @@ const resMock = {
 
 jest.mock('../../utils', () => {
   return {
+    authorizePlayer: () => {
+      return Promise.resolve({
+        username: 'user',
+        model: 'agtx',
+        mp3: 0,
+        role: 0,
+        active: 1,
+        score: 10,
+        player_id: 0
+      })
+    },
     logger: () => {}
   }
 })
@@ -44,6 +55,7 @@ describe('Join server', () => {
       }
     }
     const reqMock = {
+      query: {},
       body: {
         LENUM: '0',
         LEPASS: 'test',
@@ -52,7 +64,7 @@ describe('Join server', () => {
       }
     }
     await handler.handler(appMock, reqMock, resMock, jest.fn())
-    expect(resMock.status).toBeCalledWith(200)
     expect(appMock.serverList[0].connectedPeers).toStrictEqual([0])
+    expect(resMock.status).toBeCalledWith(200)
   })
 })

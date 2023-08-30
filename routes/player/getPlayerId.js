@@ -5,8 +5,11 @@ const utils = require('../../utils')
 // get_id -> getPlayerId
 module.exports = {
   schema: {
+    query: Joi.object({
+      username: Joi.string().optional()
+    }),
     body: Joi.object({
-      LELOGIN: Joi.string().required(), //leminLength: 3 },
+      LELOGIN: Joi.string().optional(), //leminLength: 3 },
       LEPASS: Joi.string().required(),
       LESOFT: Joi.number().required(),
       LAVERSION: Joi.string().required() //minLength: 3 }
@@ -15,7 +18,7 @@ module.exports = {
   handler: async (app, req, res, next) => {
     let player
     try {
-      player = await utils.authorizePlayer(app, { username: req.body.LELOGIN, password: req.body.LEPASS })
+      player = await utils.authorizePlayer(app, { username: req.query.username || req.body.LELOGIN, password: req.body.LEPASS })
     } catch (e) {
       res.status(500).send({ error: 'Invalid credentials' })
       return

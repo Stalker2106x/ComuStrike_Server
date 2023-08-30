@@ -32,7 +32,7 @@ describe('Set player MP3', () => {
         LAVERSION: '157'
       }
     }, resMock, jest.fn())
-    expect(resMock.status).toBeCalledWith(200)
     expect(resMock.send).toBeCalledWith()
+    expect(resMock.status).toBeCalledWith(200)
   })
 })

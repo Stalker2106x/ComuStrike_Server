@@ -5,6 +5,9 @@ const utils = require('../../utils')
 // quit_server -> quitServer
 module.exports = {
   schema: {
+    query: Joi.object({
+      serverId: Joi.number().optional()
+    }),
     body: Joi.object({
       LENUM: Joi.number().required(),
       LEPASS: Joi.string().required(),

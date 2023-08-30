@@ -23,6 +23,12 @@ jest.mock('../index', () => {
   }
 })
 
+jest.mock('../../middlewares/validation', () => {
+  return {
+    validate: (schema, req) => { }
+  }
+})
+
 jest.mock('../../utils', () => {
   return {
     decypher: () => 'METHOD=get_map&LENUM=0'

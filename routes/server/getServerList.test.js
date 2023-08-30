@@ -39,6 +39,7 @@ describe('Get server list', () => {
       }
     }
     const reqMock = {
+      query: {},
       body: {
         LENUM: '0',
         LEPASS: 'test',

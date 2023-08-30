@@ -10,7 +10,6 @@ const LegacyToRESTMapper = {
   get_niveau_grade: routes.getRank,
   se_faire_tuer: routes.killed,
   get_id: routes.getPlayerId,
-  score_plus: routes.addScore,
   set_tournois: routes.createTournament,
   get_mp3: routes.getMP3List,
   set_mp3: routes.setMP3,

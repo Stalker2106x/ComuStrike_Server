@@ -8,6 +8,9 @@ const resMock = {
 
 jest.mock('../../utils', () => {
   return {
+    authorizePlayer: () => {
+      return Promise.resolve({})
+    },
     logger: () => {}
   }
 })
@@ -34,18 +37,12 @@ describe('Delete server', () => {
         weapons: '****************************',
         md5: 'checksum',
         connectedPeers: []
-      }],
-      db: {
-        models: {
-          Players: {
-            findOne: () => Promise.resolve({})
-          }
-        }
-      }
+      }]
     }
     const reqMock = {
       headers: [],
       connection: { remoteAddress: '127.0.0.1' },
+      query: {},
       body: {
         LENUM: '0',
         LEPASS: 'pw',
@@ -53,7 +50,7 @@ describe('Delete server', () => {
       }
     }
     await handler.handler(appMock, reqMock, resMock, jest.fn())
-    expect(resMock.status).toBeCalledWith(200)
     expect(appMock.serverList).toStrictEqual([])
+    expect(resMock.status).toBeCalledWith(200)
   })
 })

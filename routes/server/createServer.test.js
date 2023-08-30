@@ -8,6 +8,9 @@ const resMock = {
 
 jest.mock('../../utils', () => {
   return {
+    authorizePlayer: () => {
+      return Promise.resolve({})
+    },
     logger: () => {}
   }
 })
@@ -52,7 +55,6 @@ describe('Create server', () => {
       }
     }
     await handler.handler(appMock, reqMock, resMock, jest.fn())
-    expect(resMock.status).toBeCalledWith(200)
     expect(appMock.serverList).toStrictEqual([{
       serverId: 0,
       name: reqMock.body.DESC,
@@ -68,5 +70,6 @@ describe('Create server', () => {
       md5: reqMock.body.MD5,
       connectedPeers: []
     }])
+    expect(resMock.status).toBeCalledWith(200)
   })
 })

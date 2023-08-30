@@ -10,7 +10,6 @@ module.exports = {
   getObject: require('./object/getObject'),
   placeObject: require('./object/placeObject'),
   // Player
-  addScore: require('./player/addScore'),
   setMP3: require('./player/setMP3'),
   createPlayer: require('./player/createPlayer'),
   getRank: require('./player/getRank'),

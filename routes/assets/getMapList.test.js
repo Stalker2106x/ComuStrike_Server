@@ -41,7 +41,6 @@ describe('Get map list', () => {
       }
     }
     await handler.handler(appMock, reqMock, resMock, jest.fn())
-    expect(resMock.status).toBeCalledWith(200)
     expect(resMock.send).toBeCalledWith([{
       NAME: 'tunisia',
       MAPPEUR: 'someone',
@@ -49,5 +48,6 @@ describe('Get map list', () => {
       BSPMD5: 'checksum',
       HOST: '127.0.0.1'
     }])
+    expect(resMock.status).toBeCalledWith(200)
   })
 })

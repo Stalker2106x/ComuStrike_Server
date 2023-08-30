@@ -5,8 +5,11 @@ const utils = require('../../utils')
 // info_joueur -> getPlayer
 module.exports = {
   schema: {
+    query: Joi.object({
+      playerId: Joi.string().optional()
+    }),
     body: Joi.object({
-      LENUM: Joi.number().required(),
+      LENUM: Joi.number().optional(),
       LEPASS: Joi.string().required(),
       LAMAC: Joi.string().required(),
       LAVERSION: Joi.string().required()
@@ -15,7 +18,7 @@ module.exports = {
   handler: async (app, req, res, next) => {
     let player
     try {
-      player = await utils.authorizePlayer(app, { id: req.body.LENUM, password: req.body.LEPASS })
+      player = await utils.authorizePlayer(app, { id: req.query.username || req.body.LENUM, password: req.body.LEPASS })
     } catch (e) {
       res.status(500).send({ error: 'Invalid credentials' })
       return next()
