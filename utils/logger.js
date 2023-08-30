@@ -20,7 +20,7 @@ function dateToTimestamp (date) {
 module.exports = {
   logPayload (body) {
     const copy = JSON.parse(JSON.stringify(body))
-    delete copy.LEPASS
+    copy.LEPASS = '***'
     console.log(copy)
   },
   logger (service, msg) {

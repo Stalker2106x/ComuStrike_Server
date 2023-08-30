@@ -1,6 +1,6 @@
 const Joi = require('joi')
 
-const validate = require('../../middlewares/validation')
+const validation = require('../../middlewares/validation')
 const utils = require('../../utils')
 const routes = require('../index')
 
@@ -41,6 +41,8 @@ module.exports = {
         const data = entry.split('=')
         req.body[data[0].toUpperCase()] = data[1]
       }
+      req.crypt = req.query.crypt
+      delete req.query.crypt
     } catch (e) {
       res.status(500).send('Invalid crypt payload')
       next()
@@ -53,8 +55,9 @@ module.exports = {
     } else {
       // Call appopriate REST method from mapper
       const method = LegacyToRESTMapper[req.body.METHOD]
+      delete req.body.METHOD //Field needs to be discarded to pass validation
       
-      //validate(method.schema, req, res, next)
+      validation.validate(method.schema, req)
       method.handler(app, req, res, next)
     }
   }

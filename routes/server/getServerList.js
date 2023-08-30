@@ -1,10 +1,13 @@
 const Joi = require('joi')
 
+const utils = require('../../utils')
+
 // get_server -> getServerList
 module.exports = {
   schema: {
     body: Joi.object({
       LENUM: Joi.number().required(),
+      LEPASS: Joi.string().required(),
       LESOFT: Joi.number().required(),
       CLE_TOURNOIS: Joi.number().required(),
       ROUND: Joi.number().required(),
@@ -12,11 +15,12 @@ module.exports = {
     })
   },
   handler: async (app, req, res, next) => {
-    const player = await app.db.models.Players.findOne({ where: { player_id: parseInt(req.body.LENUM) } })
-    if (!player) {
-      res.status(500).send({ error: 'Invalid player ID' })
-      next()
-      return
+    let player
+    try {
+      player = await utils.authorizePlayer(app, { id: req.body.LENUM, password: req.body.LEPASS })
+    } catch (e) {
+      res.status(500).send({ error: 'Invalid credentials' })
+      return next()
     }
     const servers = []
     for (const server of app.serverList) {

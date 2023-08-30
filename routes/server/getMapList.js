@@ -1,5 +1,6 @@
 const Joi = require('joi')
 const path = require('path')
+
 const utils = require('../../utils')
 
 // get_map -> getMapList
@@ -7,16 +8,18 @@ module.exports = {
   schema: {
     body: Joi.object({
       LENUM: Joi.number().required(),
+      LEPASS: Joi.string().required(),
       LESOFT: Joi.number().required(),
       LAVERSION: Joi.string().required()
     })
   },
   handler: async (app, req, res, next) => {
-    const player = await app.db.models.Players.findOne({ where: { player_id: parseInt(req.body.LENUM) } })
-    if (!player) {
-      res.status(500).send({ error: 'Invalid player ID' })
-      next()
-      return
+    let player
+    try {
+      player = await utils.authorizePlayer(app, { id: req.body.LENUM, password: req.body.LEPASS })
+    } catch (e) {
+      res.status(500).send({ error: 'Invalid credentials' })
+      return next()
     }
     const dbMaps = await app.db.models.Maps.findAll()
     const maps = []

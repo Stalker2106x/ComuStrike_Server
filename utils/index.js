@@ -5,7 +5,7 @@ const xmlModule = require('./xml')
 const authorizeModule = require('./authorize')
 
 module.exports = {
-  authorizeModule: authorizeModule.authorizePlayer,
+  authorizePlayer: authorizeModule.authorizePlayer,
   cypher: cypherModule.cypher,
   decypher: cypherModule.decypher,
   fileMD5: hashModule.fileMD5,

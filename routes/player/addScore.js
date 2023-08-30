@@ -1,5 +1,7 @@
 const Joi = require('joi')
 
+const utils = require('../../utils')
+
 // add_score -> addScore
 module.exports = {
   schema: {
@@ -13,11 +15,12 @@ module.exports = {
     })
   },
   handler: async (app, req, res, next) => {
-    const player = await app.db.models.Players.findOne({ where: { player_id: parseInt(req.body.LENUM) } })
-    if (!player) {
-      res.status(500).send({ error: 'Invalid player ID' })
-      next()
-      return
+    let player
+    try {
+      player = await utils.authorizePlayer(app, { id: req.body.LENUM, password: req.body.LEPASS })
+    } catch (e) {
+      res.status(500).send({ error: 'Invalid credentials' })
+      return next()
     }
     player.update({
       kills: parseInt(req.body.KILLER),

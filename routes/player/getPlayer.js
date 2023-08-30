@@ -1,4 +1,5 @@
 const Joi = require('joi')
+
 const utils = require('../../utils')
 
 // info_joueur -> getPlayer
@@ -6,16 +7,18 @@ module.exports = {
   schema: {
     body: Joi.object({
       LENUM: Joi.number().required(),
+      LEPASS: Joi.string().required(),
       LAMAC: Joi.string().required(),
       LAVERSION: Joi.string().required()
     })
   },
   handler: async (app, req, res, next) => {
-    const player = await app.db.models.Players.findOne({ where: { player_id: parseInt(req.body.LENUM) } })
-    if (!player) {
-      res.status(500).send({ error: 'Invalid player ID' })
-      next()
-      return
+    let player
+    try {
+      player = await utils.authorizePlayer(app, { id: req.body.LENUM, password: req.body.LEPASS })
+    } catch (e) {
+      res.status(500).send({ error: 'Invalid credentials' })
+      return next()
     }
     const mp3 = await app.db.models.MP3.findOne({
       where: { mp3_id: player.mp3 }

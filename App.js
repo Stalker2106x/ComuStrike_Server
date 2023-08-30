@@ -15,7 +15,7 @@ const utils = require('./utils')
 const routes = require('./routes')
 const xmlLayer = require('./routes/xmlLayer/xmlLayer')
 
-const validate = require('./middlewares/validation')
+const validate = require('./middlewares/validation').middleware
 const sendMiddleware = require('./middlewares/sendMiddleware')
 
 const defaultData = require('./models/defaultData')
