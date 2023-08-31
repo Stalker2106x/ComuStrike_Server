@@ -5,7 +5,7 @@ module.exports = {
   description: 'Creates a tournament',
   method: 'post',
   route: '/v1/tournaments',
-  schema: {
+  params: {
     body: Joi.object({
       LENUM: Joi.number().integer().required().description('The ID of the player sending the request'),
       LEPASS: Joi.string().required().description('The password of the player sending the request'),
@@ -15,7 +15,11 @@ module.exports = {
       SCORE2: Joi.number().integer().required()
     })
   },
+  responses: {
+    200: null
+  },
   handler: (app, req, res, next) => {
+    res.status(200).send()
     next()
   }
 }

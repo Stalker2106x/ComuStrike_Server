@@ -5,11 +5,19 @@ module.exports = {
   description: 'Get all MP3s available on server',
   method: 'get',
   route: '/v1/mp3s',
-  schema: {
+  params: {
     body: Joi.object({
       LENUM: Joi.string().required().description('The ID of the player sending the request'),
       LEPASS: Joi.string().required().description('The password of the player sending the request'),
       IDMP3: Joi.number().integer().required().description('Unknown use')
+    })
+  },
+  responses: {
+    200: Joi.array().items({
+      ID: Joi.number().required().description('The ID of the mp3'),
+      NAME: Joi.string().required().description('The name of the mp3'),
+      COMMENTAIRE: Joi.string().required().description('A comment that will be printed to in-game chat when playing this mp3'),
+      HOST: Joi.string().required().description('The host where the mp3 is available to download')
     })
   },
   handler: async (app, req, res, next) => {
@@ -17,10 +25,10 @@ module.exports = {
     const mp3s = []
     for (const mp3 of dbMp3s) {
       mp3s.push({
+        ID: mp3.mp3_id,
         NAME: mp3.name,
         COMMENTAIRE: mp3.description,
-        HOST: global.forceLocalhost ? '127.0.0.1' : app.config.publicIP,
-        ID: mp3.mp3_id
+        HOST: global.forceLocalhost ? '127.0.0.1' : app.config.publicIP
       })
     }
     res.arrayKey = 'element'

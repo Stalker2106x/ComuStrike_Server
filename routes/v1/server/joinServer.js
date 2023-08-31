@@ -7,7 +7,7 @@ module.exports = {
   description: 'Register a client connection to a server',
   method: 'post',
   route: '/v1/servers/:serverId/join',
-  schema: {
+  params: {
     query: Joi.object({
       serverId: Joi.number().integer().optional()
     }),
@@ -17,6 +17,12 @@ module.exports = {
       LESOFT: Joi.number().integer().required().description('The software used for sending the request'),
       SERVERID: Joi.number().integer().required().description('The ID of the server to join'),
       LAVERSION: Joi.string().required().description('The version of the software used for sending the request')
+    })
+  },
+  responses: {
+    200: Joi.number().integer().required().description('ID of the joined server'),
+    500: Joi.object({
+      error: Joi.string().required().description('A short description of the error that occured')
     })
   },
   handler: async (app, req, res, next) => {

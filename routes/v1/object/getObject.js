@@ -5,11 +5,26 @@ module.exports = {
   description: 'Get all Objects',
   method: 'get',
   route: '/v1/objects',
-  schema: {
+  params: {
     body: Joi.object({
       LENUM: Joi.string().required().description('The ID of the player sending the request'),
       LEPASS: Joi.string().required().description('The password of the player sending the request'),
       LAMAP: Joi.string().description('Unknown use')
+    })
+  },
+  responses: {
+    200: Joi.array().items({
+      ID: Joi.number().integer().required().description('Unknown use'),
+      X: Joi.string().required().description('Coordinate, unknown use'),
+      Y: Joi.string().required().description('Coordinate, unknown use'),
+      Z: Joi.string().required().description('Coordinate, unknown use'),
+      DX: Joi.string().required().description('Coordinate, unknown use'),
+      DY: Joi.string().required().description('Coordinate, unknown use'),
+      DZ: Joi.string().required().description('Coordinate, unknown use'),
+      HX: Joi.string().required().description('Coordinate, unknown use'),
+      HY: Joi.string().required().description('Coordinate, unknown use'),
+      HZ: Joi.string().required().description('Coordinate, unknown use'),
+      HOST: Joi.string().required().description('Unknown use')
     })
   },
   handler: (app, req, res, next) => {

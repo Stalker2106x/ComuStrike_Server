@@ -7,7 +7,7 @@ module.exports = {
   description: 'Deletes a server from the master server list',
   method: 'delete',
   route: '/v1/servers/:serverId',
-  schema: {
+  params: {
     query: Joi.object({
       serverId: Joi.number().integer().optional()
     }),
@@ -16,6 +16,12 @@ module.exports = {
       LEPASS: Joi.string().required().description('The password of the player sending the request'),
       CLE_SERVEUR: Joi.number().integer().required().description('The ID of the server to delete'),
       LAVERSION: Joi.string().required().description('The version of the software used for sending the request')
+    })
+  },
+  responses: {
+    200: null,
+    500: Joi.object({
+      error: Joi.string().required().description('A short description of the error that occured')
     })
   },
   handler: async (app, req, res, next) => {

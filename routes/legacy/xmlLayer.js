@@ -31,9 +31,15 @@ module.exports = {
   description: 'Legacy entrypoint to handle requests from game',
   method: 'get',
   route: '/script/romustrike/xml_layer.php',
-  schema: {
+  params: {
     query: Joi.object({
       crypt: Joi.string().min(3).required().description('Cyphered payload containing the method to call and the body of the request')
+    })
+  },
+  responses: {
+    200: Joi.object().required().description('JSON response of the appropriate method converted to XML'),
+    500: Joi.object({
+      error: Joi.string().required().description('A short description of the error that occured')
     })
   },
   handler: (app, req, res, next) => {
@@ -61,7 +67,7 @@ module.exports = {
       const method = LegacyToRESTMapper[req.body.METHOD]
       delete req.body.METHOD //Field needs to be discarded to pass validation
       
-      validation.validate(method.schema, req)
+      validation.validate(method.params, req)
       method.handler(app, req, res, next)
     }
   }

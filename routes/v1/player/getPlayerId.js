@@ -7,7 +7,7 @@ module.exports = {
   description: 'Get player ID with a username',
   method: 'get',
   route: '/v1/players/:username/id',
-  schema: {
+  params: {
     query: Joi.object({
       username: Joi.string().optional()
     }),
@@ -16,6 +16,14 @@ module.exports = {
       LEPASS: Joi.string().required().description('The password of the player to get ID for'),
       LESOFT: Joi.number().integer().required().description('The software used for sending the request'),
       LAVERSION: Joi.string().required().description('The version of the software used for sending the request')
+    })
+  },
+  responses: {
+    200: Joi.object({
+      ID_PLAYER: Joi.string().required().description('ID of the player'),
+    }),
+    500: Joi.object({
+      error: Joi.string().required().description('A short description of the error that occured')
     })
   },
   handler: async (app, req, res, next) => {

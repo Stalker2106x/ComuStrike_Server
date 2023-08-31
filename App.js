@@ -139,13 +139,13 @@ class App {
       // Register all routes and xmlLayer
       this.app.use(sendMiddleware)
       for (const route of Object.values(routes)) {
-        if (route.schema) {
-          this.app[route.method](route.route, (req, res, next) => { validate(route.schema, req, res, next) }, (req, res, next) => route.handler(this, req, res, next))
+        if (route.params) {
+          this.app[route.method](route.route, (req, res, next) => { validate(route.params, req, res, next) }, (req, res, next) => route.handler(this, req, res, next))
         } else {
           this.app[route.method](route.route, (req, res, next) => route.handler(this, req, res, next))
         }
       }
-      this.app.get('/script/romustrike/xml_layer.php', (req, res, next) => { validate(xmlLayer.schema, req, res, next) }, (req, res, next) => xmlLayer.handler(this, req, res, next))
+      this.app.get('/script/romustrike/xml_layer.php', (req, res, next) => { validate(xmlLayer.params, req, res, next) }, (req, res, next) => xmlLayer.handler(this, req, res, next))
       if (global.debug) {
         this.app.use('/documentation', swaggerUi.serve, swaggerUi.setup(utils.generateAPIdoc()))
       }

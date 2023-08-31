@@ -5,7 +5,7 @@ module.exports = {
   description: 'Set mp3 to be played when client logs in',
   method: 'post',
   route: '/v1/players/:playerId/mp3',
-  schema: {
+  params: {
     query: Joi.object({
       playerId: Joi.number().integer().optional()
     }),
@@ -14,6 +14,9 @@ module.exports = {
       IDMP3: Joi.number().integer().required().description('The ID of the mp3 to set to the player'),
       LAVERSION: Joi.string().required().description('The version of the software used for sending the request')
     })
+  },
+  responses: {
+    200: null
   },
   handler: async (app, req, res, next) => {
     await app.db.models.Players.update({

@@ -1,7 +1,7 @@
 const fs = require('fs')
 const { convert } = require("joi-openapi")
 
-function convertSchema(schema) {
+function convertSchemaParameters(schema) {
   let parameters = []
   for (const [source, params] of Object.entries(schema)) {
     const openapiSchema = convert(params)
@@ -14,6 +14,17 @@ function convertSchema(schema) {
     }
   }
   return (parameters)
+}
+
+function convertSchemaResponse(schema) {
+  let responses = {}
+  for (const [code, response] of Object.entries(schema)) {
+    responses[code] = {}
+    if (response) {
+      responses[code].schema = convert(response)
+    }
+  }
+  return (responses)
 }
 
 module.exports = {
@@ -59,8 +70,12 @@ module.exports = {
         
         if (route.description) routeSpec.description = route.description
         if (route.produces) routeSpec.produces = route.produces
-        if (route.schema) routeSpec.parameters = convertSchema(route.schema)
-
+        if (route.params) {
+          routeSpec.parameters = convertSchemaParameters(route.params)
+        }
+        if (route.responses) {
+          routeSpec.responses = convertSchemaResponse(route.responses)
+        }
         openAPI.paths[route.route][route.method] = routeSpec
     }
 

@@ -7,7 +7,7 @@ module.exports = {
   description: 'Adds a server to the master server list',
   method: 'post',
   route: '/v1/servers',
-  schema: {
+  params: {
     body: Joi.object({
       LENUM: Joi.number().integer().required().description('The ID of the player sending the request'),
       LEPASS: Joi.string().required().description('The password of the player sending the request'),
@@ -25,6 +25,12 @@ module.exports = {
       GDMG: Joi.number().integer().required(),
       ANTILAG: Joi.number().integer().required(),
       LAVERSION: Joi.string().required().description('The version of the software used for sending the request')
+    })
+  },
+  responses: {
+    200: Joi.number().integer().required().description('ID of the created server'),
+    500: Joi.object({
+      error: Joi.string().required().description('A short description of the error that occured')
     })
   },
   handler: async (app, req, res, next) => {

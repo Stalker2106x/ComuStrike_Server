@@ -11,10 +11,16 @@ module.exports = {
   description: 'Route to download binary assets from server',
   method: 'get',
   route: '/romustrike/:assetType/:asset',
-  schema: {
+  params: {
     body: Joi.object({
       assetType: Joi.string().valid('map150','mp3').required().description('The asset type of the asset to download'),
       asset: Joi.string().required().description('The asset name of the asset to download'),
+    })
+  },
+  responses: {
+    200: Joi.binary().required().description('The binary asset requested'),
+    500: Joi.object({
+      error: Joi.string().required().description('A short description of the error that occured')
     })
   },
   handler: (app, req, res, next) => {

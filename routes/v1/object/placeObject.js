@@ -4,7 +4,7 @@ module.exports = {
   description: 'Place object',
   method: 'post',
   route: '/v1/objects',
-  schema: {
+  params: {
     body: Joi.object({
       LENUM: Joi.string().required().description('The ID of the player sending the request'),
       LEPASS: Joi.string().required().description('The password of the player sending the request'),
@@ -22,7 +22,11 @@ module.exports = {
       M: Joi.string().description('Unknown use')
     })
   },
+  responses: {
+    200: null
+  },
   handler: (app, req, res, next) => {
+    res.status(200).send()
     next()
   }
 }

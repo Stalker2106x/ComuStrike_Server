@@ -5,7 +5,7 @@ module.exports = {
   description: 'Get the rank of a player',
   method: 'get',
   route: '/v1/players/:playerId/rank',
-  schema: {
+  params: {
     body: Joi.object({
       J: Joi.string().required().description('The ID of the player to get the rank of'),
       LAVERSION: Joi.string().required().description('The version of the software used for sending the request')

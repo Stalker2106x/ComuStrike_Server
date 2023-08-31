@@ -5,7 +5,7 @@ module.exports = {
   description: 'Sent when a kill occur in game',
   method: 'post',
   route: '/v1/players/:playerId/killed',
-  schema: {
+  params: {
     body: Joi.object({
       V: Joi.number().integer().required().description('The ID of the player that got killed'),
       P: Joi.string().required().description('The username of the player that got killed'),

@@ -8,11 +8,20 @@ module.exports = {
   description: 'Get all maps available on server',
   method: 'get',
   route: '/v1/maps',
-  schema: {
+  params: {
     body: Joi.object({
       LENUM: Joi.number().integer().required().description('The ID of the player sending the request'),
       LESOFT: Joi.number().integer().required().description('The software used for sending the request'),
       LEPASS: Joi.string().required().description('The password of the player sending the request')
+    }),
+  },
+  responses: {
+    200: Joi.array().items({
+      NAME: Joi.string().required().description('The name of the map'),
+      MAPPEUR: Joi.string().required().description('The username of the creator of the map'),
+      WADMD5: Joi.string().required().description('The MD5 checksum of the WAD file of the map'),
+      BSPMD5: Joi.string().required().description('The MD5 checksum of the BSP file of the map'),
+      HOST: Joi.string().required().description('The host where the map is available to download')
     })
   },
   handler: async (app, req, res, next) => {

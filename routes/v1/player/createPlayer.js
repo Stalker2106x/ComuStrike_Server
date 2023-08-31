@@ -8,14 +8,19 @@ module.exports = {
   description: 'Create a new player on server',
   method: 'post',
   route: '/v1/players',
-  schema: {
+  params: {
     body: Joi.object({
       LENUM: Joi.number().integer().required().description('The ID of the player sending the request'),
       LESOFT: Joi.number().integer().required().description('The software used for sending the request'),
-      LENOM: Joi.string().required().description('The username to use for creation'),
+      LENOM: Joi.string().required().pattern(/^[a-zA-Z0-9._^$]*$/).description('The username to use for creation'),
       LAVERSION: Joi.string().required().description('The version of the software used for sending the request'),
-      LEMAIL: Joi.string().required().description('The email to use for creation'),
+      LEMAIL: Joi.string().required().pattern(/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/).description('The email to use for creation'),
       LEPASS: Joi.string().required().description('The password to use for creation')
+    })
+  },
+  responses: {
+    200: Joi.object({
+      created: Joi.boolean().required().description('Boolean true if user was successfully created, else otherwise')
     })
   },
   handler: async (app, req, res, next) => {
@@ -51,7 +56,7 @@ module.exports = {
         email: req.body.LEMAIL,
         password: utils.passwordHash(req.body.LEPASS, app.config.cypherKey)
       })
-      res.status(200).send('OK')
+      res.status(200).send({ created: true })
       next()
     }
   }

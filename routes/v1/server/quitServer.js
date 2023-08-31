@@ -7,7 +7,7 @@ module.exports = {
   description: 'Register a client disconnection from a server',
   method: 'post',
   route: '/v1/servers/:serverId/quit',
-  schema: {
+  params: {
     query: Joi.object({
       serverId: Joi.number().integer().optional()
     }),
@@ -19,6 +19,12 @@ module.exports = {
       KILLER: Joi.number().integer().required().description('The amount of kills the player disconnecting did'),
       KILLED: Joi.number().integer().required().description('The amount of deaths the player disconnecting had'),
       LAVERSION: Joi.string().required().description('The version of the software used for sending the request')
+    })
+  },
+  responses: {
+    200: null,
+    500: Joi.object({
+      error: Joi.string().required().description('A short description of the error that occured')
     })
   },
   handler: async (app, req, res, next) => {
