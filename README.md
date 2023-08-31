@@ -38,7 +38,7 @@ Requirements:
 The server has a built-in Swagger endpoint on `/documentation`
 Note that the endpoint is only served when the application is started in __debug__ mode
 
-## Game Ports
- 47624 TCP/UDP
- 6073 UDP
- 2300-2400 UDP
+# Web interface
+
+The server is configured to serve a web interface on `/` to check server status.
+It also comes with a registration page to create new accounts on `/register`
