@@ -18,10 +18,11 @@ function convertSchema(schema) {
 
 module.exports = {
   generate: () => {
+    const config = require('../config')
     let openAPI = {
         swagger: "2.0",
         info: {
-            version: "1.0.0",
+            version: config.serverVersion,
             title: "Comustrike Server",
             description: "Unofficial Romustrike master server API",
             contact: {
