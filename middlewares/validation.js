@@ -1,17 +1,18 @@
-const Joi = require('joi')
-
 module.exports = {
     validate: (schema, req) => {
-        return schema.validate(req)
+        return {
+            body: schema.body ? schema.body.validate(req.body) : null,
+            query: schema.query ? schema.query.validate(req.query) : null
+        }
     },
     middleware: (schema, req, res, next) => {
         let validationResult = module.exports.validate(schema, req)
         
-        if ((validationResult == null || !Object.prototype.hasOwnProperty.call(validationResult, 'error'))) {
-            next()
-        } else {
-            res.status(422).send(validationResult)
+        if (validationResult.body && validationResult.body.error || validationResult.query && validationResult.query.error) {
+            console.error(validationResult)
+            res.status(422).send('valid error')
             next()
         }
+        next()
     }
 }

@@ -5,7 +5,7 @@ module.exports = (req, res, next) => {
   const oldSend = res.send
   res.send = function (body) {
     res.send = oldSend // set function back to avoid the 'double-send'
-    if (req.crypt) {
+    if (req.headers['crypt']) {
       if (body && Object.prototype.hasOwnProperty.call(body, 'return')) {
         // If object contains a return key, we convert it to single value body
         const xmlData = { _declaration: { _attributes: { version: '1.0', encoding: 'ISO-8859-1' } }, root: { _text: body.return } }

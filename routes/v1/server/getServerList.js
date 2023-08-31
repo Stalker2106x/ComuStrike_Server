@@ -4,9 +4,10 @@ const utils = require('../../../utils')
 
 // get_server -> getServerList
 module.exports = {
+  description: 'Get all servers from the master server list',
   method: 'get',
   route: '/v1/servers',
-  schema: Joi.object({
+  schema: {
     body: Joi.object({
       LENUM: Joi.number().integer().required().description('The ID of the player sending the request'),
       LEPASS: Joi.string().required().description('The password of the player sending the request'),
@@ -15,7 +16,7 @@ module.exports = {
       ROUND: Joi.number().integer().required().description('Unknown use'),
       LAVERSION: Joi.string().required().description('The version of the software used for sending the request')
     })
-  }),
+  },
   handler: async (app, req, res, next) => {
     let player
     try {

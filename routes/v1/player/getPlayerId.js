@@ -7,7 +7,7 @@ module.exports = {
   description: 'Get player ID with a username',
   method: 'get',
   route: '/v1/players/:username/id',
-  schema: Joi.object({
+  schema: {
     query: Joi.object({
       username: Joi.string().optional()
     }),
@@ -17,7 +17,7 @@ module.exports = {
       LESOFT: Joi.number().integer().required().description('The software used for sending the request'),
       LAVERSION: Joi.string().required().description('The version of the software used for sending the request')
     })
-  }),
+  },
   handler: async (app, req, res, next) => {
     let player
     try {

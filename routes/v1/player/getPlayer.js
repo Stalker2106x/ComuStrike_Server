@@ -4,10 +4,10 @@ const utils = require('../../../utils')
 
 // info_joueur -> getPlayer
 module.exports = {
-  description: 'Get all player infos on server',
+  description: 'Get all player infos',
   method: 'get',
   route: '/v1/players/:playerId',
-  schema: Joi.object({
+  schema: {
     query: Joi.object({
       playerId: Joi.string().optional()
     }),
@@ -17,7 +17,7 @@ module.exports = {
       LAMAC: Joi.string().required().description('MAC address of the client sending the request'),
       LAVERSION: Joi.string().required().description('The version of the software used for sending the request')
     })
-  }),
+  },
   handler: async (app, req, res, next) => {
     let player
     try {

@@ -8,13 +8,13 @@ module.exports = {
   description: 'Get all maps available on server',
   method: 'get',
   route: '/v1/maps',
-  schema: Joi.object({
+  schema: {
     body: Joi.object({
       LENUM: Joi.number().integer().required().description('The ID of the player sending the request'),
       LESOFT: Joi.number().integer().required().description('The software used for sending the request'),
       LEPASS: Joi.string().required().description('The password of the player sending the request')
     })
-  }),
+  },
   handler: async (app, req, res, next) => {
     const dbMaps = await app.db.models.Maps.findAll()
     const maps = []

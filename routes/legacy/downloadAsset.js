@@ -11,12 +11,12 @@ module.exports = {
   description: 'Route to download binary assets from server',
   method: 'get',
   route: '/romustrike/:assetType/:asset',
-  schema: Joi.object({
+  schema: {
     body: Joi.object({
       assetType: Joi.string().valid('map150','mp3').required().description('The asset type of the asset to download'),
       asset: Joi.string().required().description('The asset name of the asset to download'),
     })
-  }),
+  },
   handler: (app, req, res, next) => {
     if (!Object.prototype.hasOwnProperty.call(PathMapper, req.params.assetType)) {
       res.status(500).send('Invalid asset type')

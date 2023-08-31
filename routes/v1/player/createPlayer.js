@@ -8,7 +8,7 @@ module.exports = {
   description: 'Create a new player on server',
   method: 'post',
   route: '/v1/players',
-  schema: Joi.object({
+  schema: {
     body: Joi.object({
       LENUM: Joi.number().integer().required().description('The ID of the player sending the request'),
       LESOFT: Joi.number().integer().required().description('The software used for sending the request'),
@@ -17,7 +17,7 @@ module.exports = {
       LEMAIL: Joi.string().required().description('The email to use for creation'),
       LEPASS: Joi.string().required().description('The password to use for creation')
     })
-  }),
+  },
   handler: async (app, req, res, next) => {
     if ((req.body.LENOM.length < 2 && req.body.LENOM.length > 15) || !/^[a-zA-Z0-9._^$]*$/.test(req.body.LENOM)) {
       res.status(500).send('Username must consist only of alphanumeric characters, and be between 2 and 15 characters long')

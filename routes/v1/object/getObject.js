@@ -5,13 +5,13 @@ module.exports = {
   description: 'Get all Objects',
   method: 'get',
   route: '/v1/objects',
-  schema: Joi.object({
+  schema: {
     body: Joi.object({
       LENUM: Joi.string().required().description('The ID of the player sending the request'),
       LEPASS: Joi.string().required().description('The password of the player sending the request'),
       LAMAP: Joi.string().description('Unknown use')
     })
-  }),
+  },
   handler: (app, req, res, next) => {
     res.arrayKey = 'OBJ'
     res.status(200).send([{

@@ -5,13 +5,13 @@ module.exports = {
   description: 'Get all MP3s available on server',
   method: 'get',
   route: '/v1/mp3s',
-  schema: Joi.object({
+  schema: {
     body: Joi.object({
       LENUM: Joi.string().required().description('The ID of the player sending the request'),
       LEPASS: Joi.string().required().description('The password of the player sending the request'),
       IDMP3: Joi.number().integer().required().description('Unknown use')
     })
-  }),
+  },
   handler: async (app, req, res, next) => {
     const dbMp3s = await app.db.models.MP3.findAll()
     const mp3s = []

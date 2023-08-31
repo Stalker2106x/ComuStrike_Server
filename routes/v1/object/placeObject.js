@@ -4,7 +4,7 @@ module.exports = {
   description: 'Place object',
   method: 'post',
   route: '/v1/objects',
-  schema: Joi.object({
+  schema: {
     body: Joi.object({
       LENUM: Joi.string().required().description('The ID of the player sending the request'),
       LEPASS: Joi.string().required().description('The password of the player sending the request'),
@@ -21,7 +21,7 @@ module.exports = {
       T: Joi.number().integer().description('Unknown use'),
       M: Joi.string().description('Unknown use')
     })
-  }),
+  },
   handler: (app, req, res, next) => {
     next()
   }

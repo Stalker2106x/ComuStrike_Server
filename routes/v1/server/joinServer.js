@@ -7,7 +7,7 @@ module.exports = {
   description: 'Register a client connection to a server',
   method: 'post',
   route: '/v1/servers/:serverId/join',
-  schema: Joi.object({
+  schema: {
     query: Joi.object({
       serverId: Joi.number().integer().optional()
     }),
@@ -18,7 +18,7 @@ module.exports = {
       SERVERID: Joi.number().integer().required().description('The ID of the server to join'),
       LAVERSION: Joi.string().required().description('The version of the software used for sending the request')
     })
-  }),
+  },
   handler: async (app, req, res, next) => {
     let player
     try {

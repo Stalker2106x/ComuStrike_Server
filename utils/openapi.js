@@ -1,8 +1,20 @@
 const fs = require('fs')
 const { convert } = require("joi-openapi")
 
-const routes = require('../routes')
-const xmlLayer = require('../routes/legacy/xmlLayer')
+function convertSchema(schema) {
+  let parameters = []
+  for (const [source, params] of Object.entries(schema)) {
+    const openapiSchema = convert(params)
+    for (const [paramName, paramData] of Object.entries(openapiSchema.properties)) {
+      parameters.push({
+        "name": paramName,
+        "in": source,
+        ...paramData
+      })
+    }
+  }
+  return (parameters)
+}
 
 module.exports = {
   generate: () => {
@@ -33,7 +45,8 @@ module.exports = {
         paths: {}
     }
 
-    const allRoutes = Object.values(routes)
+    const xmlLayer = require('../routes/legacy/xmlLayer')
+    const allRoutes = Object.values(require('../routes'))
     allRoutes.push(xmlLayer)
     for (const route of allRoutes) {
         //route params :p needs to become {p}
@@ -45,7 +58,7 @@ module.exports = {
         
         if (route.description) routeSpec.description = route.description
         if (route.produces) routeSpec.produces = route.produces
-        if (route.schema) routeSpec.parameters = convert(route.schema)
+        if (route.schema) routeSpec.parameters = convertSchema(route.schema)
 
         openAPI.paths[route.route][route.method] = routeSpec
     }

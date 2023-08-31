@@ -5,7 +5,7 @@ module.exports = {
   description: 'Gets tournament data',
   method: 'get',
   route: '/v1/tournament/:tournamentId',
-  schema: Joi.object({
+  schema: {
     body: Joi.object({
       LENUM: Joi.number().integer().required().description('The ID of the player sending the request'),
       LEPASS: Joi.string().required().description('The password of the player sending the request'),
@@ -13,7 +13,7 @@ module.exports = {
       ROUND: Joi.number().integer().required(),
       CLE_TOURNOIS: Joi.number().integer().required()
     })
-  }),
+  },
   handler: (app, req, res, next) => {
     res.status(200).send({
       TEAM: 'jobar',

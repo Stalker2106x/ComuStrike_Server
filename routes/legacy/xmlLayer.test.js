@@ -29,7 +29,7 @@ jest.mock('../../middlewares/validation', () => {
   }
 })
 
-jest.mock('../../../utils', () => {
+jest.mock('../../utils', () => {
   return {
     decypher: () => 'METHOD=get_map&LENUM=0'
   }
@@ -48,7 +48,7 @@ describe('XML Layer', () => {
   test('XML Layer should work', async () => {
     const appMock = {
     }
-    await handler.handler(appMock, { query: { crypt: '15CDF' }, body: {} }, resMock, jest.fn())
+    await handler.handler(appMock, { headers: {}, query: { crypt: '15CDF' }, body: {} }, resMock, jest.fn())
     expect(resMock.status).not.toHaveBeenCalled()
   })
 })

@@ -1,7 +1,7 @@
 const Joi = require('joi')
 
-const validation = require('../../middlewares/validation')
 const utils = require('../../utils')
+const validation = require('../../middlewares/validation')
 const routes = require('../index')
 
 const LegacyToRESTMapper = {
@@ -25,16 +25,17 @@ const LegacyToRESTMapper = {
   get_objet: routes.getObject
 }
 
+
 // xml_layer.php -> xmlLayer
 module.exports = {
   description: 'Legacy entrypoint to handle requests from game',
   method: 'get',
   route: '/script/romustrike/xml_layer.php',
-  schema: Joi.object({
+  schema: {
     query: Joi.object({
       crypt: Joi.string().min(3).required().description('Cyphered payload containing the method to call and the body of the request')
     })
-  }),
+  },
   handler: (app, req, res, next) => {
     if (global.debug) console.log(req.query.crypt)
     try {
@@ -43,9 +44,10 @@ module.exports = {
         const data = entry.split('=')
         req.body[data[0].toUpperCase()] = data[1]
       }
-      req.crypt = req.query.crypt
+      req.headers['crypt'] = req.query.crypt
       delete req.query.crypt
     } catch (e) {
+      console.error(e)
       res.status(500).send('Invalid crypt payload')
       next()
       return
