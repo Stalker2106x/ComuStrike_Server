@@ -10,12 +10,12 @@ module.exports = {
   route: '/v1/players',
   params: {
     body: Joi.object({
-      LENUM: Joi.number().integer().required().description('The ID of the player sending the request'),
-      LESOFT: Joi.number().integer().required().description('The software used for sending the request'),
+      LENUM: Joi.number().integer().optional().description('The ID of the player sending the request'),
+      LESOFT: Joi.number().integer().optional().description('The software used for sending the request'),
       LENOM: Joi.string().required().pattern(/^[a-zA-Z0-9._^$]*$/).description('The username to use for creation'),
-      LAVERSION: Joi.string().required().description('The version of the software used for sending the request'),
+      LAVERSION: Joi.string().optional().description('The version of the software used for sending the request'),
       LEMAIL: Joi.string().required().pattern(/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/).description('The email to use for creation'),
-      LEPASS: Joi.string().required().description('The password to use for creation')
+      LEPASS: Joi.string().optional().description('The password to use for creation')
     })
   },
   responses: {

@@ -10,9 +10,9 @@ module.exports = {
       playerId: Joi.number().integer().optional()
     }),
     body: Joi.object({
-      LENUM: Joi.number().integer().required().description('The ID of the player to set mp3 to'),
+      LENUM: Joi.number().integer().optional().description('The ID of the player to set mp3 to'),
       IDMP3: Joi.number().integer().required().description('The ID of the mp3 to set to the player'),
-      LAVERSION: Joi.string().required().description('The version of the software used for sending the request')
+      LAVERSION: Joi.string().optional().description('The version of the software used for sending the request')
     })
   },
   responses: {

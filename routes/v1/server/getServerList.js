@@ -9,12 +9,12 @@ module.exports = {
   route: '/v1/servers',
   params: {
     body: Joi.object({
-      LENUM: Joi.number().integer().required().description('The ID of the player sending the request'),
-      LEPASS: Joi.string().required().description('The password of the player sending the request'),
-      LESOFT: Joi.number().integer().required().description('The software used for sending the request'),
-      CLE_TOURNOIS: Joi.number().integer().required().description('Unknown use'),
-      ROUND: Joi.number().integer().required().description('Unknown use'),
-      LAVERSION: Joi.string().required().description('The version of the software used for sending the request')
+      LENUM: Joi.number().integer().optional().description('The ID of the player sending the request'),
+      LEPASS: Joi.string().optional().description('The password of the player sending the request'),
+      LESOFT: Joi.number().integer().optional().description('The software used for sending the request'),
+      CLE_TOURNOIS: Joi.number().integer().default(0).optional().description('Unknown use'),
+      ROUND: Joi.number().integer().default(0).optional().description('Unknown use'),
+      LAVERSION: Joi.string().optional().description('The version of the software used for sending the request')
     })
   },
   responses: {
@@ -36,7 +36,7 @@ module.exports = {
   handler: async (app, req, res, next) => {
     let player
     try {
-      player = await utils.authorizePlayer(app, { id: req.body.LENUM, password: req.body.LEPASS })
+      player = await utils.authorizePlayer(app, req)
     } catch (e) {
       res.status(500).send({ error: 'Invalid credentials' })
       return next()

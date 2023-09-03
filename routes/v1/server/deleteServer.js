@@ -13,9 +13,9 @@ module.exports = {
     }),
     body: Joi.object({
       LENUM: Joi.number().integer().optional().description('The ID of the player sending the request'),
-      LEPASS: Joi.string().required().description('The password of the player sending the request'),
+      LEPASS: Joi.string().optional().description('The password of the player sending the request'),
       CLE_SERVEUR: Joi.number().integer().required().description('The ID of the server to delete'),
-      LAVERSION: Joi.string().required().description('The version of the software used for sending the request')
+      LAVERSION: Joi.string().optional().description('The version of the software used for sending the request')
     })
   },
   responses: {
@@ -27,7 +27,7 @@ module.exports = {
   handler: async (app, req, res, next) => {
     let player
     try {
-      player = await utils.authorizePlayer(app, { id: req.body.LENUM, password: req.body.LEPASS })
+      player = await utils.authorizePlayer(app, req)
     } catch (e) {
       res.status(500).send({ error: 'Invalid credentials' })
       return next()

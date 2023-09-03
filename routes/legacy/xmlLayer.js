@@ -66,9 +66,12 @@ module.exports = {
       // Call appopriate REST method from mapper
       const method = LegacyToRESTMapper[req.body.METHOD]
       delete req.body.METHOD //Field needs to be discarded to pass validation
-      
-      validation.validate(method.params, req)
-      method.handler(app, req, res, next)
+      const validationResult = validation.validate(method.params, req)
+      if (validationResult != null) {
+        res.status(500).send(validationResult)
+      } else {
+        method.handler(app, req, res, next)
+      }
     }
   }
 }

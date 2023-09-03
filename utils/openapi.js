@@ -79,6 +79,7 @@ module.exports = {
         openAPI.paths[route.route][route.method] = routeSpec
     }
 
+    fs.writeFileSync('openapi.json', JSON.stringify(openAPI, null, 2))
     return openAPI
   }
 }

@@ -10,9 +10,10 @@ module.exports = {
   route: '/v1/maps',
   params: {
     body: Joi.object({
-      LENUM: Joi.number().integer().required().description('The ID of the player sending the request'),
-      LESOFT: Joi.number().integer().required().description('The software used for sending the request'),
-      LEPASS: Joi.string().required().description('The password of the player sending the request')
+      LENUM: Joi.number().integer().optional().description('The ID of the player sending the request'),
+      LESOFT: Joi.number().integer().optional().description('The software used for sending the request'),
+      LEPASS: Joi.string().optional().description('The password of the player sending the request'),
+      LAVERSION: Joi.string().optional().description('The version of the software used for sending the request')
     }),
   },
   responses: {
@@ -25,14 +26,20 @@ module.exports = {
     })
   },
   handler: async (app, req, res, next) => {
+    try {
+      await utils.authorizePlayer(app, req)
+    } catch (e) {
+      res.status(500).send({ error: 'Invalid credentials' })
+      return next()
+    }
     const dbMaps = await app.db.models.Maps.findAll()
     const maps = []
     for (const map of dbMaps) {
       maps.push({
         NAME: map.name,
         MAPPEUR: map.author,
-        WADMD5: utils.fileMD5(path.join(__dirname, '../../maps/', `${map.name}.wad`)),
-        BSPMD5: utils.fileMD5(path.join(__dirname, '../../maps/', `${map.name}.bsp`)),
+        WADMD5: utils.fileMD5(path.join(__dirname, '../../../maps/', `${map.name}.wad`)),
+        BSPMD5: utils.fileMD5(path.join(__dirname, '../../../maps/', `${map.name}.bsp`)),
         HOST: global.forceLocalhost ? '127.0.0.1' : app.config.publicIP
       })
     }

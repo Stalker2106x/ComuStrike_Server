@@ -8,7 +8,8 @@ module.exports = {
   params: {
     body: Joi.object({
       LENUM: Joi.string().required().description('The ID of the player sending the request'),
-      LEPASS: Joi.string().required().description('The password of the player sending the request'),
+      LEPASS: Joi.string().optional().description('The password of the player sending the request'),
+      LAVERSION: Joi.string().optional().description('The version of the software used for sending the request'),
       LAMAP: Joi.string().description('Unknown use')
     })
   },

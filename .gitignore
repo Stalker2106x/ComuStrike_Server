@@ -130,6 +130,7 @@ dist
 .pnp.*
 
 # Server
+openapi.json
 Comustrike_Server*
 config.json
 server.log

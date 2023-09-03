@@ -8,8 +8,9 @@ module.exports = {
   params: {
     body: Joi.object({
       LENUM: Joi.string().required().description('The ID of the player sending the request'),
-      LEPASS: Joi.string().required().description('The password of the player sending the request'),
-      IDMP3: Joi.number().integer().required().description('Unknown use')
+      LEPASS: Joi.string().optional().description('The password of the player sending the request'),
+      LESOFT: Joi.number().integer().optional().description('The software used for sending the request'),
+      LAVERSION: Joi.string().optional().description('The version of the software used for sending the request')
     })
   },
   responses: {
@@ -21,6 +22,12 @@ module.exports = {
     })
   },
   handler: async (app, req, res, next) => {
+    try {
+      await utils.authorizePlayer(app, req)
+    } catch (e) {
+      res.status(500).send({ error: 'Invalid credentials' })
+      return next()
+    }
     const dbMp3s = await app.db.models.MP3.findAll()
     const mp3s = []
     for (const mp3 of dbMp3s) {

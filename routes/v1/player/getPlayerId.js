@@ -6,16 +6,13 @@ const utils = require('../../../utils')
 module.exports = {
   description: 'Get player ID with a username',
   method: 'get',
-  route: '/v1/players/:username/id',
+  route: '/v1/playerId',
   params: {
-    query: Joi.object({
-      username: Joi.string().optional()
-    }),
     body: Joi.object({
       LELOGIN: Joi.string().min(2).optional().description('The username of the player to get ID for'),
-      LEPASS: Joi.string().required().description('The password of the player to get ID for'),
-      LESOFT: Joi.number().integer().required().description('The software used for sending the request'),
-      LAVERSION: Joi.string().required().description('The version of the software used for sending the request')
+      LEPASS: Joi.string().optional().description('The password of the player to get ID for'),
+      LESOFT: Joi.number().integer().optional().description('The software used for sending the request'),
+      LAVERSION: Joi.string().optional().description('The version of the software used for sending the request')
     })
   },
   responses: {
@@ -29,7 +26,7 @@ module.exports = {
   handler: async (app, req, res, next) => {
     let player
     try {
-      player = await utils.authorizePlayer(app, { username: req.query.username || req.body.LELOGIN, password: req.body.LEPASS })
+      player = await utils.authorizePlayer(app, req)
     } catch (e) {
       res.status(500).send({ error: 'Invalid credentials' })
       return
