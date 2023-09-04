@@ -49,6 +49,8 @@ module.exports = {
       if (validationResult != null) {
         res.status(500).send(validationResult)
       } else {
+        req.headers['rs-version'] = req.body.LAVERSION
+        req.headers['rs-soft'] = req.body.LESOFT
         method.handler(app, req, res, next)
       }
     }
