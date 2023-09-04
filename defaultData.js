@@ -1,6 +1,13 @@
-const utils = require('../utils')
+const utils = require('./utils')
 
 module.exports = {
+  async create () {
+    await module.exports.createRanks(this)
+    await module.exports.createMP3(this)
+    await module.exports.createPlayers(this)
+    await module.exports.createTeams(this)
+    await module.exports.createMaps(this)
+  },
   async createTeams (app) {
     await app.db.models.Teams.create({
       name: 'RS Staff'
@@ -15,6 +22,13 @@ module.exports = {
       name: 'RSbo',
       description: 'Default 157 music'
     })
+  },
+  async createRanks (app) {
+    for (let i = 1; i <= 10; i++) {
+      await app.db.models.Ranks.create({
+        name: `Rank${i}`
+      })
+    }
   },
   async createPlayers (app) {
     await app.db.models.Players.create({

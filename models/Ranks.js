@@ -2,7 +2,7 @@ const { DataTypes } = require('sequelize')
 
 module.exports = {
   define: {
-    mp3_id: {
+    rank_id: {
       type: DataTypes.INTEGER,
       autoIncrement: true,
       primaryKey: true
@@ -10,13 +10,9 @@ module.exports = {
     name: {
       type: DataTypes.STRING,
       allowNull: false
-    },
-    description: {
-      type: DataTypes.STRING,
-      allowNull: false
     }
   },
   options: {
-    tableName: 'MP3'
+    tableName: 'Ranks'
   }
 }

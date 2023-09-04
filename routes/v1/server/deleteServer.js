@@ -9,7 +9,7 @@ module.exports = {
   route: '/v1/servers/:serverId',
   params: {
     query: Joi.object({
-      serverId: Joi.number().integer().optional()
+      serverId: Joi.number().integer().required()
     }),
     body: Joi.object({
       CLE_SERVEUR: Joi.number().integer().required().description('The ID of the server to delete')
@@ -22,9 +22,8 @@ module.exports = {
     })
   },
   handler: async (app, req, res, next) => {
-    let player
     try {
-      player = await utils.authorizePlayer(app, req)
+      await utils.authorizePlayer(app, req)
     } catch (e) {
       res.status(500).send({ error: `Authorization error: ${e}` })
       return next()

@@ -1,35 +1,37 @@
 /* eslint-disable no-undef */
-const handler = require('./xmlLayer/xmlLayer')
+const handler = require('./xmlLayer')
 
-jest.mock('../index', () => {
+jest.mock('../../index', () => {
   return {
     createPlayer: { handler: jest.fn() },
-    getPlayer: { handler: jest.fn()},
-    getPlayerId: { handler: jest.fn()},
-    addScore: { handler: jest.fn()},
-    createTournament: { handler: jest.fn()},
-    getMP3: { handler: jest.fn()},
-    setMP3: { handler: jest.fn()},
-    getMapList: { handler: jest.fn()},
-    createServer: { handler: jest.fn()},
-    getServerList: { handler: jest.fn()},
-    deleteServer: { handler: jest.fn()},
-    joinServer: { handler: jest.fn()},
-    quitServer: { handler: jest.fn()},
-    getTournaments: { handler: jest.fn()},
-    getTournament: { handler: jest.fn()},
-    placeObject: { handler: jest.fn()},
+    getPlayer: { handler: jest.fn() },
+    getPlayerId: { handler: jest.fn() },
+    addScore: { handler: jest.fn() },
+    getRank: { handler: jest.fn() },
+    killed: { handler: jest.fn() },
+    createTournament: { handler: jest.fn() },
+    getMP3List: { handler: jest.fn() },
+    setMP3: { handler: jest.fn() },
+    getMapList: { handler: jest.fn() },
+    createServer: { handler: jest.fn() },
+    getServerList: { handler: jest.fn() },
+    deleteServer: { handler: jest.fn() },
+    joinServer: { handler: jest.fn() },
+    quitServer: { handler: jest.fn() },
+    getTournamentList: { handler: jest.fn() },
+    getTournament: { handler: jest.fn() },
+    placeObject: { handler: jest.fn() },
     getObject: { handler: jest.fn() }
   }
 })
 
-jest.mock('../../middlewares/validation', () => {
+jest.mock('../../../middlewares/validation', () => {
   return {
     validate: (schema, req) => { }
   }
 })
 
-jest.mock('../../utils', () => {
+jest.mock('../../../utils', () => {
   return {
     decypher: () => 'METHOD=get_map&LENUM=0'
   }

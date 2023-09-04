@@ -17,9 +17,9 @@ module.exports = {
   },
   handler: (app, req, res, next) => {
     res.status(200).send({
-        IDGRADE: 0,
-        NOMGRADE: 'test',
-        NIVEAU: 1
+      IDGRADE: 0,
+      NOMGRADE: 'test',
+      NIVEAU: 1
     })
     next()
   }

@@ -9,7 +9,7 @@ module.exports = {
   route: '/v1/servers/:serverId/join',
   params: {
     query: Joi.object({
-      serverId: Joi.number().integer().optional()
+      serverId: Joi.number().integer().required()
     }),
     body: null
   },
@@ -27,13 +27,13 @@ module.exports = {
       res.status(500).send({ error: `Authorization error: ${e}` })
       return next()
     }
-    const serverId = parseInt( req.query.serverId || req.body.SERVERID)
+    const serverId = parseInt(req.query.serverId || req.body.SERVERID)
     const server = app.serverList[app.serverList.findIndex((serv) => serv.serverId === serverId)]
     if (!server) {
       res.status(500).send({ error: 'Invalid SERVERID' })
       return next()
     }
-    if (server.connectedPeers.indexOf(player.player_id) != -1) {
+    if (server.connectedPeers.indexOf(player.player_id) !== -1) {
       res.status(500).send({ error: 'Player ID already on server' })
       next()
       return

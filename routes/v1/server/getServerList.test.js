@@ -6,6 +6,14 @@ const resMock = {
   send: jest.fn().mockReturnThis()
 }
 
+jest.mock('../../../utils', () => {
+  return {
+    authorizePlayer: () => {
+      return Promise.resolve({})
+    }
+  }
+})
+
 jest.spyOn(resMock, 'status')
 afterEach(() => {
   jest.clearAllMocks()
@@ -48,7 +56,6 @@ describe('Get server list', () => {
       }
     }
     await handler.handler(appMock, reqMock, resMock, jest.fn())
-    expect(resMock.status).toBeCalledWith(200)
     expect(resMock.send).toBeCalledWith([{
       NOM: appMock.serverList[0].name,
       VERSION: appMock.serverList[0].version,
@@ -60,5 +67,6 @@ describe('Get server list', () => {
       __SERVERID: appMock.serverList[0].serverId,
       __PLAYERID: appMock.serverList[0].owner
     }])
+    expect(resMock.status).toBeCalledWith(200)
   })
 })

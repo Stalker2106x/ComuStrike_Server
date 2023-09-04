@@ -36,6 +36,7 @@ module.exports = {
       res.status(500).send({ error: 'Invalid SERVERID' })
       return next()
     }
+    player.update({})
     const server = app.serverList[serverIdx]
     server.connectedPeers.splice(server.connectedPeers.indexOf(parseInt(req.body.LENUM)), 1)
     utils.logger('game', `Player ${parseInt(req.body.LENUM)} left server [${server.serverId}] ${server.host}`)

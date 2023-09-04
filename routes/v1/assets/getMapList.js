@@ -9,12 +9,7 @@ module.exports = {
   method: 'get',
   route: '/v1/maps',
   params: {
-    body: Joi.object({
-      LENUM: Joi.number().integer().optional().description('The ID of the player sending the request'),
-      LESOFT: Joi.number().integer().optional().description('The software used for sending the request'),
-      LEPASS: Joi.string().optional().description('The password of the player sending the request'),
-      LAVERSION: Joi.string().optional().description('The version of the software used for sending the request')
-    }),
+    body: null
   },
   responses: {
     200: Joi.array().items({

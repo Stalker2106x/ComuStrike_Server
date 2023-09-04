@@ -9,7 +9,7 @@ module.exports = {
   route: '/v1/players/:playerId',
   params: {
     query: Joi.object({
-      playerId: Joi.string().optional().description('The ID of the player sending the request')
+      playerId: Joi.string().required().description('The ID of the player sending the request')
     })
   },
   responses: {
@@ -26,9 +26,9 @@ module.exports = {
       MSG3: Joi.string().required().description('Unknown use'),
       MSG4: Joi.string().required().description('Unknown use'),
       SCORE: Joi.string().required().description('Total score of the user'),
-      SCROLL: Joi.string().required().description('Text that will be written on the bottom scroll text of the game') ,
+      SCROLL: Joi.string().required().description('Text that will be written on the bottom scroll text of the game'),
       STATS: Joi.string().required().description('Text that will be written on left of the play home screen'),
-      PANEL: Joi.string().required().description('Text that will be written on top of the game panel') ,
+      PANEL: Joi.string().required().description('Text that will be written on top of the game panel'),
       ROMUCHAT: Joi.string().required().description('Hostname to use to connect chat client'),
       ID_PLAYER: Joi.string().required().description('ID of the player'),
       CONTROLE: Joi.string().required().description('MD5 checksum of the player')

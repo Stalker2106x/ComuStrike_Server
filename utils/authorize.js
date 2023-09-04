@@ -6,7 +6,7 @@ module.exports = {
     const where = {}
     if (req.headers.authorization) {
       const session = module.exports.authorizeToken(app, req.headers.authorization.replace('Bearer ', ''))
-      where.username = session.secret.username
+      where.player_id = session.secret.id
     } else {
       // Identify login
       if (req.body.LENUM) {

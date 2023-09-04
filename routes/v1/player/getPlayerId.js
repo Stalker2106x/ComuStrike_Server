@@ -12,7 +12,7 @@ module.exports = {
   },
   responses: {
     200: Joi.object({
-      ID_PLAYER: Joi.string().required().description('ID of the player'),
+      ID_PLAYER: Joi.string().required().description('ID of the player')
     }),
     500: Joi.object({
       error: Joi.string().required().description('A short description of the error that occured')

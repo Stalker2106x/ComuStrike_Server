@@ -1,7 +1,6 @@
 const { DataTypes } = require('sequelize')
 
 module.exports = {
-  name: 'Players',
   define: {
     player_id: {
       type: DataTypes.INTEGER,
@@ -30,7 +29,7 @@ module.exports = {
     },
     version: {
       type: DataTypes.STRING,
-      defaultValue: 100
+      defaultValue: 157
     },
     mac_address: {
       type: DataTypes.STRING,
@@ -46,7 +45,17 @@ module.exports = {
     },
     mp3: {
       type: DataTypes.INTEGER,
-      defaultValue: 1
+      references: {
+        model: 'MP3',
+        key: 'mp3_id'
+      }
+    },
+    rank: {
+      type: DataTypes.INTEGER,
+      references: {
+        model: 'Ranks',
+        key: 'rank_id'
+      }
     },
     model: {
       type: DataTypes.STRING,

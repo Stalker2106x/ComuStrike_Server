@@ -30,9 +30,8 @@ module.exports = {
     })
   },
   handler: async (app, req, res, next) => {
-    let player
     try {
-      player = await utils.authorizePlayer(app, req)
+      await utils.authorizePlayer(app, req)
     } catch (e) {
       res.status(500).send({ error: `Authorization error: ${e}` })
       return next()

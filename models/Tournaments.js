@@ -1,7 +1,6 @@
 const { DataTypes } = require('sequelize')
 
 module.exports = {
-  name: 'Tournaments',
   define: {
     tournament_id: {
       type: DataTypes.INTEGER,

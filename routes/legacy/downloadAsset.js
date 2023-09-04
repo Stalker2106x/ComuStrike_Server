@@ -13,8 +13,8 @@ module.exports = {
   route: '/romustrike/:assetType/:asset',
   params: {
     body: Joi.object({
-      assetType: Joi.string().valid('map150','mp3').required().description('The asset type of the asset to download'),
-      asset: Joi.string().required().description('The asset name of the asset to download'),
+      assetType: Joi.string().valid('map150', 'mp3').required().description('The asset type of the asset to download'),
+      asset: Joi.string().required().description('The asset name of the asset to download')
     })
   },
   responses: {

@@ -3,6 +3,7 @@ const handler = require('./getMapList')
 
 jest.mock('../../../utils', () => {
   return {
+    authorizePlayer: (app, params) => {},
     fileMD5: () => 'checksum'
   }
 })

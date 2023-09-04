@@ -6,7 +6,9 @@ module.exports = {
   method: 'get',
   route: '/v1/players/:playerId/rank',
   params: {
-    body: null
+    query: Joi.object({
+      playerId: Joi.string().required().description('The ID of the player sending the request')
+    })
   },
   handler: (app, req, res, next) => {
     res.status(200).send({

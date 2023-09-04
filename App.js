@@ -18,13 +18,9 @@ const xmlLayer = require('./routes/legacy/xmlLayer/xmlLayer')
 const validate = require('./middlewares/validation').middleware
 const sendMiddleware = require('./middlewares/sendMiddleware')
 
-const defaultData = require('./models/defaultData')
+const defaultData = require('./defaultData')
 
-const Players = require('./models/Players')
-const MP3 = require('./models/MP3')
-const Teams = require('./models/Teams')
-const Maps = require('./models/Maps')
-const Tournaments = require('./models/Tournaments')
+const models = require('./models')
 
 class App {
   constructor (debug, fillDB, forceLocalhost) {
@@ -81,11 +77,9 @@ class App {
         logging: global.debug
       })
       await this.db.authenticate()
-      await this.db.define(Players.name, Players.define, Players.options)
-      await this.db.define(MP3.name, MP3.define, MP3.options)
-      await this.db.define(Teams.name, Teams.define, Teams.options)
-      await this.db.define(Maps.name, Maps.define, Maps.options)
-      await this.db.define(Tournaments.name, Tournaments.define, Tournaments.options)
+      for (const [modelName, model] of Object.entries(models)) {
+        await this.db.define(modelName, model.define, model.options)
+      }
       await this.db.models.Players.sync() // Make sure player table exists for next request
       const playerCount = await this.db.models.Players.count()
       if (playerCount === 0 || this.fillDB) {
@@ -108,10 +102,7 @@ class App {
           process.exit(0)
         }
         await this.db.sync({ force: true })
-        await defaultData.createPlayers(this)
-        await defaultData.createMP3(this)
-        await defaultData.createTeams(this)
-        await defaultData.createMaps(this)
+        await defaultData.create(this)
         console.log('Database was filled successfully!')
       } else {
         await this.db.sync()

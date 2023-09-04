@@ -17,7 +17,10 @@ module.exports = {
     }
   },
   info_joueur: {
-    handler: routes.getPlayer.handler,
+    handler: (app, req, res, next) => {
+      req.query.playerId = req.body.LENUM
+      routes.getPlayer.handler(app, req, res, next)
+    },
     params: {
       body: Joi.object({
         LENUM: Joi.number().integer().optional().description('The ID of the player sending the request'),
@@ -85,7 +88,7 @@ module.exports = {
         LESOFT: Joi.number().integer().optional().description('The software used for sending the request'),
         LEPASS: Joi.string().optional().description('The password of the player sending the request'),
         LAVERSION: Joi.string().optional().description('The version of the software used for sending the request')
-      }),
+      })
     }
   },
   set_server: {
@@ -122,10 +125,13 @@ module.exports = {
         ROUND: Joi.number().integer().default(0).optional().description('Unknown use'),
         LAVERSION: Joi.string().optional().description('The version of the software used for sending the request')
       })
-    },
+    }
   },
   delete_server: {
-    handler: routes.deleteServer.handler,
+    handler: (app, req, res, next) => {
+      req.query.serverId = req.body.CLE_SERVEUR
+      routes.deleteServer.handler(app, req, res, next)
+    },
     params: {
       body: Joi.object({
         LENUM: Joi.number().integer().optional().description('The ID of the player sending the request'),
@@ -136,7 +142,10 @@ module.exports = {
     }
   },
   joinserver: {
-    handler: routes.joinServer.handler,
+    handler: (app, req, res, next) => {
+      req.query.serverId = req.body.SERVERID
+      routes.joinServer.handler(app, req, res, next)
+    },
     params: {
       body: Joi.object({
         LENUM: Joi.number().integer().optional().description('The ID of the player sending the request'),
@@ -148,7 +157,10 @@ module.exports = {
     }
   },
   quitter_server: {
-    handler: routes.quitServer.handler,
+    handler: (app, req, res, next) => {
+      req.query.serverId = req.body.LAPARTIE
+      routes.quitServer.handler(app, req, res, next)
+    },
     params: {
       query: Joi.object({
         serverId: Joi.number().integer().optional()

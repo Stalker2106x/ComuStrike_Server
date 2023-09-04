@@ -1,4 +1,3 @@
-const Joi = require('joi')
 
 // get_tournois -> getTournamentList
 module.exports = {
