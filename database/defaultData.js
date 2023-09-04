@@ -1,12 +1,15 @@
-const utils = require('./utils')
+const utils = require('../utils')
+
+const events = require('./events')
 
 module.exports = {
-  async create () {
-    await module.exports.createRanks(this)
-    await module.exports.createMP3(this)
-    await module.exports.createPlayers(this)
-    await module.exports.createTeams(this)
-    await module.exports.createMaps(this)
+  async create (app) {
+    await module.exports.createRanks(app)
+    await module.exports.createMP3(app)
+    await module.exports.createPlayers(app)
+    await module.exports.createTeams(app)
+    await module.exports.createMaps(app)
+    await module.exports.createEvents(app)
   },
   async createTeams (app) {
     await app.db.models.Teams.create({
@@ -89,5 +92,8 @@ module.exports = {
     await app.db.models.Maps.create({ name: 'tunisia', author: 'TDC' })
     await app.db.models.Maps.create({ name: 'Valaperil', author: 'Yamamoto' })
     await app.db.models.Maps.create({ name: 'Z51', author: 'Bonovox' })
+  },
+  async createEvents (app) {
+    await app.db.query(events.ScoreEvent)
   }
 }

@@ -2,7 +2,7 @@ const { DataTypes } = require('sequelize')
 
 module.exports = {
   define: {
-    player_id: {
+    id: {
       type: DataTypes.INTEGER,
       autoIncrement: true,
       primaryKey: true
@@ -43,20 +43,6 @@ module.exports = {
       type: DataTypes.INTEGER,
       defaultValue: 1
     },
-    mp3: {
-      type: DataTypes.INTEGER,
-      references: {
-        model: 'MP3',
-        key: 'mp3_id'
-      }
-    },
-    rank: {
-      type: DataTypes.INTEGER,
-      references: {
-        model: 'Ranks',
-        key: 'rank_id'
-      }
-    },
     model: {
       type: DataTypes.STRING,
       defaultValue: 'agtx'
@@ -64,6 +50,20 @@ module.exports = {
     role: {
       type: DataTypes.INTEGER,
       defaultValue: 0
+    },
+    mp3_id: {
+      type: DataTypes.INTEGER,
+      references: {
+        model: 'MP3',
+        key: 'id'
+      }
+    },
+    rank_id: {
+      type: DataTypes.INTEGER,
+      references: {
+        model: 'Ranks',
+        key: 'id'
+      }
     },
     kills: {
       type: DataTypes.BIGINT,
@@ -80,5 +80,7 @@ module.exports = {
   },
   options: {
     tableName: 'Players'
+  },
+  defineAssociations: function (models) {
   }
 }

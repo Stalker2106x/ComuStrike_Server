@@ -2,7 +2,7 @@ const { DataTypes } = require('sequelize')
 
 module.exports = {
   define: {
-    map_id: {
+    id: {
       type: DataTypes.INTEGER,
       autoIncrement: true,
       primaryKey: true
@@ -11,24 +11,14 @@ module.exports = {
       type: DataTypes.STRING,
       allowNull: false
     },
-    author: {
-      type: DataTypes.STRING,
-      allowNull: false
-    },
-    active: {
-      type: DataTypes.BOOLEAN,
-      defaultValue: true
-    },
     description: {
       type: DataTypes.STRING,
-      allowNull: true
-    },
-    sessions: {
-      type: DataTypes.INTEGER,
-      defaultValue: 0
+      allowNull: false
     }
   },
   options: {
-    tableName: 'Maps'
+    tableName: 'MP3'
+  },
+  defineAssociations: function (models) {
   }
 }

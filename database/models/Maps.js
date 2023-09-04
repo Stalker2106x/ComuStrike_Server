@@ -2,33 +2,35 @@ const { DataTypes } = require('sequelize')
 
 module.exports = {
   define: {
-    tournament_id: {
+    id: {
       type: DataTypes.INTEGER,
       autoIncrement: true,
       primaryKey: true
     },
+    name: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
+    author: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
+    active: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: true
+    },
     description: {
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: true
     },
-    map: {
-      type: DataTypes.STRING,
-      allowNull: false
-    },
-    round: {
+    sessions: {
       type: DataTypes.INTEGER,
-      allowNull: false
-    },
-    score1: {
-      type: DataTypes.INTEGER,
-      allowNull: false
-    },
-    score2: {
-      type: DataTypes.INTEGER,
-      allowNull: false
+      defaultValue: 0
     }
   },
   options: {
-    tableName: 'Tournaments'
+    tableName: 'Maps'
+  },
+  defineAssociations: function (models) {
   }
 }

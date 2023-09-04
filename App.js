@@ -18,9 +18,9 @@ const xmlLayer = require('./routes/legacy/xmlLayer/xmlLayer')
 const validate = require('./middlewares/validation').middleware
 const sendMiddleware = require('./middlewares/sendMiddleware')
 
-const defaultData = require('./defaultData')
+const defaultData = require('./database/defaultData')
 
-const models = require('./models')
+const models = require('./database/models')
 
 class App {
   constructor (debug, fillDB, forceLocalhost) {
@@ -77,8 +77,13 @@ class App {
         logging: global.debug
       })
       await this.db.authenticate()
+      // Define models
       for (const [modelName, model] of Object.entries(models)) {
         await this.db.define(modelName, model.define, model.options)
+      }
+      // Define associations
+      for (const model of Object.values(models)) {
+        await model.defineAssociations(this.db.models)
       }
       await this.db.models.Players.sync() // Make sure player table exists for next request
       const playerCount = await this.db.models.Players.count()

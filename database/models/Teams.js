@@ -2,7 +2,7 @@ const { DataTypes } = require('sequelize')
 
 module.exports = {
   define: {
-    rank_id: {
+    id: {
       type: DataTypes.INTEGER,
       autoIncrement: true,
       primaryKey: true
@@ -13,6 +13,8 @@ module.exports = {
     }
   },
   options: {
-    tableName: 'Ranks'
+    tableName: 'Teams'
+  },
+  defineAssociations: function (models) {
   }
 }
