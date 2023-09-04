@@ -7,9 +7,6 @@ module.exports = {
   route: '/v1/tournament/:tournamentId',
   params: {
     body: Joi.object({
-      LENUM: Joi.number().integer().optional().description('The ID of the player sending the request'),
-      LEPASS: Joi.string().optional().description('The password of the player sending the request'),
-      LESOFT: Joi.number().integer().optional().description('The software used for sending the request'),
       ROUND: Joi.number().integer().required(),
       CLE_TOURNOIS: Joi.number().integer().required()
     })

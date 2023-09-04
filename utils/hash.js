@@ -13,6 +13,10 @@ module.exports = {
   },
 
   passwordHash (password, salt) {
-    return createHash('sha256').update(password + salt).digest('hex')
+    return module.exports.sha256(password + salt)
+  },
+
+  sha256 (data) {
+    return createHash('sha256').update(data).digest('hex')
   }
 }

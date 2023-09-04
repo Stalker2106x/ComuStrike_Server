@@ -9,12 +9,8 @@ module.exports = {
   route: '/v1/servers',
   params: {
     body: Joi.object({
-      LENUM: Joi.number().integer().optional().description('The ID of the player sending the request'),
-      LEPASS: Joi.string().optional().description('The password of the player sending the request'),
-      LESOFT: Joi.number().integer().optional().description('The software used for sending the request'),
       CLE_TOURNOIS: Joi.number().integer().default(0).optional().description('Unknown use'),
-      ROUND: Joi.number().integer().default(0).optional().description('Unknown use'),
-      LAVERSION: Joi.string().optional().description('The version of the software used for sending the request')
+      ROUND: Joi.number().integer().default(0).optional().description('Unknown use')
     })
   },
   responses: {
@@ -38,7 +34,7 @@ module.exports = {
     try {
       player = await utils.authorizePlayer(app, req)
     } catch (e) {
-      res.status(500).send({ error: 'Invalid credentials' })
+      res.status(500).send({ error: `Authorization error: ${e}` })
       return next()
     }
     const servers = []

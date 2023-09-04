@@ -13,7 +13,7 @@ const mariadb = require('mariadb')
 const config = require('./config')
 const utils = require('./utils')
 const routes = require('./routes')
-const xmlLayer = require('./routes/legacy/xmlLayer')
+const xmlLayer = require('./routes/legacy/xmlLayer/xmlLayer')
 
 const validate = require('./middlewares/validation').middleware
 const sendMiddleware = require('./middlewares/sendMiddleware')
@@ -66,8 +66,9 @@ class App {
     this.config = { ...config, ...userConfig, publicIP }
     // Set globals for logger
     if (this.config.logFile && this.config.logFile !== '') global.logFile = this.config.logFile
-    // Initialize serverList
+    // Initialize dynamic data
     this.serverList = []
+    this.sessions = []
   }
 
   async initDB () {

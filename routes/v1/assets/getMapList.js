@@ -29,7 +29,7 @@ module.exports = {
     try {
       await utils.authorizePlayer(app, req)
     } catch (e) {
-      res.status(500).send({ error: 'Invalid credentials' })
+      res.status(500).send({ error: `Authorization error: ${e}` })
       return next()
     }
     const dbMaps = await app.db.models.Maps.findAll()

@@ -25,7 +25,7 @@ module.exports = {
     try {
       await utils.authorizePlayer(app, req)
     } catch (e) {
-      res.status(500).send({ error: 'Invalid credentials' })
+      res.status(500).send({ error: `Authorization error: ${e}` })
       return next()
     }
     const dbMp3s = await app.db.models.MP3.findAll()

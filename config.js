@@ -4,6 +4,7 @@ module.exports = {
   userConfigPath: './config.json',
   defaultUserConfig: {
     maxPayloadSize: 1500,
+    sessionDuration: 3600,
     cypherKey: 66865,
     gamePort: 80,
     chatPort: 3159,

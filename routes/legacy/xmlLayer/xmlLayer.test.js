@@ -1,5 +1,5 @@
 /* eslint-disable no-undef */
-const handler = require('./xmlLayer')
+const handler = require('./xmlLayer/xmlLayer')
 
 jest.mock('../index', () => {
   return {

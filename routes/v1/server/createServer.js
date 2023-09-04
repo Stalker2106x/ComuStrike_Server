@@ -9,9 +9,6 @@ module.exports = {
   route: '/v1/servers',
   params: {
     body: Joi.object({
-      LENUM: Joi.number().integer().optional().description('The ID of the player sending the request'),
-      LEPASS: Joi.string().optional().description('The password of the player sending the request'),
-      LESOFT: Joi.number().integer().optional().description('The software used for sending the request'),
       LECOMMENT: Joi.string().required(),
       MAX_PLAYERS: Joi.number().integer().required(),
       CFT: Joi.number().integer().required(),
@@ -23,8 +20,7 @@ module.exports = {
       ARMES: Joi.string().required(),
       THIRD: Joi.number().integer().required(),
       GDMG: Joi.number().integer().required(),
-      ANTILAG: Joi.number().integer().required(),
-      LAVERSION: Joi.string().optional().description('The version of the software used for sending the request')
+      ANTILAG: Joi.number().integer().required()
     })
   },
   responses: {
@@ -38,7 +34,7 @@ module.exports = {
     try {
       player = await utils.authorizePlayer(app, req)
     } catch (e) {
-      res.status(500).send({ error: 'Invalid credentials' })
+      res.status(500).send({ error: `Authorization error: ${e}` })
       return next()
     }
     const serverId = app.serverList.length

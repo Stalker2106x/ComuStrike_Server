@@ -6,17 +6,14 @@ module.exports = {
   method: 'get',
   route: '/v1/players/:playerId/rank',
   params: {
-    body: Joi.object({
-      J: Joi.string().required().description('The ID of the player to get the rank of'),
-      LAVERSION: Joi.string().optional().description('The version of the software used for sending the request')
-    })
+    body: null
   },
   handler: (app, req, res, next) => {
     res.status(200).send({
-        IDGRADE: 0,
-        NOMGRADE: 'test',
-        NIVEAU: 1,
-        LVLARME: 1
+      IDGRADE: 0,
+      NOMGRADE: 'test',
+      NIVEAU: 1,
+      LVLARME: 1
     })
     next()
   }

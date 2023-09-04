@@ -8,12 +8,7 @@ module.exports = {
   method: 'get',
   route: '/v1/playerId',
   params: {
-    body: Joi.object({
-      LELOGIN: Joi.string().min(2).optional().description('The username of the player to get ID for'),
-      LEPASS: Joi.string().optional().description('The password of the player to get ID for'),
-      LESOFT: Joi.number().integer().optional().description('The software used for sending the request'),
-      LAVERSION: Joi.string().optional().description('The version of the software used for sending the request')
-    })
+    body: null
   },
   responses: {
     200: Joi.object({
@@ -28,7 +23,7 @@ module.exports = {
     try {
       player = await utils.authorizePlayer(app, req)
     } catch (e) {
-      res.status(500).send({ error: 'Invalid credentials' })
+      res.status(500).send({ error: `Authorization error: ${e}` })
       return
     }
     res.status(200).send({ ID_PLAYER: player.player_id })

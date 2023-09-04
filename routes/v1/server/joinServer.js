@@ -11,13 +11,7 @@ module.exports = {
     query: Joi.object({
       serverId: Joi.number().integer().optional()
     }),
-    body: Joi.object({
-      LENUM: Joi.number().integer().optional().description('The ID of the player sending the request'),
-      LEPASS: Joi.string().optional().description('The password of the player sending the request'),
-      LESOFT: Joi.number().integer().optional().description('The software used for sending the request'),
-      SERVERID: Joi.number().integer().required().description('The ID of the server to join'),
-      LAVERSION: Joi.string().optional().description('The version of the software used for sending the request')
-    })
+    body: null
   },
   responses: {
     200: Joi.number().integer().required().description('ID of the joined server'),
@@ -30,7 +24,7 @@ module.exports = {
     try {
       player = await utils.authorizePlayer(app, req)
     } catch (e) {
-      res.status(500).send({ error: 'Invalid credentials' })
+      res.status(500).send({ error: `Authorization error: ${e}` })
       return next()
     }
     const serverId = parseInt( req.query.serverId || req.body.SERVERID)

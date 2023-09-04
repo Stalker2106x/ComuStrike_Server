@@ -22,6 +22,8 @@ module.exports = {
   getServerList: require('./v1/server/getServerList'),
   joinServer: require('./v1/server/joinServer'),
   quitServer: require('./v1/server/quitServer'),
+  // Session
+  createSession: require('./v1/session/createSession'),
   // Tournament
   createTournament: require('./v1/tournament/createTournament'),
   getTournament: require('./v1/tournament/getTournament'),

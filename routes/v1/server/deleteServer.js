@@ -12,10 +12,7 @@ module.exports = {
       serverId: Joi.number().integer().optional()
     }),
     body: Joi.object({
-      LENUM: Joi.number().integer().optional().description('The ID of the player sending the request'),
-      LEPASS: Joi.string().optional().description('The password of the player sending the request'),
-      CLE_SERVEUR: Joi.number().integer().required().description('The ID of the server to delete'),
-      LAVERSION: Joi.string().optional().description('The version of the software used for sending the request')
+      CLE_SERVEUR: Joi.number().integer().required().description('The ID of the server to delete')
     })
   },
   responses: {
@@ -29,7 +26,7 @@ module.exports = {
     try {
       player = await utils.authorizePlayer(app, req)
     } catch (e) {
-      res.status(500).send({ error: 'Invalid credentials' })
+      res.status(500).send({ error: `Authorization error: ${e}` })
       return next()
     }
     const serverId = parseInt(req.query.serverId || req.body.CLE_SERVEUR)

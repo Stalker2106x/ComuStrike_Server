@@ -9,13 +9,7 @@ module.exports = {
   route: '/v1/players/:playerId',
   params: {
     query: Joi.object({
-      playerId: Joi.string().optional()
-    }),
-    body: Joi.object({
-      LENUM: Joi.number().integer().optional().description('The ID of the player sending the request'),
-      LEPASS: Joi.string().optional().description('The password of the player sending the request'),
-      LAMAC: Joi.string().required().description('MAC address of the client sending the request'),
-      LAVERSION: Joi.string().optional().description('The version of the software used for sending the request')
+      playerId: Joi.string().optional().description('The ID of the player sending the request')
     })
   },
   responses: {
@@ -48,7 +42,7 @@ module.exports = {
     try {
       player = await utils.authorizePlayer(app, req)
     } catch (e) {
-      res.status(500).send({ error: 'Invalid credentials' })
+      res.status(500).send({ error: `Authorization error: ${e}` })
       return next()
     }
     const mp3 = await app.db.models.MP3.findOne({
