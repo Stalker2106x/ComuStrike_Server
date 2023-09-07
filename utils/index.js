@@ -3,6 +3,7 @@ const hashModule = require('./hash')
 const loggerModule = require('./logger')
 const xmlModule = require('./xml')
 const authorizeModule = require('./authorize')
+const scoreModule = require('./score')
 const ipModule = require('./ip')
 const openapiModule = require('./openapi')
 
@@ -10,6 +11,9 @@ module.exports = {
   // Authorize
   authorizePlayer: authorizeModule.authorizePlayer,
   authorizeToken: authorizeModule.authorizeToken,
+  // Score
+  getPlayerScore: scoreModule.getPlayerScore,
+  updatePlayerScore: scoreModule.updatePlayerScore,
   // Cypher
   cypher: cypherModule.cypher,
   decypher: cypherModule.decypher,

@@ -61,7 +61,7 @@ module.exports = {
       MSG2: 'testmsg2',
       MSG3: 'testmsg3',
       MSG4: 'testmsg4',
-      SCORE: player.score,
+      SCORE: utils.getPlayerScore(app, player.player_id).kills,
       SCROLL: 'ComuStrike Unofficial Server - Enjoy RomuStrike in 2023... and more!',
       STATS: `Score: ${player.score}`,
       PANEL: `ComuStrike Unofficial Server v${app.config.serverVersion}`,

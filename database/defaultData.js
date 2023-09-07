@@ -6,9 +6,9 @@ module.exports = {
   async create (app) {
     await module.exports.createRanks(app)
     await module.exports.createMP3(app)
-    await module.exports.createPlayers(app)
-    await module.exports.createTeams(app)
     await module.exports.createMaps(app)
+    await module.exports.createTeams(app)
+    await module.exports.createPlayers(app)
     await module.exports.createEvents(app)
   },
   async createTeams (app) {
@@ -27,18 +27,52 @@ module.exports = {
     })
   },
   async createRanks (app) {
-    for (let i = 1; i <= 10; i++) {
-      await app.db.models.Ranks.create({
-        name: `Rank${i}`
-      })
-    }
+    await app.db.models.Ranks.create({
+      name: 'Soldat',
+      weapon_level: 1
+    })
+    await app.db.models.Ranks.create({
+      name: 'Membre du GIGN',
+      weapon_level: 1
+    })
+    await app.db.models.Ranks.create({
+      name: 'Sous-Lieutenant',
+      weapon_level: 2
+    })
+    await app.db.models.Ranks.create({
+      name: 'Lieutenant',
+      weapon_level: 2
+    })
+    await app.db.models.Ranks.create({
+      name: 'Capitaine',
+      weapon_level: 3
+    })
+    await app.db.models.Ranks.create({
+      name: 'Commandant',
+      weapon_level: 3
+    })
+    await app.db.models.Ranks.create({
+      name: 'Colonel',
+      weapon_level: 3
+    })
+    await app.db.models.Ranks.create({
+      name: 'General',
+      weapon_level: 4
+    })
+    await app.db.models.Ranks.create({
+      name: 'Maréchal',
+      weapon_level: 4
+    })
+    await app.db.models.Ranks.create({
+      name: 'Maître de Romustrike',
+      weapon_level: 4
+    })
   },
   async createPlayers (app) {
     await app.db.models.Players.create({
       username: 'admin',
       email: 'admin@romustrike.fr',
-      password: utils.passwordHash('admin', app.config.cypherKey),
-      team_id: await app.db.models.Teams.findOne({ where: { name: 'RS Staff' } }).team_id
+      password: utils.passwordHash('admin', app.config.cypherKey)
     })
     await app.db.models.Players.create({
       username: 'user',

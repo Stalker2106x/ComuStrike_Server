@@ -85,12 +85,11 @@ class App {
       for (const model of Object.values(models)) {
         await model.defineAssociations(this.db.models)
       }
-      await this.db.models.Players.sync() // Make sure player table exists for next request
-      const playerCount = await this.db.models.Players.count()
-      if (playerCount === 0 || this.fillDB) {
+      const playersExists = await this.db.getQueryInterface().tableExists('Players')
+      if (playersExists === 0 || this.fillDB) {
         if (this.fillDB) {
           console.warn('You started the server with the --fillDB switch which is DESTRUCTIVE.')
-        } else if (playerCount === 0) {
+        } else if (playersExists === 0) {
           console.warn('It looks like the server database is empty. To function properly, ComuStrike needs base data.')
           console.warn('The next process will inject adequate data into your database.')
         }
@@ -113,7 +112,7 @@ class App {
         await this.db.sync()
       }
     } catch (e) {
-      console.error(`Database initialization failed: ${e}`)
+      console.error(`Database initialization failed: ${e.message} ${e.stack}`)
       process.exit(1)
     }
   }

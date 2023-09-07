@@ -5,6 +5,7 @@ module.exports = {
     id: {
       type: DataTypes.INTEGER,
       autoIncrement: true,
+      allowNull: false,
       primaryKey: true
     },
     name: {
@@ -17,6 +18,7 @@ module.exports = {
     },
     active: {
       type: DataTypes.BOOLEAN,
+      allowNull: false,
       defaultValue: true
     },
     description: {
@@ -25,6 +27,7 @@ module.exports = {
     },
     sessions: {
       type: DataTypes.INTEGER,
+      allowNull: false,
       defaultValue: 0
     }
   },

@@ -19,6 +19,7 @@ jest.mock('../../../utils', () => {
         player_id: 0
       })
     },
+    getPlayerScore: () => { return { kills: 1 } },
     logger: () => {}
   }
 })
@@ -66,7 +67,7 @@ describe('Get player', () => {
       MSG2: expect.any(String),
       MSG3: expect.any(String),
       MSG4: expect.any(String),
-      SCORE: 10,
+      SCORE: 1,
       SCROLL: expect.any(String),
       STATS: expect.any(String),
       PANEL: expect.any(String),

@@ -5,6 +5,7 @@ module.exports = {
     id: {
       type: DataTypes.INTEGER,
       autoIncrement: true,
+      allowNull: false,
       primaryKey: true
     },
     username: {
@@ -21,15 +22,13 @@ module.exports = {
     },
     credits: {
       type: DataTypes.INTEGER,
+      allowNull: false,
       defaultValue: 0
-    },
-    team_id: {
-      type: DataTypes.INTEGER,
-      allowNull: true
     },
     version: {
       type: DataTypes.STRING,
-      defaultValue: 157
+      allowNull: false,
+      defaultValue: '157'
     },
     mac_address: {
       type: DataTypes.STRING,
@@ -41,40 +40,42 @@ module.exports = {
     },
     active: {
       type: DataTypes.INTEGER,
+      allowNull: false,
       defaultValue: 1
     },
     model: {
       type: DataTypes.STRING,
+      allowNull: false,
       defaultValue: 'agtx'
     },
     role: {
       type: DataTypes.INTEGER,
+      allowNull: false,
       defaultValue: 0
     },
-    mp3_id: {
+    level: {
       type: DataTypes.INTEGER,
-      references: {
-        model: 'MP3',
-        key: 'id'
-      }
+      allowNull: false,
+      defaultValue: 0
     },
-    rank_id: {
+    level_xp: {
       type: DataTypes.INTEGER,
-      references: {
-        model: 'Ranks',
-        key: 'id'
-      }
+      allowNull: false,
+      defaultValue: 0
     },
     kills: {
-      type: DataTypes.BIGINT,
+      type: DataTypes.INTEGER,
+      allowNull: false,
       defaultValue: 0
     },
     headshots: {
-      type: DataTypes.BIGINT,
+      type: DataTypes.INTEGER,
+      allowNull: false,
       defaultValue: 0
     },
     deaths: {
-      type: DataTypes.BIGINT,
+      type: DataTypes.INTEGER,
+      allowNull: false,
       defaultValue: 0
     }
   },
@@ -82,5 +83,22 @@ module.exports = {
     tableName: 'Players'
   },
   defineAssociations: function (models) {
+    models.Players.belongsTo(models.MP3, {
+      foreignKey: {
+        name: 'mp3_id',
+        allowNull: false,
+        defaultValue: 1
+      },
+      onUpdate: 'NO ACTION'
+    })
+    models.Players.belongsTo(models.Ranks, {
+      foreignKey: {
+        name: 'rank_id',
+        allowNull: false,
+        defaultValue: 1
+      },
+      onUpdate: 'NO ACTION'
+    })
+    models.Players.belongsToMany(models.Teams, { through: 'Teams_Players' })
   }
 }
