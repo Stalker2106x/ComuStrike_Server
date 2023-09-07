@@ -11,7 +11,7 @@ jest.mock('../../../utils', () => {
     authorizePlayer: () => {
       return Promise.resolve({
         username: 'user',
-        player_id: 0
+        id: 0
       })
     }
   }

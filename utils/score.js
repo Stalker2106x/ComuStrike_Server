@@ -11,21 +11,23 @@ function sumObjects (...objs) {
 }
 
 module.exports = {
-  getScore: function (app, playerId) {
+  getPlayerScore: function (app, playerId) {
     const scoreData = {
       kills: 0,
       deaths: 0,
       headshots: 0
     }
-    app.db.models.Scores.find({
+    app.db.models.Scores.findAll({
       where: {
         player_id: playerId
       }
-    }).forEach((score) => {
-      sumObjects(scoreData, {
-        kills: score.kills,
-        deaths: score.deaths,
-        headshots: score.headshots
+    }).then((scores) => {
+      scores.forEach((score) => {
+        sumObjects(scoreData, {
+          kills: score.kills,
+          deaths: score.deaths,
+          headshots: score.headshots
+        })
       })
     })
     return scoreData

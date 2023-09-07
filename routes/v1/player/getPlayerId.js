@@ -26,7 +26,7 @@ module.exports = {
       res.status(500).send({ error: `Authorization error: ${e}` })
       return
     }
-    res.status(200).send({ ID_PLAYER: player.player_id })
+    res.status(200).send({ ID_PLAYER: player.id })
     next()
   }
 }

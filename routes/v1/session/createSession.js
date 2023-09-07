@@ -29,7 +29,7 @@ module.exports = {
       return
     }
     const secret = {
-      id: player.player_id,
+      id: player.id,
       username: player.username
     }
     const generatedToken = {

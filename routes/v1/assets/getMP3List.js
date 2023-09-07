@@ -33,7 +33,7 @@ module.exports = {
     const mp3s = []
     for (const mp3 of dbMp3s) {
       mp3s.push({
-        ID: mp3.mp3_id,
+        ID: mp3.id,
         NAME: mp3.name,
         COMMENTAIRE: mp3.description,
         HOST: global.forceLocalhost ? '127.0.0.1' : app.config.publicIP

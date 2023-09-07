@@ -33,7 +33,7 @@ module.exports = {
       res.status(500).send({ error: 'Invalid SERVERID' })
       return next()
     }
-    if (server.connectedPeers.indexOf(player.player_id) !== -1) {
+    if (server.connectedPeers.indexOf(player.id) !== -1) {
       res.status(500).send({ error: 'Player ID already on server' })
       next()
       return

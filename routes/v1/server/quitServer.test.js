@@ -16,7 +16,7 @@ jest.mock('../../../utils', () => {
         role: 0,
         active: 1,
         score: 10,
-        player_id: 0
+        id: 0
       })
     },
     logger: () => {}

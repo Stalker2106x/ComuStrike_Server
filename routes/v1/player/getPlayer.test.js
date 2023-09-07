@@ -16,7 +16,7 @@ jest.mock('../../../utils', () => {
         role: 0,
         active: 1,
         score: 10,
-        player_id: 0
+        id: 0
       })
     },
     getPlayerScore: () => { return { kills: 1 } },
@@ -40,7 +40,7 @@ describe('Get player', () => {
         models: {
           MP3: {
             findOne: () => Promise.resolve({
-              mp3_id: 0,
+              id: 0,
               name: 'music'
             })
           }

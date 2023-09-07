@@ -4,6 +4,7 @@ const { convert } = require('joi-openapi')
 function convertSchemaParameters (schema) {
   const parameters = []
   for (const [source, params] of Object.entries(schema)) {
+    if (!params) continue
     const openapiSchema = convert(params)
     for (const [paramName, paramData] of Object.entries(openapiSchema.properties)) {
       parameters.push({
@@ -57,7 +58,7 @@ module.exports = {
       paths: {}
     }
 
-    const xmlLayer = require('../routes/legacy/xmlLayer')
+    const xmlLayer = require('../routes/legacy/xmlLayer/xmlLayer')
     const allRoutes = Object.values(require('../routes'))
     allRoutes.push(xmlLayer)
     for (const route of allRoutes) {

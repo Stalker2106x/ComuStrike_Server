@@ -21,7 +21,7 @@ module.exports = {
       mp3: parseInt(req.body.IDMP3)
     }, {
       where: {
-        player_id: parseInt(req.body.LENUM)
+        id: parseInt(req.body.LENUM)
       }
     })
     res.status(200).send()
