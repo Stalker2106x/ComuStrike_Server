@@ -48,6 +48,7 @@ module.exports = {
     const mp3 = await app.db.models.MP3.findOne({
       where: { id: player.mp3_id }
     })
+    const scoreData = await utils.getPlayerScore(app, player.id)
     utils.logger('game', `Player [${player.id}] ${player.username} logged in`)
     res.status(200).send({
       NAME: player.username,
@@ -61,9 +62,9 @@ module.exports = {
       MSG2: 'testmsg2',
       MSG3: 'testmsg3',
       MSG4: 'testmsg4',
-      SCORE: utils.getPlayerScore(app, player.id).kills,
+      SCORE: scoreData.kills,
       SCROLL: 'ComuStrike Unofficial Server - Enjoy RomuStrike in 2023... and more!',
-      STATS: `Score: ${player.score}`,
+      STATS: `Score: ${scoreData.kills}`,
       PANEL: `ComuStrike Unofficial Server v${app.config.serverVersion}`,
       ROMUCHAT: global.forceLocalhost ? '127.0.0.1' : app.config.publicIP,
       ID_PLAYER: player.id,
