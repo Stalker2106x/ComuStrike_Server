@@ -54,7 +54,7 @@ module.exports = {
       NAME: player.username,
       KEY: '???',
       MP3: mp3.name,
-      MP3__ID: player.mp3,
+      MP3__ID: mp3.id,
       MODEL: player.model,
       IS_OP: player.role,
       VALIDE: player.active,
