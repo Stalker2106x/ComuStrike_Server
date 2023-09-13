@@ -16,7 +16,7 @@ module.exports = {
     200: Joi.object({
       token: Joi.string().required().description('The generated jwt token')
     }),
-    500: Joi.object({
+    401: Joi.object({
       error: Joi.string().required().description('A short description of the error that occured')
     })
   },
@@ -25,7 +25,7 @@ module.exports = {
     try {
       player = await utils.authorizePlayer(app, req)
     } catch (e) {
-      res.status(500).send({ error: `Authorization error: ${e}` })
+      res.status(401).send({ error: `Authorization error: ${e}` })
       return
     }
     const secret = {

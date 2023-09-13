@@ -1,5 +1,5 @@
 module.exports = {
-  serverVersion: '1.2.0',
+  serverVersion: '1.2.1',
   gameVersion: '157',
   userConfigPath: './config.json',
   defaultUserConfig: {

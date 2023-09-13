@@ -5,7 +5,8 @@ module.exports = {
       query: schema.query ? schema.query.validate(req.query) : null
     }
     if ((validationResult.body && validationResult.body.error) || (validationResult.query && validationResult.query.error)) {
-      console.error(validationResult)
+      if (validationResult.body && global.debug) console.error(validationResult.body.error)
+      if (validationResult.query && global.debug) console.error(validationResult.query.error)
       return validationResult
     }
     return null
@@ -13,9 +14,10 @@ module.exports = {
   middleware: (schema, req, res, next) => {
     const validationResult = module.exports.validate(schema, req)
     if (validationResult) {
-      if (global.debug) console.error(validationResult)
-      res.status(422).send(JSON.stringify(validationResult))
+      res.status(422).setHeader('Content-Type', 'application/json').send(JSON.stringify({
+        ...(validationResult.body && { bodyError: validationResult.body.error.details }),
+        ...(validationResult.query && { queryError: validationResult.query.error.details })
+      }))
     }
-    next()
   }
 }

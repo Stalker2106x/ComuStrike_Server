@@ -33,7 +33,7 @@ module.exports = {
       ID_PLAYER: Joi.string().required().description('ID of the player'),
       CONTROLE: Joi.string().required().description('MD5 checksum of the player')
     }),
-    500: Joi.object({
+    401: Joi.object({
       error: Joi.string().required().description('A short description of the error that occured')
     })
   },
@@ -42,7 +42,7 @@ module.exports = {
     try {
       player = await utils.authorizePlayer(app, req)
     } catch (e) {
-      res.status(500).send({ error: `Authorization error: ${e}` })
+      res.status(401).send({ error: `Authorization error: ${e}` })
       return next()
     }
     const mp3 = await app.db.models.MP3.findOne({

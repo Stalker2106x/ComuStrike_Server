@@ -17,6 +17,9 @@ module.exports = {
     200: Joi.number().integer().required().description('ID of the joined server'),
     500: Joi.object({
       error: Joi.string().required().description('A short description of the error that occured')
+    }),
+    401: Joi.object({
+      error: Joi.string().required().description('A short description of the error that occured')
     })
   },
   handler: async (app, req, res, next) => {
@@ -24,7 +27,7 @@ module.exports = {
     try {
       player = await utils.authorizePlayer(app, req)
     } catch (e) {
-      res.status(500).send({ error: `Authorization error: ${e}` })
+      res.status(401).send({ error: `Authorization error: ${e}` })
       return next()
     }
     const serverId = parseInt(req.query.serverId || req.body.SERVERID)

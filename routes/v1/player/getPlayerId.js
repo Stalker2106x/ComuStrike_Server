@@ -14,7 +14,7 @@ module.exports = {
     200: Joi.object({
       ID_PLAYER: Joi.string().required().description('ID of the player')
     }),
-    500: Joi.object({
+    401: Joi.object({
       error: Joi.string().required().description('A short description of the error that occured')
     })
   },
@@ -23,7 +23,7 @@ module.exports = {
     try {
       player = await utils.authorizePlayer(app, req)
     } catch (e) {
-      res.status(500).send({ error: `Authorization error: ${e}` })
+      res.status(401).send({ error: `Authorization error: ${e}` })
       return
     }
     res.status(200).send({ ID_PLAYER: player.id })

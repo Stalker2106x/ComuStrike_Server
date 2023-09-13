@@ -21,7 +21,7 @@ module.exports = {
     try {
       await utils.authorizePlayer(app, req)
     } catch (e) {
-      res.status(500).send({ error: `Authorization error: ${e}` })
+      res.status(401).send({ error: `Authorization error: ${e}` })
       return next()
     }
     await utils.updatePlayerScore(app, parseInt(req.body.V), { deaths: 1 })

@@ -40,7 +40,10 @@ module.exports = {
     }
   },
   se_faire_tuer: {
-    handler: routes.killed.handler,
+    handler: (app, req, res, next) => {
+      req.query.LENUM = req.body.V
+      routes.killed.handler(app, req, res, next)
+    },
     params: {
       body: Joi.object({
         V: Joi.number().integer().required().description('The ID of the player that got killed'),
@@ -48,7 +51,9 @@ module.exports = {
         T: Joi.number().integer().required().description('The ID of the player that did the kill'),
         PV: Joi.number().integer().required().description('Unknown use'),
         PT: Joi.number().integer().required().description('Unknown use'),
-        HS: Joi.number().integer().required().description('Equals to 1 if the kill was a headshot, else 0')
+        HS: Joi.number().integer().required().description('Equals to 1 if the kill was a headshot, else 0'),
+        LAVERSION: Joi.string().optional().description('The version of the software used for sending the request'),
+        LEPASS: Joi.string().optional().description('The password of the player to get ID for')
       })
     }
   },
