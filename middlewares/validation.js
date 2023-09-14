@@ -18,6 +18,8 @@ module.exports = {
         ...(validationResult.body && { bodyError: validationResult.body.error.details }),
         ...(validationResult.query && { queryError: validationResult.query.error.details })
       }))
+      return;
     }
+    next()
   }
 }
